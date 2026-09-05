@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Simplistic Website</title>
+    <title>The Airline of Udyanapura</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600&display=swap" rel="stylesheet">
+
     <style>
         /* --- Base & Reset --- */
         * {
@@ -77,7 +82,7 @@
             height: 80vh;
             /* Tinted Image Background */
             background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)),
-                        url('https://imgur.com/3zx6eLm.png') center/cover no-repeat;
+                        url('https://placehold.co/1920x1080/1a1a1a/666?text=Header+Image') center/cover no-repeat;
             display: flex;
             align-items: center;
             padding: 0 5%;
@@ -98,20 +103,29 @@
         .hero-content {
             position: relative;
             z-index: 10;
-            max-width: 700px;
+            max-width: 800px; /* Slightly wider to accommodate the paragraph */
         }
 
         .hero-title {
+            font-family: 'Gazpacho', Georgia, serif; /* Custom font with serif fallback */
             font-size: 4.5rem;
-            font-weight: 800;
+            font-weight: normal; /* Removed bold */
             line-height: 1.1;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             
             /* Top White to Bottom Blue Gradient */
             background: linear-gradient(to bottom, #ffffff 40%, #002A5C 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+        }
+        
+        .hero-subtitle {
+            font-family: 'Raleway', sans-serif; /* Applied Raleway */
+            font-size: 1.1rem;
+            color: #f8f9fa; /* Soft white for readability against the dark tint */
+            line-height: 1.8;
+            max-width: 650px;
         }
 
         /* --- About Section --- */
@@ -188,6 +202,11 @@
             background-color: #f8f9fa;
             color: #333;
             border: 1px solid #e9ecef;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
         
         .btn-wide:hover {
@@ -199,7 +218,7 @@
         /* Responsive tweaks */
         @media (max-width: 900px) {
             .about-section { flex-direction: column; gap: 2rem; }
-            .nav-links { display: none; } /* Hide links on mobile for simplicity */
+            .nav-links { display: none; }
             .hero-title { font-size: 3rem; }
         }
     </style>
@@ -219,7 +238,8 @@
 
     <header class="hero">
         <div class="hero-content">
-            <h1 class="hero-title">The Airline of Udyanapura.</h1>
+            <h1 class="hero-title">The Airline of Udyanapura</h1>
+            <p class="hero-subtitle">One of Aeronautica's Largest Airlines. We offer programs from beginners to advanced pilots, with top of the end pay, and quality. Welcome to the Airline of Udyanapura.</p>
         </div>
     </header>
 
@@ -234,21 +254,21 @@
             <div class="card">
                 <img src="https://placehold.co/600x400/eeeeee/999999?text=Image+1" alt="Box 1 Image">
                 <div class="card-body">
-                    <button class="btn btn-wide">View Details</button>
+                    <button class="btn-wide">View Details</button>
                 </div>
             </div>
 
             <div class="card">
                 <img src="https://placehold.co/600x400/eeeeee/999999?text=Image+2" alt="Box 2 Image">
                 <div class="card-body">
-                    <button class="btn btn-wide">View Details</button>
+                    <button class="btn-wide">View Details</button>
                 </div>
             </div>
 
             <div class="card">
                 <img src="https://placehold.co/600x400/eeeeee/999999?text=Image+3" alt="Box 3 Image">
                 <div class="card-body">
-                    <button class="btn btn-wide">View Details</button>
+                    <button class="btn-wide">View Details</button>
                 </div>
             </div>
         </div>
