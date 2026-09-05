@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
     <style>
         /* --- Base & Reset --- */
@@ -15,8 +15,8 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            /* Set global default font to Lato */
-            font-family: 'Lato', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            /* Set global default font to Inter */
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
         body {
             background-color: #ffffff;
@@ -26,10 +26,9 @@
 
         /* --- Global Typography Theme --- */
         h1, h2, h3, .logo {
-            /* Set headings to Abril Fatface */
-            font-family: 'Abril Fatface', serif;
-            font-weight: 400; /* Abril Fatface is naturally very bold */
-            letter-spacing: 1px;
+            /* Set headings to Playfair Display */
+            font-family: 'Playfair Display', Georgia, serif;
+            font-weight: 600; 
         }
 
         /* --- Top Navigation --- */
@@ -45,8 +44,10 @@
         }
         
         .logo {
-            font-size: 2rem;
+            font-size: 2.2rem;
             color: #002A5C; /* SIA Blue */
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
         
         .nav-links {
@@ -58,7 +59,7 @@
         .nav-links a {
             text-decoration: none;
             color: #555;
-            font-weight: 700;
+            font-weight: 500;
             transition: color 0.3s ease;
         }
         
@@ -73,8 +74,9 @@
             padding: 0.75rem 1.75rem;
             border-radius: 6px;
             cursor: pointer;
-            font-weight: 700;
+            font-weight: 600;
             transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
         }
         
         .btn:hover {
@@ -127,7 +129,7 @@
             color: #f8f9fa;
             line-height: 1.8;
             max-width: 650px;
-            font-weight: 400;
+            font-weight: 300;
         }
 
         /* --- About Section --- */
@@ -153,8 +155,8 @@
         
         .about-text p {
             color: #002A5C;
-            font-size: 1rem;
-            font-weight: 700;
+            font-size: 0.95rem;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
@@ -203,10 +205,10 @@
         }
 
         .card-text {
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: #666;
             margin-bottom: 1.5rem;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         .btn-wide {
@@ -217,9 +219,10 @@
             border: 1px solid #e9ecef;
             padding: 0.75rem;
             border-radius: 6px;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
         }
         
         .btn-wide:hover {
