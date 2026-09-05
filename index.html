@@ -3,31 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Website - Biofarma Theme</title>
+    <title>Modern Website</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&display=swap" rel="stylesheet">
-    
-    <style>
-        /* Base Styles & Biofarma Design Tokens */
-        :root {
-            --primary-color: #01373d; /* Deep Teal */
-            --accent-color: #ce1a4d;  /* Crimson/Red-Pink */
-            --border-color: #d3ccff;  /* Light Periwinkle */
-            --bg-color: #ffffff;      /* Clean White */
-            --text-color: #333333;
-        }
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
 
+    <style>
+        /* Base Styles & Reset */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'DM Sans', sans-serif;
         }
-
+        
         body {
-            color: var(--text-color);
-            background-color: var(--bg-color); 
+            font-family: 'Inter', sans-serif;
+            color: #333;
+            background-color: #f8f9fa; /* Matches the bottom of the hero fade */
         }
 
         /* Header Navigation */
@@ -35,205 +28,184 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 5%;
-            background-color: var(--bg-color);
-            box-shadow: 0 1px 0 var(--border-color); /* Subtle border matching theme */
+            padding: 1.5rem 5%;
+            background-color: #ffffff;
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
         .logo {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--primary-color);
-            letter-spacing: -0.5px;
-        }
-
-        nav {
-            display: flex;
-            gap: 30px;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: var(--primary-color);
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        nav a:hover {
-            color: var(--accent-color);
-        }
-
-        .header-btn, .card-btn {
-            padding: 10px 24px;
-            background-color: var(--accent-color);
-            color: #ffffff;
-            border: none;
-            border-radius: 6px;
+            font-size: 1.5rem;
             font-weight: 700;
-            font-size: 15px;
+            color: #1a1a1a;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
         }
 
-        .header-btn:hover, .card-btn:hover {
-            background-color: #a7123d; /* Slightly darker accent on hover */
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #00a859; /* Green accent inspired by bio/pharma themes */
+        }
+
+        .btn-primary {
+            background-color: #00a859;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #008746;
             transform: translateY(-2px);
         }
 
-        /* Hero Section (Fading Image) */
+        /* Hero Image with Fade */
         .hero {
-            height: 75vh;
+            position: relative;
+            height: 70vh;
+            /* REPLACE URL BELOW WITH YOUR IMAGE URL */
+            background: url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+        }
+
+        /* This pseudo-element creates the smooth fade into the background color */
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
             width: 100%;
-            /* Uses the requested Imgur link and fades into the white background */
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 1) 100%),
-                        url('https://imgur.com/3zx6eLm.png') no-repeat center center/cover;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            height: 250px;
+            background: linear-gradient(to bottom, transparent, #f8f9fa);
         }
 
-        /* About Section */
-        .about {
+        /* About Us Section */
+        .about-section {
+            padding: 4rem 5% 6rem;
             text-align: center;
-            padding: 20px 20px 80px;
-            background-color: var(--bg-color);
+            background-color: #f8f9fa;
         }
 
-        .about h2 {
-            font-size: 52px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            color: var(--primary-color);
-            letter-spacing: -1px;
+        .about-section h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
         }
 
-        .about p {
-            font-size: 22px;
-            color: var(--text-color);
-            text-transform: lowercase;
-            letter-spacing: 0.5px;
-            font-weight: 400;
+        .about-section h3 {
+            font-size: 1.25rem;
+            font-weight: 300;
+            color: #666;
+            margin-bottom: 4rem;
         }
 
-        /* Cards Section */
+        /* Cards Grid */
         .cards-container {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            padding: 0 5% 100px;
-            background-color: var(--bg-color);
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .card {
-            border-radius: 12px;
-            overflow: hidden;
-            width: 320px;
-            box-shadow: 0 15px 30px rgba(1, 55, 61, 0.1);
+            padding: 2rem;
+            border-radius: 20px;
             display: flex;
             flex-direction: column;
-            transition: transform 0.3s ease;
-            border: 1px solid rgba(211, 204, 255, 0.4); /* Faint periwinkle border */
+            align-items: center;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
         }
-
-        /* Solid, Non-Pastel Card Backgrounds */
-        .card-1 { background-color: var(--primary-color); } 
-        .card-2 { background-color: #02535c; } /* Lighter Teal */
-        .card-3 { background-color: #ffffff; border: 2px solid var(--primary-color); } /* High contrast white */
 
         .card img {
             width: 100%;
-            height: 220px;
+            height: 200px;
             object-fit: cover;
-            border-bottom: 3px solid var(--accent-color);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
         }
 
-        .card-content {
-            padding: 30px 24px;
-            text-align: center;
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* Card Color Variations */
+        .card-green { background-color: #e8f5e9; }
+        .card-blue { background-color: #e3f2fd; }
+        .card-gray { background-color: #f1f3f5; }
+
+        .card .btn-secondary {
+            margin-top: auto;
+            background-color: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
-        /* Adjust button styles based on card background for contrast */
-        .card-3 .card-btn {
-            background-color: var(--primary-color);
-        }
-        .card-3 .card-btn:hover {
-            background-color: var(--accent-color);
-        }
-
-        /* Responsive Design for smaller screens */
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                gap: 15px;
-                padding: 20px;
-            }
-            .cards-container {
-                flex-direction: column;
-                align-items: center;
-            }
-            .hero {
-                height: 50vh; /* Shorter hero on mobile */
-            }
+        .card .btn-secondary:hover {
+            background-color: #333;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">Logo</div>
-        <nav>
-            <a href="#">Pages</a>
-            <a href="#">Middle</a>
-            <a href="#">Here</a>
+        <div class="logo">Logo.</div>
+        <nav class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Services</a>
+            <a href="#">Company</a>
+            <a href="#">Contact</a>
         </nav>
-        <button class="header-btn">Action</button>
+        <button class="btn-primary">Get Started</button>
     </header>
 
-    <main>
-        <section class="hero"></section>
+    <section class="hero"></section>
 
-        <section class="about">
-            <h2>About Us</h2>
-            <p>all about us</p>
-        </section>
+    <section class="about-section">
+        <h1>About us</h1>
+        <h3>All about us</h3>
 
-        <section class="cards-container">
+        <div class="cards-container">
+            <div class="card card-green">
+                <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=500&q=60" alt="Card 1 Image">
+                <button class="btn-secondary">Learn More</button>
+            </div>
             
-            <div class="card card-1">
-                <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=600&auto=format&fit=crop" alt="Card Image 1">
-                <div class="card-content">
-                    <button class="card-btn">Button</button>
-                </div>
+            <div class="card card-blue">
+                <img src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=500&q=60" alt="Card 2 Image">
+                <button class="btn-secondary">Discover</button>
             </div>
-
-            <div class="card card-2">
-                <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=600&auto=format&fit=crop" alt="Card Image 2">
-                <div class="card-content">
-                    <button class="card-btn">Button</button>
-                </div>
+            
+            <div class="card card-gray">
+                <img src="https://images.unsplash.com/photo-1531297172864-459c73a4b5c4?auto=format&fit=crop&w=500&q=60" alt="Card 3 Image">
+                <button class="btn-secondary">Explore</button>
             </div>
-
-            <div class="card card-3">
-                <img src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?q=80&w=600&auto=format&fit=crop" alt="Card Image 3">
-                <div class="card-content">
-                    <button class="card-btn">Button</button>
-                </div>
-            </div>
-
-        </section>
-    </main>
+        </div>
+    </section>
 
 </body>
 </html>
