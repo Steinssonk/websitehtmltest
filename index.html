@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Airline of Udyanapura</title>
     
-    <!-- Import Raleway from Google Fonts -->
+    <!-- Import Raleway (Headings) & Poppins (Body Text) from Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
 
     <style>
         /* --- Base & Reset --- */
@@ -16,12 +16,17 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
         body {
             background-color: #ffffff;
             color: #333;
             line-height: 1.6;
+        }
+
+        /* --- Global Typography Theme --- */
+        h1, h2, h3, .logo {
+            font-family: 'Raleway', sans-serif;
         }
 
         /* --- Top Navigation --- */
@@ -54,6 +59,7 @@
             text-decoration: none;
             color: #555;
             font-weight: 500;
+            font-family: 'Poppins', sans-serif;
             transition: color 0.3s ease;
         }
         
@@ -69,6 +75,7 @@
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
+            font-family: 'Poppins', sans-serif;
             transition: all 0.3s ease;
         }
         
@@ -81,7 +88,7 @@
         .hero {
             position: relative;
             height: 80vh;
-            /* Tinted Image Background using your Imgur Link */
+            /* Tinted Image Background */
             background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)),
                         url('https://i.imgur.com/3zx6eLm.png') center/cover no-repeat;
             display: flex;
@@ -108,9 +115,9 @@
         }
 
         .hero-title {
-            font-family: 'Gazpacho', Georgia, serif;
+            font-family: 'Raleway', sans-serif;
             font-size: 4.5rem;
-            font-weight: normal;
+            font-weight: 700;
             line-height: 1.1;
             margin-bottom: 1.5rem;
             
@@ -122,11 +129,12 @@
         }
         
         .hero-subtitle {
-            font-family: 'Raleway', sans-serif;
+            font-family: 'Poppins', sans-serif;
             font-size: 1.1rem;
             color: #f8f9fa;
             line-height: 1.8;
             max-width: 650px;
+            font-weight: 400;
         }
 
         /* --- About Section --- */
@@ -145,6 +153,7 @@
         }
         
         .about-text h2 {
+            font-family: 'Raleway', sans-serif;
             font-size: 3rem;
             color: #111;
             margin-bottom: 0.5rem;
@@ -153,6 +162,7 @@
         }
         
         .about-text p {
+            font-family: 'Poppins', sans-serif;
             color: #002A5C;
             font-size: 1rem;
             font-weight: 600;
@@ -197,6 +207,22 @@
             flex-grow: 1;
         }
 
+        .card-title {
+            font-family: 'Raleway', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #111;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
         .btn-wide {
             width: 100%;
             margin-top: auto;
@@ -206,6 +232,7 @@
             padding: 0.75rem;
             border-radius: 6px;
             font-weight: 600;
+            font-family: 'Poppins', sans-serif;
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -257,24 +284,30 @@
         <div class="cards-container">
             <!-- Box 1 -->
             <div class="card">
-                <img src="https://placehold.co/600x400/eeeeee/999999?text=Image+1" alt="Box 1 Image">
+                <img src="https://placehold.co/600x400/eeeeee/999999?text=Image+1" alt="Flight Academy">
                 <div class="card-body">
+                    <h3 class="card-title">Flight Academy</h3>
+                    <p class="card-text">Comprehensive flight training programs designed for beginner pilots looking to earn their wings.</p>
                     <button class="btn-wide">View Details</button>
                 </div>
             </div>
 
             <!-- Box 2 -->
             <div class="card">
-                <img src="https://placehold.co/600x400/eeeeee/999999?text=Image+2" alt="Box 2 Image">
+                <img src="https://placehold.co/600x400/eeeeee/999999?text=Image+2" alt="Modern Fleet">
                 <div class="card-body">
+                    <h3 class="card-title">Modern Fleet</h3>
+                    <p class="card-text">Fly modern, state-of-the-art aircraft equipped with top-tier avionics and safety systems.</p>
                     <button class="btn-wide">View Details</button>
                 </div>
             </div>
 
             <!-- Box 3 -->
             <div class="card">
-                <img src="https://placehold.co/600x400/eeeeee/999999?text=Image+3" alt="Box 3 Image">
+                <img src="https://placehold.co/600x400/eeeeee/999999?text=Image+3" alt="Pilot Careers">
                 <div class="card-body">
+                    <h3 class="card-title">Pilot Careers</h3>
+                    <p class="card-text">Enjoy top-of-the-market pay packages, flexible scheduling, and clear career advancement tracks.</p>
                     <button class="btn-wide">View Details</button>
                 </div>
             </div>
