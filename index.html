@@ -1,44 +1,366 @@
-<header class="hero" style="position: relative; height: 80vh; background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://i.imgur.com/3zx6eLm.png') center/cover no-repeat; display: flex; align-items: center; padding: 0 5%;">
-        <div class="hero-content" style="position: relative; z-index: 10; max-width: 800px;">
-            <h1 class="hero-title" style="font-size: 4.5rem; line-height: 1.1; margin-bottom: 1.5rem; background: linear-gradient(to bottom, #ffffff 40%, #002A5C 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">The Airline of Udyanapura</h1>
-            <p class="hero-subtitle" style="font-size: 1.1rem; color: #f8f9fa; line-height: 1.8; max-width: 650px; font-weight: 300;">One of Aeronautica's Largest Airlines. We offer programs from beginners to advanced pilots, with top of the end pay, and quality. Welcome to the Airline of Udyanapura.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Airline of Udyanapura</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Base & Reset --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        body {
+            background-color: #ffffff;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* --- Global Typography Theme --- */
+        h1, h2, h3, .logo {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-weight: 600; 
+        }
+
+        /* --- Top Navigation --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 5%;
+            background-color: #ffffff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            font-size: 2.2rem;
+            color: #002A5C;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: #002A5C;
+        }
+
+        .btn {
+            background-color: #002A5C;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .btn:hover {
+            background-color: #001b3d;
+            box-shadow: 0 4px 12px rgba(0, 42, 92, 0.2);
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            position: relative;
+            height: 80vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)),
+                        url('https://i.imgur.com/3zx6eLm.png') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(to bottom, transparent, #ffffff);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+        }
+
+        .hero-title {
+            font-size: 4.5rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to bottom, #ffffff 40%, #002A5C 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: #f8f9fa;
+            line-height: 1.8;
+            max-width: 650px;
+            font-weight: 300;
+        }
+
+        /* --- About Section --- */
+        .about-section {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 6rem 5%;
+            gap: 4rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .about-text {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .about-text h2 {
+            font-size: 3.5rem;
+            color: #111;
+            margin-bottom: 0.5rem;
+        }
+        
+        .about-text p {
+            color: #002A5C;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* --- Cards Grid --- */
+        .cards-container {
+            flex: 2.5;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #f0f0f0;
+        }
+        
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+        }
+
+        .card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-title {
+            font-size: 1.75rem;
+            color: #111;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-text {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .btn-wide {
+            width: 100%;
+            margin-top: auto;
+            background-color: #f8f9fa;
+            color: #333;
+            border: 1px solid #e9ecef;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .btn-wide:hover {
+            background-color: #002A5C;
+            color: white;
+            border-color: #002A5C;
+        }
+
+        /* --- Footer Section --- */
+        footer {
+            background-color: #002A5C;
+            color: #ffffff;
+            padding: 4rem 5% 2rem;
+            margin-top: 4rem;
+        }
+        .footer-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        .footer-col {
+            flex: 1;
+            min-width: 250px;
+        }
+        .footer-col h3, .footer-col h4 {
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+        .footer-col p, .footer-col a {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            text-decoration: none;
+        }
+        .footer-col ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .footer-bottom {
+            max-width: 1600px;
+            margin: 0 auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1.5rem;
+            text-align: center;
+        }
+        .footer-bottom p {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+        
+        /* Responsive tweaks */
+        @media (max-width: 900px) {
+            .about-section { flex-direction: column; gap: 2rem; }
+            .nav-links { display: none; }
+            .hero-title { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">Brand.</div>
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Portfolio</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+        <button class="btn">Get Started</button>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">The Airline of Udyanapura</h1>
+            <p class="hero-subtitle">One of Aeronautica's Largest Airlines. We offer programs from beginners to advanced pilots, with top of the end pay, and quality. Welcome to the Airline of Udyanapura.</p>
         </div>
     </header>
 
-    <section class="about-section" style="display: flex; flex-wrap: wrap; padding: 6rem 5%; gap: 4rem; max-width: 1600px; margin: 0 auto;">
-        
-        <div class="about-text" style="flex: 1; min-width: 300px;">
-            <h2 style="font-size: 3.5rem; color: #111; margin-bottom: 0.5rem;">About us</h2>
-            <p style="color: #002A5C; font-size: 0.95rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px;">Learn more about us</p>
+    <section class="about-section">
+        <div class="about-text">
+            <h2>About us</h2>
+            <p>Learn more about us</p>
         </div>
 
-        <div class="cards-container" style="flex: 2.5; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
-            <div class="card" style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.06); display: flex; flex-direction: column; border: 1px solid #f0f0f0;">
-                <img src="https://i.imgur.com/t7PLNUA.png" alt="Our Programs" style="width: 100%; height: 220px; object-fit: cover;">
-                <div class="card-body" style="padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1;">
-                    <h3 class="card-title" style="font-size: 1.75rem; color: #111; margin-bottom: 0.5rem;">Our Programs</h3>
-                    <p class="card-text" style="font-size: 0.95rem; color: #666; margin-bottom: 1.5rem; line-height: 1.6;">Explore our pilot programs that target development in our pilots.</p>
-                    <button class="btn-wide" style="width: 100%; margin-top: auto; background-color: #f8f9fa; color: #333; border: 1px solid #e9ecef; padding: 0.75rem; border-radius: 6px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;">View Details</button>
+        <div class="cards-container">
+            <div class="card">
+                <img src="https://i.imgur.com/t7PLNUA.png" alt="Our Programs">
+                <div class="card-body">
+                    <h3 class="card-title">Our Programs</h3>
+                    <p class="card-text">Explore our pilot programs that target development in our pilots.</p>
+                    <button class="btn-wide">View Details</button>
                 </div>
             </div>
 
-            <div class="card" style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.06); display: flex; flex-direction: column; border: 1px solid #f0f0f0;">
-                <img src="https://placehold.co/600x400/eeeeee/999999?text=Image+2" alt="Modern Fleet" style="width: 100%; height: 220px; object-fit: cover;">
-                <div class="card-body" style="padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1;">
-                    <h3 class="card-title" style="font-size: 1.75rem; color: #111; margin-bottom: 0.5rem;">Modern Fleet</h3>
-                    <p class="card-text" style="font-size: 0.95rem; color: #666; margin-bottom: 1.5rem; line-height: 1.6;">Fly modern, state-of-the-art aircraft equipped with top-tier avionics and safety systems.</p>
-                    <button class="btn-wide" style="width: 100%; margin-top: auto; background-color: #f8f9fa; color: #333; border: 1px solid #e9ecef; padding: 0.75rem; border-radius: 6px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;">View Details</button>
+            <div class="card">
+                <img src="https://placehold.co/600x400/eeeeee/999999?text=Image+2" alt="Modern Fleet">
+                <div class="card-body">
+                    <h3 class="card-title">Modern Fleet</h3>
+                    <p class="card-text">Fly modern, state-of-the-art aircraft equipped with top-tier avionics and safety systems.</p>
+                    <button class="btn-wide">View Details</button>
                 </div>
             </div>
 
-            <div class="card" style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.06); display: flex; flex-direction: column; border: 1px solid #f0f0f0;">
-                <img src="https://placehold.co/600x400/eeeeee/999999?text=Image+3" alt="Pilot Careers" style="width: 100%; height: 220px; object-fit: cover;">
-                <div class="card-body" style="padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1;">
-                    <h3 class="card-title" style="font-size: 1.75rem; color: #111; margin-bottom: 0.5rem;">Pilot Careers</h3>
-                    <p class="card-text" style="font-size: 0.95rem; color: #666; margin-bottom: 1.5rem; line-height: 1.6;">Enjoy top-of-the-market pay packages, flexible scheduling, and clear career advancement tracks.</p>
-                    <button class="btn-wide" style="width: 100%; margin-top: auto; background-color: #f8f9fa; color: #333; border: 1px solid #e9ecef; padding: 0.75rem; border-radius: 6px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;">View Details</button>
+            <div class="card">
+                <img src="https://placehold.co/600x400/eeeeee/999999?text=Image+3" alt="Pilot Careers">
+                <div class="card-body">
+                    <h3 class="card-title">Pilot Careers</h3>
+                    <p class="card-text">Enjoy top-of-the-market pay packages, flexible scheduling, and clear career advancement tracks.</p>
+                    <button class="btn-wide">View Details</button>
                 </div>
             </div>
         </div>
-
     </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <h3>The Airline of Udyanapura</h3>
+                <p>Excellence in aviation, connecting pilots to advanced career pathways across Aeronautica.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#">Programs</a></li>
+                    <li><a href="#">Fleet</a></li>
+                    <li><a href="#">Careers</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <p>Support & Inquiries<br>Udyanapura Aviation Hub</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 The Airline of Udyanapura. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
