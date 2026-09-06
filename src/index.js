@@ -1,7 +1,7 @@
 import headerHtml from './header.html';
 import footerHtml from './footer.html';
-import programsContent from './programs-content.html';
-import homeContent from './home-content.html';
+import programsContent from './programs.html';
+import homeContent from './home.html';
 
 export default {
   async fetch(request, env, ctx) {
