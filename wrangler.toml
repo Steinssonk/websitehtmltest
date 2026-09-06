@@ -5,3 +5,12 @@ compatibility_date = "2026-03-01"
 [[rules]]
 type = "Text"
 globs = ["*.html"]
+
+[vars]
+DISCORD_CLIENT_ID = "1536683890142482433"
+SHEET_ID = "1RyT3k2L8jfFJt-2vtW8cxLyP7U2kEPE-qxJiNkOldKo"
+SHEET_GID = "0"
+
+# Set these with the wrangler CLI (never commit real secrets to git):
+#   wrangler secret put DISCORD_CLIENT_SECRET
+#   wrangler secret put SESSION_SECRET
