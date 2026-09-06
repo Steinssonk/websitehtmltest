@@ -1,3 +1,7 @@
-name = "the-airline-of-udyanapura"
-main = "src/index.js"
-compatibility_date = "2026-09-06"
+name = "udyan-leaf-website"
+main = "index.js"
+compatibility_date = "2026-03-01"
+
+[[rules]]
+type = "Text"
+globs = ["*.html"]
