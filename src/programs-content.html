@@ -1,593 +1,159 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Programs - The Airline of Udyanapura</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Raleway:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-
-    <style>
-        /* --- Base & Reset --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-        body {
-            background-color: #ffffff;
-            color: #333;
-            line-height: 1.5;
-        }
-
-        /* --- Global Typography Theme --- */
-        h1, h2, h3, .logo {
-            font-family: 'Raleway', sans-serif;
-            font-weight: 700;
-        }
-
-        /* --- Top Navigation --- */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 5%;
-            background-color: #ffffff;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            color: #002A5C;
-            letter-spacing: 0.5px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #555;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: color 0.2s ease;
-        }
-
-        .nav-links a:hover {
-            color: #002A5C;
-        }
-
-        .btn {
-            background-color: #002A5C;
-            color: white;
-            border: none;
-            padding: 0.6rem 1.5rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .btn:hover {
-            background-color: #001b3d;
-        }
-
-        /* --- Hero Section --- */
-        .hero {
-            position: relative;
-            height: 65vh;
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.65)),
-                        url('https://i.imgur.com/3zx6eLm.png') center/cover no-repeat;
-            display: flex;
-            align-items: center;
-            padding: 0 5%;
-        }
-
-        .hero::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background: linear-gradient(to bottom, transparent, #ffffff);
-            pointer-events: none;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 10;
-            max-width: 750px;
-        }
-
-        .hero-title {
-            font-size: 3.5rem;
-            line-height: 1.2;
-            margin-bottom: 1rem;
-            color: #ffffff;
-        }
-
-        .hero-subtitle {
-            font-size: 1rem;
-            color: #e2e8f0;
-            line-height: 1.6;
-            max-width: 600px;
-            font-weight: 300;
-            margin-bottom: 1.5rem;
-        }
-
-        /* --- Layout Wrappers --- */
-        .bg-white { background-color: #ffffff; }
-        .bg-neutral { background-color: #f9fafb; }
-
-        .section-wrapper {
-            padding: 5rem 0;
-        }
-
-        .page-section {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 5%;
-        }
-
-        .overlap-section {
-            margin-top: -50px;
-            position: relative;
-            z-index: 20;
-            padding-bottom: 5rem;
-        }
-
-        /* Section Headers */
-        .section-header {
-            margin-bottom: 3rem;
-            text-align: left;
-        }
-
-        .section-header h2 {
-            font-size: 2.2rem;
-            color: #111;
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-        }
-
-        .section-header p {
-            color: #555;
-            font-size: 1.05rem;
-            font-weight: 300;
-        }
-
-        /* --- Unified Card Styling --- */
-        .card {
-            background: #ffffff; 
-            border-radius: 16px; 
-            overflow: hidden;
-            box-shadow: 0 12px 30px rgba(0, 42, 92, 0.08);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            border: 1px solid rgba(0, 42, 92, 0.06);
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 16px 35px rgba(0, 42, 92, 0.12);
-        }
-
-        .card-content {
-            padding: 2rem 1.75rem 1rem 1.75rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .card-tag {
-            font-size: 0.75rem;
-            color: #002A5C;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 0.5rem;
-        }
-
-        .card-title {
-            font-size: 1.6rem;
-            color: #111;
-            margin-bottom: 0.75rem;
-        }
-
-        .card-text {
-            font-size: 0.9rem;
-            color: #555;
-            line-height: 1.5;
-        }
-
-        .rewards-list {
-            list-style: none;
-            margin-top: 1rem;
-            flex-grow: 1;
-        }
-
-        .rewards-list li {
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: flex-start;
-            gap: 0.5rem;
-        }
-
-        .rewards-list li::before {
-            content: '✦';
-            color: #002A5C;
-            font-size: 0.9rem;
-        }
-
-        .card-btn {
-            margin-top: 1.5rem;
-            align-self: flex-start;
-            text-decoration: none;
-        }
-
-        /* --- Specific Styles for Pay Rate Cards --- */
-        .pay-card {
-            justify-content: flex-start;
-        }
-        
-        .pay-card .epaulet-wrapper {
-            padding: 1.25rem 1.25rem 0 1.25rem;
-        }
-
-        .pay-card .epaulet {
-            background-color: #686868;
-            height: 60px;
-            border-radius: 6px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .pay-card .stripe {
-            width: 16px;
-            height: 100%;
-            background-color: #ffbd59;
-        }
-
-        .pay-card .star {
-            color: #f19d53;
-            font-size: 26px;
-            margin-right: 6px;
-        }
-
-        .pay-card .card-content {
-            padding: 1.25rem;
-            text-align: left;
-        }
-
-        .pay-grid .card-tag,
-        .pay-grid .card-title,
-        .pay-grid .card-text {
-            font-family: 'Roboto', sans-serif;
-        }
-
-        .pay-card .card-title {
-            margin-bottom: 0.5rem;
-        }
-
-        /* --- Grid Layouts --- */
-        .pay-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 1.25rem;
-        }
-
-        .programs-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.75rem;
-        }
-
-        .dev-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.75rem;
-        }
-
-        /* --- Custom Pattern Background with Parallax Effect for Flight Programs --- */
-        .flight-programs-bg {
-            background: linear-gradient(rgba(0, 10, 25, 0.82), rgba(0, 10, 25, 0.82)),
-                        url('https://imgur.com/m2bcxBM.png');
-            background-repeat: repeat;
-            background-size: 450px;
-            background-position: center;
-            background-attachment: fixed; /* Adds the smooth parallax effect */
-        }
-
-        /* Make only the section header text outside the boxes white */
-        .flight-programs-bg .section-header h2,
-        .flight-programs-bg .section-header p {
-            color: #ffffff;
-        }
-
-        /* --- Footer Section --- */
-        footer {
-            background-color: #002A5C;
-            color: #ffffff;
-            padding: 3rem 5% 1.5rem;
-        }
-        .footer-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            gap: 2.5rem;
-            margin-bottom: 2.5rem;
-        }
-        .footer-col {
-            flex: 1;
-            min-width: 220px;
-        }
-        .footer-col h3, .footer-col h4 {
-            color: #ffffff;
-            margin-bottom: 0.75rem;
-            font-size: 1.1rem;
-        }
-        .footer-col p, .footer-col a {
-            color: #cbd5e1;
-            font-size: 0.9rem;
-            text-decoration: none;
-        }
-        .footer-col ul {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        .footer-bottom {
-            max-width: 1400px;
-            margin: 0 auto;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 1.25rem;
-            text-align: center;
-        }
-        .footer-bottom p {
-            font-size: 0.8rem;
-            color: #94a3b8;
-        }
-
-        /* Responsive tweaks */
-        @media (max-width: 1200px) {
-            .pay-grid { grid-template-columns: repeat(3, 1fr); }
-        }
-        @media (max-width: 1024px) {
-            .programs-grid { grid-template-columns: 1fr; }
-            .dev-grid { grid-template-columns: 1fr; }
-            .nav-links { display: none; }
-            .overlap-section { margin-top: 2rem; }
-        }
-        @media (max-width: 768px) {
-            .pay-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 600px) {
-            .pay-grid { grid-template-columns: 1fr; }
-            .hero-title { font-size: 2.5rem; }
-        }
-    </style>
-</head>
-<body>
-
-    <nav>
-        <div class="logo">Brand.</div>
-        <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="programs.html">Programs</a></li>
-            <li><a href="#">Portfolio</a></li>
-            <li><a href="#">Contact</a></li>
-        </ul>
-        <button class="btn">Get Started</button>
-    </nav>
-
-    <header class="hero">
-        <div class="hero-content">
-            <h1 class="hero-title">Our Programs</h1>
-            <p class="hero-subtitle">Discover our pilot programs, competitive salaries, and exclusive development pathways designed to accelerate your aviation career.</p>
-        </div>
-    </header>
-
-    <section class="overlap-section">
-        <div class="page-section">
-            <div class="pay-grid">
-                
-                <div class="card pay-card">
-                    <div class="epaulet-wrapper">
-                        <div class="epaulet">
-                            <div class="stripe"></div>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-tag">Cadet</div>
-                        <h3 class="card-title">30k WP/hr</h3>
-                        <p class="card-text">Req. 0 hours</p>
+<section class="overlap-section">
+    <div class="page-section">
+        <div class="pay-grid">
+            
+            <div class="card pay-card">
+                <div class="epaulet-wrapper">
+                    <div class="epaulet">
+                        <div class="stripe"></div>
                     </div>
                 </div>
-
-                <div class="card pay-card">
-                    <div class="epaulet-wrapper">
-                        <div class="epaulet">
-                            <div class="stripe"></div>
-                            <div class="stripe"></div>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-tag">Second Officer</div>
-                        <h3 class="card-title">45k WP/hr</h3>
-                        <p class="card-text">Req. 2 hours</p>
-                    </div>
+                <div class="card-content">
+                    <div class="card-tag">Cadet</div>
+                    <h3 class="card-title">30k WP/hr</h3>
+                    <p class="card-text">Req. 0 hours</p>
                 </div>
-
-                <div class="card pay-card">
-                    <div class="epaulet-wrapper">
-                        <div class="epaulet">
-                            <div class="stripe"></div>
-                            <div class="stripe"></div>
-                            <div class="stripe"></div>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-tag">First Officer</div>
-                        <h3 class="card-title">60k WP/hr</h3>
-                        <p class="card-text">Req. 5 hours</p>
-                    </div>
-                </div>
-
-                <div class="card pay-card">
-                    <div class="epaulet-wrapper">
-                        <div class="epaulet">
-                            <div class="stripe"></div>
-                            <div class="stripe"></div>
-                            <div class="stripe"></div>
-                            <div class="stripe"></div>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-tag">Captain</div>
-                        <h3 class="card-title">75k WP/hr</h3>
-                        <p class="card-text">Req. 10 hours</p>
-                    </div>
-                </div>
-
-                <div class="card pay-card">
-                    <div class="epaulet-wrapper">
-                        <div class="epaulet">
-                            <span class="star">★</span>
-                            <div class="stripe"></div>
-                            <div class="stripe"></div>
-                            <div class="stripe"></div>
-                            <div class="stripe"></div>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-tag">Senior Captain</div>
-                        <h3 class="card-title">90k WP/hr</h3>
-                        <p class="card-text">Req. 20 hours</p>
-                    </div>
-                </div>
-
             </div>
-        </div>
-    </section>
 
-    <section class="section-wrapper flight-programs-bg">
-        <div class="page-section">
-            <div class="section-header">
-                <h2>Flight Programs</h2>
-                <p>Ascend through the ranks and unlock new perks along your journey.</p>
+            <div class="card pay-card">
+                <div class="epaulet-wrapper">
+                    <div class="epaulet">
+                        <div class="stripe"></div>
+                        <div class="stripe"></div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="card-tag">Second Officer</div>
+                    <h3 class="card-title">45k WP/hr</h3>
+                    <p class="card-text">Req. 2 hours</p>
+                </div>
             </div>
-            <div class="programs-grid">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-tag">Merlion Development</div>
-                        <h3 class="card-title">Second Officer</h3>
-                        <p class="card-text">This program supports pilots in their early game experience.</p>
-                        <ul class="rewards-list card-text">
-                            <li>Choice between the A330-300 and 787-8.</li>
-                        </ul>
+
+            <div class="card pay-card">
+                <div class="epaulet-wrapper">
+                    <div class="epaulet">
+                        <div class="stripe"></div>
+                        <div class="stripe"></div>
+                        <div class="stripe"></div>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-tag">Merlion Advanced</div>
-                        <h3 class="card-title">First Officer</h3>
-                        <p class="card-text">This program supports pilots in their mid game experience.</p>
-                        <ul class="rewards-list card-text">
-                            <li>Choice between the A350-900ulr and 777-300er.</li>
-                        </ul>
+                <div class="card-content">
+                    <div class="card-tag">First Officer</div>
+                    <h3 class="card-title">60k WP/hr</h3>
+                    <p class="card-text">Req. 5 hours</p>
+                </div>
+            </div>
+
+            <div class="card pay-card">
+                <div class="epaulet-wrapper">
+                    <div class="epaulet">
+                        <div class="stripe"></div>
+                        <div class="stripe"></div>
+                        <div class="stripe"></div>
+                        <div class="stripe"></div>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-tag">Merlion Excellence</div>
-                        <h3 class="card-title">Captain</h3>
-                        <p class="card-text">This program supports pilots in their end game experience.</p>
-                        <ul class="rewards-list card-text">
-                            <li>Choice between the A380-800 and 747-8i.</li>
-                        </ul>
+                <div class="card-content">
+                    <div class="card-tag">Captain</div>
+                    <h3 class="card-title">75k WP/hr</h3>
+                    <p class="card-text">Req. 10 hours</p>
+                </div>
+            </div>
+
+            <div class="card pay-card">
+                <div class="epaulet-wrapper">
+                    <div class="epaulet">
+                        <span class="star">★</span>
+                        <div class="stripe"></div>
+                        <div class="stripe"></div>
+                        <div class="stripe"></div>
+                        <div class="stripe"></div>
                     </div>
+                </div>
+                <div class="card-content">
+                    <div class="card-tag">Senior Captain</div>
+                    <h3 class="card-title">90k WP/hr</h3>
+                    <p class="card-text">Req. 20 hours</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="section-wrapper flight-programs-bg">
+    <div class="page-section">
+        <div class="section-header">
+            <h2>Flight Programs</h2>
+            <p>Ascend through the ranks and unlock new perks along your journey.</p>
+        </div>
+        <div class="programs-grid">
+            <div class="card">
+                <div class="card-content">
+                    <div class="card-tag">Merlion Development</div>
+                    <h3 class="card-title">Second Officer</h3>
+                    <p class="card-text">This program supports pilots in their early game experience.</p>
+                    <ul class="rewards-list card-text">
+                        <li>Choice between the A330-300 and 787-8.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-content">
+                    <div class="card-tag">Merlion Advanced</div>
+                    <h3 class="card-title">First Officer</h3>
+                    <p class="card-text">This program supports pilots in their mid game experience.</p>
+                    <ul class="rewards-list card-text">
+                        <li>Choice between the A350-900ulr and 777-300er.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-content">
+                    <div class="card-tag">Merlion Excellence</div>
+                    <h3 class="card-title">Captain</h3>
+                    <p class="card-text">This program supports pilots in their end game experience.</p>
+                    <ul class="rewards-list card-text">
+                        <li>Choice between the A380-800 and 747-8i.</li>
+                    </ul>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section class="section-wrapper bg-white">
-        <div class="page-section">
-            <div class="section-header">
-                <h2>Development Programs</h2>
-                <p>Specialized training initiatives to rapidly advance your skills and career standing.</p>
-            </div>
-            <div class="dev-grid">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-tag">Jet Engine License Program</div>
-                        <h3 class="card-title">The Udyan Leaf</h3>
-                        <p class="card-text">The Udyan Leaf Program offers a wide range of benefits, focusing on players who do not have a Jet Engine License. This program grants Pilots a good option of aircrafts.</p>
-                        <ul class="rewards-list card-text">
-                            <li>Choice of any Jet Engine Aircraft in our Fleet.</li>
-                            <li>Get 22.5k WP to cover license fees, upon acceptance.</li>
-                        </ul>
-                        <a href="#" class="btn card-btn">Apply for Udyan Leaf</a>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-tag">Advanced Development</div>
-                        <h3 class="card-title">The Udyan Stem</h3>
-                        <p class="card-text">The Merlion Excellence Program focuses on individuals who doesn't have an SST license. This program offers huge benefits to players, and an option of starter aircrafts.</p>
-                        <ul class="rewards-list card-text">
-                            <li>Choice between the Concorde and Boom Overture 16'.</li>
-                            <li>Get 100k WP to cover license fees, upon acceptance.</li>
-                        </ul>
-                        <a href="#" class="btn card-btn">Apply for Udyan Stem</a>
-                    </div>
+<section class="section-wrapper bg-white">
+    <div class="page-section">
+        <div class="section-header">
+            <h2>Development Programs</h2>
+            <p>Specialized training initiatives to rapidly advance your skills and career standing.</p>
+        </div>
+        <div class="dev-grid">
+            <div class="card">
+                <div class="card-content">
+                    <div class="card-tag">Jet Engine License Program</div>
+                    <h3 class="card-title">The Udyan Leaf</h3>
+                    <p class="card-text">The Udyan Leaf Program offers a wide range of benefits, focusing on players who do not have a Jet Engine License. This program grants Pilots a good option of aircrafts.</p>
+                    <ul class="rewards-list card-text">
+                        <li>Choice of any Jet Engine Aircraft in our Fleet.</li>
+                        <li>Get 22.5k WP to cover license fees, upon acceptance.</li>
+                    </ul>
+                    <a href="#" class="btn card-btn">Apply for Udyan Leaf</a>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <footer>
-        <div class="footer-content">
-            <div class="footer-col">
-                <h3>The Airline of Udyanapura</h3>
-                <p>Excellence in aviation, connecting pilots to advanced career pathways across Aeronautica.</p>
-            </div>
-            <div class="footer-col">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="programs.html">Programs</a></li>
-                    <li><a href="#">Careers</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Contact</h4>
-                <p>Support & Inquiries<br>Udyanapura Aviation Hub</p>
+            
+            <div class="card">
+                <div class="card-content">
+                    <div class="card-tag">Advanced Development</div>
+                    <h3 class="card-title">The Udyan Stem</h3>
+                    <p class="card-text">The Merlion Excellence Program focuses on individuals who doesn't have an SST license. This program offers huge benefits to players, and an option of starter aircrafts.</p>
+                    <ul class="rewards-list card-text">
+                        <li>Choice between the Concorde and Boom Overture 16'.</li>
+                        <li>Get 100k WP to cover license fees, upon acceptance.</li>
+                    </ul>
+                    <a href="#" class="btn card-btn">Apply for Udyan Stem</a>
+                </div>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 The Airline of Udyanapura. All rights reserved.</p>
-        </div>
-    </footer>
-
-</body>
-</html>
+    </div>
+</section>
