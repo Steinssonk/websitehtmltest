@@ -83,7 +83,7 @@
             background-color: #001b3d;
         }
 
-        /* --- Hero Section (Matched to Home Page) --- */
+        /* --- Hero Section --- */
         .hero {
             position: relative;
             height: 65vh;
@@ -127,9 +127,9 @@
             margin-bottom: 1.5rem;
         }
 
-        /* --- Section Styling & Colors --- */
+        /* --- Layout Wrappers --- */
         .bg-white { background-color: #ffffff; }
-        .bg-neutral { background-color: #f9fafb; /* Clean neutral gray, no blue hue */ }
+        .bg-neutral { background-color: #f9fafb; }
 
         .section-wrapper {
             padding: 5rem 0;
@@ -141,7 +141,14 @@
             padding: 0 5%;
         }
 
-        /* Unbolded Subheadings */
+        .overlap-section {
+            margin-top: -50px;
+            position: relative;
+            z-index: 20;
+            padding-bottom: 5rem;
+        }
+
+        /* Section Headers (Unbolded) */
         .section-header {
             margin-bottom: 3rem;
             text-align: left;
@@ -151,7 +158,7 @@
             font-size: 2.2rem;
             color: #002A5C;
             margin-bottom: 0.5rem;
-            font-weight: 400; /* Removed bold */
+            font-weight: 400; 
         }
 
         .section-header p {
@@ -160,140 +167,53 @@
             font-weight: 300;
         }
 
-        /* --- Pay Rates (Overlapping matching home page) --- */
-        .overlap-section {
-            margin-top: -50px;
-            position: relative;
-            z-index: 20;
-            padding-bottom: 5rem;
-        }
-
-        .pay-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.75rem;
-        }
-
-        .pay-box {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 2rem 1.75rem;
-            text-align: left;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-        }
-
-        .pay-box:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 16px 35px rgba(0, 0, 0, 0.08);
-        }
-
-        /* Simple Chevron Badges */
-        .rank-badge {
-            height: 32px;
-            margin-bottom: 1.25rem;
-            display: block;
-            opacity: 0.9;
-        }
-
-        .pay-role {
-            font-size: 1.1rem;
-            color: #111;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-        }
-
-        .pay-amount {
-            font-size: 2.2rem;
-            color: #002A5C;
-            font-weight: 700;
-            font-family: 'Raleway', sans-serif;
-            margin-bottom: 0.25rem;
-        }
-        
-        .pay-currency {
-            font-size: 1.2rem;
-            color: #777;
-            font-weight: 500;
-        }
-
-        .pay-req {
-            margin-top: 1.25rem;
-            display: inline-block;
-            background-color: #f3f4f6;
-            color: #333;
-            padding: 0.4rem 1rem;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        /* --- Standard Programs (Card Style matching home page) --- */
-        .programs-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.75rem;
-        }
-
-        .program-card {
+        /* --- Unified Card Styling (Directly matched to Main Page) --- */
+        .card {
             background: #ffffff;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 12px 30px rgba(0, 42, 92, 0.08);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            border: 1px solid rgba(0, 42, 92, 0.06);
             transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
 
-        .program-card:hover {
+        .card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 16px 35px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 16px 35px rgba(0, 42, 92, 0.12);
         }
 
-        .program-content {
-            padding: 2rem 1.75rem 1.5rem 1.75rem;
+        .card-content {
+            padding: 2rem 1.75rem 1rem 1.75rem;
             flex-grow: 1;
+            display: flex;
+            flex-direction: column;
         }
 
-        .program-card h3 {
+        .card-tag {
+            font-size: 0.75rem;
+            color: #002A5C;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-title {
             font-size: 1.6rem;
             color: #111;
             margin-bottom: 0.75rem;
         }
 
-        .program-card p {
-            font-size: 0.95rem;
+        .card-text {
+            font-size: 0.9rem;
             color: #555;
-            margin-bottom: 1.5rem;
+            line-height: 1.5;
         }
 
-        .rewards-list {
-            list-style: none;
-            border-top: 1px solid #eaeaea;
-            padding-top: 1.5rem;
-        }
-
-        .rewards-list li {
-            font-size: 0.9rem;
-            color: #444;
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: flex-start;
-            gap: 0.5rem;
-        }
-
-        .rewards-list li::before {
-            content: '✦';
-            color: #002A5C;
-            font-size: 0.9rem;
-        }
-
-        /* Image styling for cards that have them */
+        /* Card Elements */
         .card-img-container {
             width: 100%;
             height: 180px;
@@ -307,60 +227,70 @@
             transition: transform 0.4s ease;
         }
 
-        .program-card:hover .card-img-container img {
+        .card:hover .card-img-container img {
             transform: scale(1.04);
         }
+        
+        .rank-badge {
+            height: 32px;
+            margin-bottom: 1.25rem;
+            display: block;
+            opacity: 0.9;
+        }
 
-        /* --- Development Programs --- */
+        .pay-currency {
+            font-size: 1rem;
+            color: #777;
+            font-weight: 500;
+        }
+
+        .rewards-list {
+            list-style: none;
+            border-top: 1px solid #eaeaea;
+            padding-top: 1.5rem;
+            margin-top: 1rem;
+            flex-grow: 1;
+        }
+
+        .rewards-list li {
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .rewards-list li::before {
+            content: '✦';
+            color: #002A5C;
+            font-size: 0.9rem;
+        }
+
+        .card-btn {
+            margin-top: 1.5rem;
+            align-self: flex-start;
+            text-decoration: none;
+        }
+
+        /* --- Grid Layouts --- */
+        .pay-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.75rem;
+        }
+
+        .programs-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.75rem;
+        }
+
         .dev-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 1.75rem;
         }
 
-        .dev-card {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 2.5rem;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .dev-tag {
-            font-size: 0.75rem;
-            color: #002A5C;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 0.75rem;
-        }
-
-        .dev-card h3 {
-            font-size: 1.8rem;
-            color: #111;
-            margin-bottom: 1rem;
-        }
-
-        .dev-card p {
-            font-size: 0.95rem;
-            color: #555;
-            margin-bottom: 1.5rem;
-        }
-
-        .dev-card .rewards-list {
-            margin-bottom: 2rem;
-            flex-grow: 1;
-            border-color: #eaeaea;
-        }
-
-        .dev-card .btn {
-            align-self: flex-start;
-            text-decoration: none;
-        }
-
-        /* --- Footer Section (Matched to Home Page) --- */
+        /* --- Footer Section --- */
         footer {
             background-color: #002A5C;
             color: #ffffff;
@@ -444,29 +374,37 @@
     <section class="overlap-section">
         <div class="page-section">
             <div class="pay-grid">
-                <div class="pay-box">
-                    <img src="https://img.icons8.com/ios-filled/100/002A5C/chevron-up.png" alt="SO Badge" class="rank-badge">
-                    <div class="pay-role">Second Officer</div>
-                    <div class="pay-amount">45k <span class="pay-currency">WP/hr</span></div>
-                    <div class="pay-req">Requirement: 2 hrs</div>
+                <div class="card">
+                    <div class="card-content">
+                        <img src="https://img.icons8.com/ios-filled/100/002A5C/chevron-up.png" alt="SO Badge" class="rank-badge">
+                        <div class="card-tag">Second Officer</div>
+                        <h3 class="card-title">45k <span class="pay-currency">WP/hr</span></h3>
+                        <p class="card-text">Requirement: 2 Flight Hours</p>
+                    </div>
                 </div>
-                <div class="pay-box">
-                    <img src="https://img.icons8.com/ios-filled/100/002A5C/double-up.png" alt="FO Badge" class="rank-badge">
-                    <div class="pay-role">First Officer</div>
-                    <div class="pay-amount">60k <span class="pay-currency">WP/hr</span></div>
-                    <div class="pay-req">Requirement: 5 hrs</div>
+                <div class="card">
+                    <div class="card-content">
+                        <img src="https://img.icons8.com/ios-filled/100/002A5C/double-up.png" alt="FO Badge" class="rank-badge">
+                        <div class="card-tag">First Officer</div>
+                        <h3 class="card-title">60k <span class="pay-currency">WP/hr</span></h3>
+                        <p class="card-text">Requirement: 5 Flight Hours</p>
+                    </div>
                 </div>
-                <div class="pay-box">
-                    <img src="https://img.icons8.com/ios-filled/100/002A5C/triple-up.png" alt="CPT Badge" class="rank-badge">
-                    <div class="pay-role">Captain</div>
-                    <div class="pay-amount">75k <span class="pay-currency">WP/hr</span></div>
-                    <div class="pay-req">Requirement: 10 hrs</div>
+                <div class="card">
+                    <div class="card-content">
+                        <img src="https://img.icons8.com/ios-filled/100/002A5C/triple-up.png" alt="CPT Badge" class="rank-badge">
+                        <div class="card-tag">Captain</div>
+                        <h3 class="card-title">75k <span class="pay-currency">WP/hr</span></h3>
+                        <p class="card-text">Requirement: 10 Flight Hours</p>
+                    </div>
                 </div>
-                <div class="pay-box">
-                    <img src="https://img.icons8.com/ios-filled/100/002A5C/military-rank.png" alt="SCP Badge" class="rank-badge">
-                    <div class="pay-role">Senior Captain</div>
-                    <div class="pay-amount">90k <span class="pay-currency">WP/hr</span></div>
-                    <div class="pay-req">Requirement: 20 hrs</div>
+                <div class="card">
+                    <div class="card-content">
+                        <img src="https://img.icons8.com/ios-filled/100/002A5C/military-rank.png" alt="SCP Badge" class="rank-badge">
+                        <div class="card-tag">Senior Captain</div>
+                        <h3 class="card-title">90k <span class="pay-currency">WP/hr</span></h3>
+                        <p class="card-text">Requirement: 20 Flight Hours</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -479,22 +417,24 @@
                 <p>Ascend through the ranks and unlock new perks along your journey.</p>
             </div>
             <div class="programs-grid">
-                <div class="program-card">
-                    <div class="program-content">
-                        <h3>Second Officer</h3>
-                        <p>Begin your line-flying career. Perfect for junior aviators looking to build hours and get accustomed to our standard operational procedures.</p>
-                        <ul class="rewards-list">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-tag">Line Flying</div>
+                        <h3 class="card-title">Second Officer</h3>
+                        <p class="card-text">Begin your line-flying career. Perfect for junior aviators looking to build hours and get accustomed to our standard operational procedures.</p>
+                        <ul class="rewards-list card-text">
                             <li>Access to regional fleet aircraft</li>
                             <li>Short-haul route clearance</li>
                             <li>Standard company benefits</li>
                         </ul>
                     </div>
                 </div>
-                <div class="program-card">
-                    <div class="program-content">
-                        <h3>First Officer</h3>
-                        <p>Take on more responsibility as an experienced pilot. This program opens doors to larger airframes and lucrative medium-haul assignments.</p>
-                        <ul class="rewards-list">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-tag">Advanced Operations</div>
+                        <h3 class="card-title">First Officer</h3>
+                        <p class="card-text">Take on more responsibility as an experienced pilot. This program opens doors to larger airframes and lucrative medium-haul assignments.</p>
+                        <ul class="rewards-list card-text">
                             <li>Access to medium-haul fleet</li>
                             <li>Priority route scheduling</li>
                             <li>Increased hourly compensation</li>
@@ -504,11 +444,12 @@
                         <img src="https://images.unsplash.com/photo-1540962351504-03099e0a754b?auto=format&fit=crop&w=600&q=80" alt="First Officer">
                     </div>
                 </div>
-                <div class="program-card">
-                    <div class="program-content">
-                        <h3>Captain</h3>
-                        <p>Command the skies. Reserved for dedicated aviators, this role offers the highest level of autonomy, respect, and long-haul capabilities.</p>
-                        <ul class="rewards-list">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-tag">Command Path</div>
+                        <h3 class="card-title">Captain</h3>
+                        <p class="card-text">Command the skies. Reserved for dedicated aviators, this role offers the highest level of autonomy, respect, and long-haul capabilities.</p>
+                        <ul class="rewards-list card-text">
                             <li>Heavy and long-haul aircraft clearance</li>
                             <li>Unrestricted route access</li>
                             <li>Command-level dispatch priority</li>
@@ -529,28 +470,32 @@
                 <p>Specialized training initiatives to rapidly advance your skills and career standing.</p>
             </div>
             <div class="dev-grid">
-                <div class="dev-card">
-                    <div class="dev-tag">Beginner Development</div>
-                    <h3>The Udyan Leaf</h3>
-                    <p>A foundational training program crafted for new pilots. Learn the essentials of flight operations, navigation, and company standards in a guided environment.</p>
-                    <ul class="rewards-list">
-                        <li>1-on-1 mentorship sessions</li>
-                        <li>Fast-track eligibility for Second Officer</li>
-                        <li>Exclusive training resources and manuals</li>
-                    </ul>
-                    <a href="#" class="btn">Apply for Udyan Leaf</a>
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-tag">Beginner Development</div>
+                        <h3 class="card-title">The Udyan Leaf</h3>
+                        <p class="card-text">A foundational training program crafted for new pilots. Learn the essentials of flight operations, navigation, and company standards in a guided environment.</p>
+                        <ul class="rewards-list card-text">
+                            <li>1-on-1 mentorship sessions</li>
+                            <li>Fast-track eligibility for Second Officer</li>
+                            <li>Exclusive training resources and manuals</li>
+                        </ul>
+                        <a href="#" class="btn card-btn">Apply for Udyan Leaf</a>
+                    </div>
                 </div>
                 
-                <div class="dev-card">
-                    <div class="dev-tag">Advanced Development</div>
-                    <h3>The Udyan Stem</h3>
-                    <p>Designed for seasoned aviators looking to transition into leadership roles. Focuses on command decision-making, advanced aircraft handling, and crew resource management.</p>
-                    <ul class="rewards-list">
-                        <li>Advanced simulator scenarios</li>
-                        <li>Fast-track eligibility for Captain rank</li>
-                        <li>Leadership and instructor endorsements</li>
-                    </ul>
-                    <a href="#" class="btn">Apply for Udyan Stem</a>
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-tag">Advanced Development</div>
+                        <h3 class="card-title">The Udyan Stem</h3>
+                        <p class="card-text">Designed for seasoned aviators looking to transition into leadership roles. Focuses on command decision-making, advanced aircraft handling, and crew resource management.</p>
+                        <ul class="rewards-list card-text">
+                            <li>Advanced simulator scenarios</li>
+                            <li>Fast-track eligibility for Captain rank</li>
+                            <li>Leadership and instructor endorsements</li>
+                        </ul>
+                        <a href="#" class="btn card-btn">Apply for Udyan Stem</a>
+                    </div>
                 </div>
             </div>
         </div>
