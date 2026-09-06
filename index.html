@@ -86,7 +86,7 @@
         /* --- Hero Section --- */
         .hero {
             position: relative;
-            height: 65vh; /* Made more compact */
+            height: 65vh;
             background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.65)),
                         url('https://i.imgur.com/3zx6eLm.png') center/cover no-repeat;
             display: flex;
@@ -112,10 +112,10 @@
         }
 
         .hero-title {
-            font-size: 3.5rem; /* Clean and compact */
+            font-size: 3.5rem;
             line-height: 1.2;
             margin-bottom: 1rem;
-            color: #ffffff; /* Solid white color as requested */
+            color: #ffffff;
         }
         
         .hero-subtitle {
@@ -124,12 +124,32 @@
             line-height: 1.6;
             max-width: 600px;
             font-weight: 300;
+            margin-bottom: 1.5rem; /* Added spacing below subtitle */
+        }
+
+        /* --- Hero Discord Button Styling --- */
+        .hero-btn {
+            display: inline-block;
+            background-color: #5865F2; /* Discord Brand Blurple */
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.75rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            box-shadow: 0 4px 12px rgba(88, 101, 242, 0.3);
+        }
+
+        .hero-btn:hover {
+            background-color: #4752C4;
+            transform: translateY(-2px);
         }
 
         /* --- Overlapping Wide Cards Section --- */
         .cards-section {
             max-width: 1400px;
-            margin: -50px auto 0 auto; /* Tighter overlap */
+            margin: -50px auto 0 auto;
             padding: 0 5%;
             position: relative;
             z-index: 20;
@@ -185,7 +205,7 @@
 
         .card-img-container {
             width: 100%;
-            height: 150px; /* Compact image height */
+            height: 150px;
             overflow: hidden;
         }
 
@@ -274,6 +294,7 @@
         <div class="hero-content">
             <h1 class="hero-title">The Airline of Udyanapura</h1>
             <p class="hero-subtitle">One of Aeronautica's Largest Airlines. We offer programs from beginners to advanced pilots, with top of the end pay, and quality. Welcome to the Airline of Udyanapura.</p>
+            <a href="https://discord.gg/3rWUYV3wDu" target="_blank" rel="noopener noreferrer" class="hero-btn">Join our Discord</a>
         </div>
     </header>
 
