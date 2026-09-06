@@ -40,7 +40,10 @@ export default {
     try {
       if (pathname === '/auth-client.js') {
         return new Response(AUTH_CLIENT_JS, {
-          headers: { 'Content-Type': 'application/javascript;charset=UTF-8' },
+          headers: {
+            'Content-Type': 'application/javascript;charset=UTF-8',
+            'Cache-Control': 'public, max-age=3600',
+          },
         });
       }
 
@@ -61,8 +64,16 @@ export default {
       }
 
       if (pathname in pageRoutes) {
+        const isFragment = pathname === '/header.html' || pathname === '/footer.html';
         return new Response(pageRoutes[pathname], {
-          headers: { 'Content-Type': 'text/html;charset=UTF-8' },
+          headers: {
+            'Content-Type': 'text/html;charset=UTF-8',
+            // header.html/footer.html rarely change, so cache them longer.
+            // Full pages get a shorter cache so edits still show up quickly.
+            'Cache-Control': isFragment
+              ? 'public, max-age=3600'
+              : 'public, max-age=300',
+          },
         });
       }
 
@@ -203,7 +214,10 @@ function redirectWithError(url, code, extraCookie) {
 function jsonResponse(obj, status) {
   return new Response(JSON.stringify(obj), {
     status,
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-store',
+    },
   });
 }
 
