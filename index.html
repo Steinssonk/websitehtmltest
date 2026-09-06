@@ -124,11 +124,18 @@
             line-height: 1.6;
             max-width: 600px;
             font-weight: 300;
-            margin-bottom: 1.5rem; /* Added spacing below subtitle */
+            margin-bottom: 1.5rem;
         }
 
-        /* --- Hero Discord Button Styling --- */
-        .hero-btn {
+        /* --- Hero Buttons Container --- */
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* --- Discord Button --- */
+        .hero-btn-discord {
             display: inline-block;
             background-color: #5865F2; /* Discord Brand Blurple */
             color: white;
@@ -141,8 +148,28 @@
             box-shadow: 0 4px 12px rgba(88, 101, 242, 0.3);
         }
 
-        .hero-btn:hover {
+        .hero-btn-discord:hover {
             background-color: #4752C4;
+            transform: translateY(-2px);
+        }
+
+        /* --- Secondary Learn More Button --- */
+        .hero-btn-secondary {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.75rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .hero-btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.25);
             transform: translateY(-2px);
         }
 
@@ -294,11 +321,15 @@
         <div class="hero-content">
             <h1 class="hero-title">The Airline of Udyanapura</h1>
             <p class="hero-subtitle">One of Aeronautica's Largest Airlines. We offer programs from beginners to advanced pilots, with top of the end pay, and quality. Welcome to the Airline of Udyanapura.</p>
-            <a href="https://discord.gg/3rWUYV3wDu" target="_blank" rel="noopener noreferrer" class="hero-btn">Join our Discord</a>
+            
+            <div class="hero-buttons">
+                <a href="https://discord.gg/3rWUYV3wDu" target="_blank" rel="noopener noreferrer" class="hero-btn-discord">Join our Discord</a>
+                <a href="#about" class="hero-btn-secondary">Learn more about us</a>
+            </div>
         </div>
     </header>
 
-    <section class="cards-section">
+    <section class="cards-section" id="about">
         <div class="cards-container">
             
             <div class="card">
