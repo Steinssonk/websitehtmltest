@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Raleway:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
         /* --- Base & Reset --- */
@@ -148,7 +148,7 @@
             padding-bottom: 5rem;
         }
 
-        /* Section Headers (Unbolded) */
+        /* Section Headers */
         .section-header {
             margin-bottom: 3rem;
             text-align: left;
@@ -156,9 +156,9 @@
 
         .section-header h2 {
             font-size: 2.2rem;
-            color: #002A5C;
+            color: #111;
             margin-bottom: 0.5rem;
-            font-weight: 400; 
+            font-weight: 700;
         }
 
         .section-header p {
@@ -167,10 +167,10 @@
             font-weight: 300;
         }
 
-        /* --- Unified Card Styling (Directly matched to Main Page) --- */
+        /* --- Unified Card Styling --- */
         .card {
-            background: #ffffff;
-            border-radius: 16px;
+            background: #ffffff; 
+            border-radius: 16px; 
             overflow: hidden;
             box-shadow: 0 12px 30px rgba(0, 42, 92, 0.08);
             display: flex;
@@ -213,41 +213,8 @@
             line-height: 1.5;
         }
 
-        /* Card Elements */
-        .card-img-container {
-            width: 100%;
-            height: 180px;
-            overflow: hidden;
-        }
-
-        .card-img-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.4s ease;
-        }
-
-        .card:hover .card-img-container img {
-            transform: scale(1.04);
-        }
-        
-        .rank-badge {
-            height: 32px;
-            margin-bottom: 1.25rem;
-            display: block;
-            opacity: 0.9;
-        }
-
-        .pay-currency {
-            font-size: 1rem;
-            color: #777;
-            font-weight: 500;
-        }
-
         .rewards-list {
             list-style: none;
-            border-top: 1px solid #eaeaea;
-            padding-top: 1.5rem;
             margin-top: 1rem;
             flex-grow: 1;
         }
@@ -271,11 +238,57 @@
             text-decoration: none;
         }
 
+        /* --- Specific Styles for Pay Rate Cards --- */
+        .pay-card {
+            justify-content: flex-start;
+        }
+        
+        .pay-card .epaulet-wrapper {
+            padding: 1.25rem 1.25rem 0 1.25rem;
+        }
+
+        .pay-card .epaulet {
+            background-color: #686868;
+            height: 60px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pay-card .stripe {
+            width: 16px;
+            height: 100%;
+            background-color: #ffbd59;
+        }
+
+        .pay-card .star {
+            color: #f19d53;
+            font-size: 26px;
+            margin-right: 6px;
+        }
+
+        .pay-card .card-content {
+            padding: 1.25rem;
+            text-align: left;
+        }
+
+        .pay-grid .card-tag,
+        .pay-grid .card-title,
+        .pay-grid .card-text {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .pay-card .card-title {
+            margin-bottom: 0.5rem;
+        }
+
         /* --- Grid Layouts --- */
         .pay-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.75rem;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.25rem;
         }
 
         .programs-grid {
@@ -288,6 +301,21 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 1.75rem;
+        }
+
+        /* --- Custom Pattern Background for Flight Programs --- */
+        .flight-programs-bg {
+            background: linear-gradient(rgba(0, 10, 25, 0.82), rgba(0, 10, 25, 0.82)),
+                        url('https://imgur.com/m2bcxBM.png');
+            background-repeat: repeat;
+            background-size: 450px;
+            background-position: center;
+        }
+
+        /* Make only the section header text outside the boxes white */
+        .flight-programs-bg .section-header h2,
+        .flight-programs-bg .section-header p {
+            color: #ffffff;
         }
 
         /* --- Footer Section --- */
@@ -338,12 +366,17 @@
         }
 
         /* Responsive tweaks */
+        @media (max-width: 1200px) {
+            .pay-grid { grid-template-columns: repeat(3, 1fr); }
+        }
         @media (max-width: 1024px) {
-            .pay-grid { grid-template-columns: repeat(2, 1fr); }
             .programs-grid { grid-template-columns: 1fr; }
             .dev-grid { grid-template-columns: 1fr; }
             .nav-links { display: none; }
             .overlap-section { margin-top: 2rem; }
+        }
+        @media (max-width: 768px) {
+            .pay-grid { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 600px) {
             .pay-grid { grid-template-columns: 1fr; }
@@ -366,51 +399,95 @@
 
     <header class="hero">
         <div class="hero-content">
-            <h1 class="hero-title">Career Pathways</h1>
-            <p class="hero-subtitle">Discover our structured pilot programs, competitive compensation tiers, and exclusive development pathways designed to accelerate your aviation career.</p>
+            <h1 class="hero-title">Our Programs</h1>
+            <p class="hero-subtitle">Discover our pilot programs, competitive salaries, and exclusive development pathways designed to accelerate your aviation career.</p>
         </div>
     </header>
 
     <section class="overlap-section">
         <div class="page-section">
             <div class="pay-grid">
-                <div class="card">
+                
+                <div class="card pay-card">
+                    <div class="epaulet-wrapper">
+                        <div class="epaulet">
+                            <div class="stripe"></div>
+                        </div>
+                    </div>
                     <div class="card-content">
-                        <img src="https://img.icons8.com/ios-filled/100/002A5C/chevron-up.png" alt="SO Badge" class="rank-badge">
+                        <div class="card-tag">Cadet</div>
+                        <h3 class="card-title">30k WP/hr</h3>
+                        <p class="card-text">Req. 0 hours</p>
+                    </div>
+                </div>
+
+                <div class="card pay-card">
+                    <div class="epaulet-wrapper">
+                        <div class="epaulet">
+                            <div class="stripe"></div>
+                            <div class="stripe"></div>
+                        </div>
+                    </div>
+                    <div class="card-content">
                         <div class="card-tag">Second Officer</div>
-                        <h3 class="card-title">45k <span class="pay-currency">WP/hr</span></h3>
-                        <p class="card-text">Requirement: 2 Flight Hours</p>
+                        <h3 class="card-title">45k WP/hr</h3>
+                        <p class="card-text">Req. 2 hours</p>
                     </div>
                 </div>
-                <div class="card">
+
+                <div class="card pay-card">
+                    <div class="epaulet-wrapper">
+                        <div class="epaulet">
+                            <div class="stripe"></div>
+                            <div class="stripe"></div>
+                            <div class="stripe"></div>
+                        </div>
+                    </div>
                     <div class="card-content">
-                        <img src="https://img.icons8.com/ios-filled/100/002A5C/double-up.png" alt="FO Badge" class="rank-badge">
                         <div class="card-tag">First Officer</div>
-                        <h3 class="card-title">60k <span class="pay-currency">WP/hr</span></h3>
-                        <p class="card-text">Requirement: 5 Flight Hours</p>
+                        <h3 class="card-title">60k WP/hr</h3>
+                        <p class="card-text">Req. 5 hours</p>
                     </div>
                 </div>
-                <div class="card">
+
+                <div class="card pay-card">
+                    <div class="epaulet-wrapper">
+                        <div class="epaulet">
+                            <div class="stripe"></div>
+                            <div class="stripe"></div>
+                            <div class="stripe"></div>
+                            <div class="stripe"></div>
+                        </div>
+                    </div>
                     <div class="card-content">
-                        <img src="https://img.icons8.com/ios-filled/100/002A5C/triple-up.png" alt="CPT Badge" class="rank-badge">
                         <div class="card-tag">Captain</div>
-                        <h3 class="card-title">75k <span class="pay-currency">WP/hr</span></h3>
-                        <p class="card-text">Requirement: 10 Flight Hours</p>
+                        <h3 class="card-title">75k WP/hr</h3>
+                        <p class="card-text">Req. 10 hours</p>
                     </div>
                 </div>
-                <div class="card">
+
+                <div class="card pay-card">
+                    <div class="epaulet-wrapper">
+                        <div class="epaulet">
+                            <span class="star">★</span>
+                            <div class="stripe"></div>
+                            <div class="stripe"></div>
+                            <div class="stripe"></div>
+                            <div class="stripe"></div>
+                        </div>
+                    </div>
                     <div class="card-content">
-                        <img src="https://img.icons8.com/ios-filled/100/002A5C/military-rank.png" alt="SCP Badge" class="rank-badge">
                         <div class="card-tag">Senior Captain</div>
-                        <h3 class="card-title">90k <span class="pay-currency">WP/hr</span></h3>
-                        <p class="card-text">Requirement: 20 Flight Hours</p>
+                        <h3 class="card-title">90k WP/hr</h3>
+                        <p class="card-text">Req. 20 hours</p>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
 
-    <section class="section-wrapper bg-neutral">
+    <section class="section-wrapper flight-programs-bg">
         <div class="page-section">
             <div class="section-header">
                 <h2>Flight Programs</h2>
@@ -419,44 +496,32 @@
             <div class="programs-grid">
                 <div class="card">
                     <div class="card-content">
-                        <div class="card-tag">Line Flying</div>
+                        <div class="card-tag">Merlion Development</div>
                         <h3 class="card-title">Second Officer</h3>
-                        <p class="card-text">Begin your line-flying career. Perfect for junior aviators looking to build hours and get accustomed to our standard operational procedures.</p>
+                        <p class="card-text">This program supports pilots in their early game experience.</p>
                         <ul class="rewards-list card-text">
-                            <li>Access to regional fleet aircraft</li>
-                            <li>Short-haul route clearance</li>
-                            <li>Standard company benefits</li>
+                            <li>Choice between the A330-300 and 787-8.</li>
                         </ul>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-content">
-                        <div class="card-tag">Advanced Operations</div>
+                        <div class="card-tag">Merlion Advanced</div>
                         <h3 class="card-title">First Officer</h3>
-                        <p class="card-text">Take on more responsibility as an experienced pilot. This program opens doors to larger airframes and lucrative medium-haul assignments.</p>
+                        <p class="card-text">This program supports pilots in their mid game experience.</p>
                         <ul class="rewards-list card-text">
-                            <li>Access to medium-haul fleet</li>
-                            <li>Priority route scheduling</li>
-                            <li>Increased hourly compensation</li>
+                            <li>Choice between the A350-900ulr and 777-300er.</li>
                         </ul>
-                    </div>
-                    <div class="card-img-container">
-                        <img src="https://images.unsplash.com/photo-1540962351504-03099e0a754b?auto=format&fit=crop&w=600&q=80" alt="First Officer">
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-content">
-                        <div class="card-tag">Command Path</div>
+                        <div class="card-tag">Merlion Excellence</div>
                         <h3 class="card-title">Captain</h3>
-                        <p class="card-text">Command the skies. Reserved for dedicated aviators, this role offers the highest level of autonomy, respect, and long-haul capabilities.</p>
+                        <p class="card-text">This program supports pilots in their end game experience.</p>
                         <ul class="rewards-list card-text">
-                            <li>Heavy and long-haul aircraft clearance</li>
-                            <li>Unrestricted route access</li>
-                            <li>Command-level dispatch priority</li>
+                            <li>Choice between the A380-800 and 747-8i.</li>
                         </ul>
-                    </div>
-                    <div class="card-img-container">
-                        <img src="https://images.unsplash.com/photo-1559160581-4465220c8cc4?auto=format&fit=crop&w=600&q=80" alt="Captain">
                     </div>
                 </div>
             </div>
@@ -472,13 +537,12 @@
             <div class="dev-grid">
                 <div class="card">
                     <div class="card-content">
-                        <div class="card-tag">Beginner Development</div>
+                        <div class="card-tag">Jet Engine License Program</div>
                         <h3 class="card-title">The Udyan Leaf</h3>
-                        <p class="card-text">A foundational training program crafted for new pilots. Learn the essentials of flight operations, navigation, and company standards in a guided environment.</p>
+                        <p class="card-text">The Udyan Leaf Program offers a wide range of benefits, focusing on players who do not have a Jet Engine License. This program grants Pilots a good option of aircrafts.</p>
                         <ul class="rewards-list card-text">
-                            <li>1-on-1 mentorship sessions</li>
-                            <li>Fast-track eligibility for Second Officer</li>
-                            <li>Exclusive training resources and manuals</li>
+                            <li>Choice of any Jet Engine Aircraft in our Fleet.</li>
+                            <li>Get 22.5k WP to cover license fees, upon acceptance.</li>
                         </ul>
                         <a href="#" class="btn card-btn">Apply for Udyan Leaf</a>
                     </div>
@@ -488,11 +552,10 @@
                     <div class="card-content">
                         <div class="card-tag">Advanced Development</div>
                         <h3 class="card-title">The Udyan Stem</h3>
-                        <p class="card-text">Designed for seasoned aviators looking to transition into leadership roles. Focuses on command decision-making, advanced aircraft handling, and crew resource management.</p>
+                        <p class="card-text">The Merlion Excellence Program focuses on individuals who doesn't have an SST license. This program offers huge benefits to players, and an option of starter aircrafts.</p>
                         <ul class="rewards-list card-text">
-                            <li>Advanced simulator scenarios</li>
-                            <li>Fast-track eligibility for Captain rank</li>
-                            <li>Leadership and instructor endorsements</li>
+                            <li>Choice between the Concorde and Boom Overture 16'.</li>
+                            <li>Get 100k WP to cover license fees, upon acceptance.</li>
                         </ul>
                         <a href="#" class="btn card-btn">Apply for Udyan Stem</a>
                     </div>
