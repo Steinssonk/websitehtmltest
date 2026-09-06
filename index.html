@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Airline of Udyanapura</title>
+    <title>Programs - The Airline of Udyanapura</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         /* --- Base & Reset --- */
@@ -24,7 +24,7 @@
         }
 
         /* --- Global Typography Theme --- */
-        h1, h2, h3, .logo {
+        h1, h2, h3, h4, .logo {
             font-family: 'Raleway', sans-serif;
             font-weight: 700; 
         }
@@ -86,23 +86,12 @@
         /* --- Hero Section --- */
         .hero {
             position: relative;
-            height: 65vh;
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.65)),
+            height: 50vh; 
+            background: linear-gradient(rgba(0, 42, 92, 0.7), rgba(0, 0, 0, 0.7)),
                         url('https://i.imgur.com/3zx6eLm.png') center/cover no-repeat;
             display: flex;
             align-items: center;
             padding: 0 5%;
-        }
-
-        .hero::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background: linear-gradient(to bottom, transparent, #ffffff);
-            pointer-events: none;
         }
 
         .hero-content {
@@ -114,103 +103,189 @@
         .hero-title {
             font-size: 3.5rem;
             line-height: 1.2;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
             color: #ffffff;
         }
         
         .hero-subtitle {
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: #e2e8f0;
             line-height: 1.6;
             max-width: 600px;
             font-weight: 300;
-            margin-bottom: 1.5rem;
         }
 
-        /* --- Hero Buttons Container --- */
-        .hero-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        /* --- Discord Button --- */
-        .hero-btn-discord {
-            display: inline-block;
-            background-color: #5865F2; /* Discord Brand Blurple */
-            color: white;
-            text-decoration: none;
-            padding: 0.75rem 1.75rem;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: background-color 0.2s ease, transform 0.2s ease;
-            box-shadow: 0 4px 12px rgba(88, 101, 242, 0.3);
-        }
-
-        .hero-btn-discord:hover {
-            background-color: #4752C4;
-            transform: translateY(-2px);
-        }
-
-        /* --- Secondary Learn More Button --- */
-        .hero-btn-secondary {
-            display: inline-block;
-            background-color: rgba(255, 255, 255, 0.15);
-            color: white;
-            text-decoration: none;
-            padding: 0.75rem 1.75rem;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: background-color 0.2s ease, transform 0.2s ease;
-        }
-
-        .hero-btn-secondary:hover {
-            background-color: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
-        }
-
-        /* --- Overlapping Wide Cards Section --- */
-        .cards-section {
-            max-width: 1400px;
-            margin: -50px auto 0 auto;
-            padding: 0 5%;
-            position: relative;
-            z-index: 20;
-        }
-
-        .cards-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.75rem;
-        }
-
-        .card {
-            background: #ffffff;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 12px 30px rgba(0, 42, 92, 0.08);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            border: 1px solid rgba(0, 42, 92, 0.06);
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        /* --- Full Width Section Wrappers --- */
+        .section-wrapper {
+            padding: 5rem 0;
         }
         
-        .card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 16px 35px rgba(0, 42, 92, 0.12);
+        .bg-white {
+            background-color: #ffffff;
+        }
+        
+        .bg-light {
+            background-color: #f1f5f9; /* Slate 100 for visual variation */
         }
 
-        .card-content {
-            padding: 2rem 1.75rem 1rem 1.75rem;
+        .page-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 5%;
         }
 
-        .card-tag {
-            font-size: 0.75rem;
+        /* --- Left-Aligned & Unbolded Headers --- */
+        .section-header {
+            margin-bottom: 3rem;
+            text-align: left;
+        }
+
+        .section-header h2 {
+            font-size: 2.2rem;
+            color: #002A5C;
+            margin-bottom: 0.5rem;
+            font-weight: 400; /* Made not bold as requested */
+        }
+
+        .section-header p {
+            color: #64748b;
+            font-size: 1.05rem;
+            font-weight: 300;
+        }
+
+        /* --- Pay Rates (Container Boxes) --- */
+        .pay-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        .pay-box {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 2rem 1.75rem;
+            text-align: left; /* Moved to the left */
+            box-shadow: 0 4px 15px rgba(0, 42, 92, 0.05);
+            border: 1px solid rgba(0, 42, 92, 0.08);
+            transition: transform 0.2s ease;
+        }
+
+        .pay-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 42, 92, 0.1);
+        }
+
+        .rank-badge {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            margin-bottom: 1.25rem;
+            object-fit: cover;
+            display: block;
+        }
+
+        .pay-role {
+            font-size: 1.1rem;
+            color: #475569;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .pay-amount {
+            font-size: 2.2rem;
+            color: #002A5C;
+            font-weight: 700;
+            font-family: 'Raleway', sans-serif;
+            margin-bottom: 0.25rem;
+        }
+        
+        .pay-currency {
+            font-size: 1.2rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .pay-req {
+            margin-top: 1.25rem;
+            display: inline-block;
+            background-color: #f1f5f9;
+            color: #334155;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* --- Standard Programs --- */
+        .programs-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .program-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 8px 24px rgba(0, 42, 92, 0.04);
+            border-top: 4px solid #002A5C;
+        }
+
+        .program-card h3 {
+            font-size: 1.6rem;
+            color: #111;
+            margin-bottom: 1rem;
+        }
+
+        .program-card p {
+            font-size: 0.95rem;
+            color: #555;
+            margin-bottom: 1.5rem;
+            min-height: 70px;
+        }
+
+        .rewards-list {
+            list-style: none;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 1.5rem;
+        }
+
+        .rewards-list li {
+            font-size: 0.9rem;
+            color: #334155;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .rewards-list li::before {
+            content: '✦';
+            color: #002A5C;
+            font-size: 0.9rem;
+        }
+
+        /* --- Development Programs --- */
+        .dev-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .dev-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 24px rgba(0, 42, 92, 0.04);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dev-tag {
+            font-size: 0.8rem;
             color: #002A5C;
             font-weight: 700;
             text-transform: uppercase;
@@ -218,33 +293,26 @@
             margin-bottom: 0.5rem;
         }
 
-        .card-title {
-            font-size: 1.6rem;
+        .dev-card h3 {
+            font-size: 1.8rem;
             color: #111;
-            margin-bottom: 0.75rem;
+            margin-bottom: 1rem;
         }
 
-        .card-text {
-            font-size: 0.9rem;
+        .dev-card p {
+            font-size: 0.95rem;
             color: #555;
-            line-height: 1.5;
+            margin-bottom: 1.5rem;
         }
 
-        .card-img-container {
-            width: 100%;
-            height: 150px;
-            overflow: hidden;
+        .dev-card .rewards-list {
+            margin-bottom: 2rem;
+            flex-grow: 1;
         }
 
-        .card-img-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.4s ease;
-        }
-
-        .card:hover .card-img-container img {
-            transform: scale(1.04);
+        .dev-card .btn {
+            align-self: flex-start;
+            text-decoration: none;
         }
 
         /* --- Footer Section --- */
@@ -252,7 +320,6 @@
             background-color: #002A5C;
             color: #ffffff;
             padding: 3rem 5% 1.5rem;
-            margin-top: 5rem;
         }
         .footer-content {
             max-width: 1400px;
@@ -297,9 +364,13 @@
         
         /* Responsive tweaks */
         @media (max-width: 1024px) {
-            .cards-container { grid-template-columns: 1fr; }
-            .cards-section { margin-top: 2rem; }
+            .pay-grid { grid-template-columns: repeat(2, 1fr); }
+            .programs-grid { grid-template-columns: 1fr; }
+            .dev-grid { grid-template-columns: 1fr; }
             .nav-links { display: none; }
+        }
+        @media (max-width: 600px) {
+            .pay-grid { grid-template-columns: 1fr; }
             .hero-title { font-size: 2.5rem; }
         }
     </style>
@@ -319,52 +390,115 @@
 
     <header class="hero">
         <div class="hero-content">
-            <h1 class="hero-title">The Airline of Udyanapura</h1>
-            <p class="hero-subtitle">One of Aeronautica's Largest Airlines. We offer programs from beginners to advanced pilots, with top of the end pay, and quality. Welcome to the Airline of Udyanapura.</p>
-            
-            <div class="hero-buttons">
-                <a href="https://discord.gg/3rWUYV3wDu" target="_blank" rel="noopener noreferrer" class="hero-btn-discord">Join our Discord</a>
-                <a href="#about" class="hero-btn-secondary">Learn more about us</a>
-            </div>
+            <h1 class="hero-title">Career Pathways</h1>
+            <p class="hero-subtitle">Discover our structured pilot programs, competitive compensation tiers, and exclusive development pathways designed to accelerate your aviation career.</p>
         </div>
     </header>
 
-    <section class="cards-section" id="about">
-        <div class="cards-container">
-            
-            <div class="card">
-                <div class="card-content">
-                    <div class="card-tag">Our Programs</div>
-                    <h3 class="card-title">Your Career</h3>
-                    <p class="card-text">Explore our one of a kind program.</p>
+    <section class="section-wrapper bg-white">
+        <div class="page-section">
+            <div class="section-header">
+                <h2>Pilot Compensation</h2>
+                <p>Industry-leading pay scales tailored to your experience and dedication.</p>
+            </div>
+            <div class="pay-grid">
+                <div class="pay-box">
+                    <img src="https://placehold.co/100x100/002A5C/FFFFFF?text=SO" alt="Second Officer Badge" class="rank-badge">
+                    <div class="pay-role">Second Officer</div>
+                    <div class="pay-amount">45k <span class="pay-currency">WP/hr</span></div>
+                    <div class="pay-req">Requirement: 2 hrs</div>
                 </div>
-                <div class="card-img-container">
-                    <img src="https://i.imgur.com/t7PLNUA.png" alt="Our Programs">
+                <div class="pay-box">
+                    <img src="https://placehold.co/100x100/002A5C/FFFFFF?text=FO" alt="First Officer Badge" class="rank-badge">
+                    <div class="pay-role">First Officer</div>
+                    <div class="pay-amount">60k <span class="pay-currency">WP/hr</span></div>
+                    <div class="pay-req">Requirement: 5 hrs</div>
+                </div>
+                <div class="pay-box">
+                    <img src="https://placehold.co/100x100/002A5C/FFFFFF?text=CPT" alt="Captain Badge" class="rank-badge">
+                    <div class="pay-role">Captain</div>
+                    <div class="pay-amount">75k <span class="pay-currency">WP/hr</span></div>
+                    <div class="pay-req">Requirement: 10 hrs</div>
+                </div>
+                <div class="pay-box">
+                    <img src="https://placehold.co/100x100/002A5C/FFFFFF?text=SCP" alt="Senior Captain Badge" class="rank-badge">
+                    <div class="pay-role">Senior Captain</div>
+                    <div class="pay-amount">90k <span class="pay-currency">WP/hr</span></div>
+                    <div class="pay-req">Requirement: 20 hrs</div>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <div class="card">
-                <div class="card-content">
-                    <div class="card-tag">Our Fleet</div>
-                    <h3 class="card-title">Aircrafts Selection</h3>
-                    <p class="card-text">Learn more about our fleet.</p>
+    <section class="section-wrapper bg-light">
+        <div class="page-section">
+            <div class="section-header">
+                <h2>Flight Programs</h2>
+                <p>Ascend through the ranks and unlock new perks along your journey.</p>
+            </div>
+            <div class="programs-grid">
+                <div class="program-card">
+                    <h3>Second Officer</h3>
+                    <p>Begin your line-flying career. Perfect for junior aviators looking to build hours and get accustomed to our standard operational procedures.</p>
+                    <ul class="rewards-list">
+                        <li>Access to regional fleet aircraft</li>
+                        <li>Short-haul route clearance</li>
+                        <li>Standard company benefits</li>
+                    </ul>
                 </div>
-                <div class="card-img-container">
-                    <img src="https://imgur.com/DNtb6bF.png" alt="Modern Fleet">
+                <div class="program-card">
+                    <h3>First Officer</h3>
+                    <p>Take on more responsibility as an experienced pilot. This program opens doors to larger airframes and more lucrative, medium-haul assignments.</p>
+                    <ul class="rewards-list">
+                        <li>Access to medium-haul fleet</li>
+                        <li>Priority route scheduling</li>
+                        <li>Increased hourly compensation</li>
+                    </ul>
+                </div>
+                <div class="program-card">
+                    <h3>Captain</h3>
+                    <p>Command the skies. Reserved for our most dedicated aviators, this role offers the highest level of autonomy, respect, and long-haul capabilities.</p>
+                    <ul class="rewards-list">
+                        <li>Heavy and long-haul aircraft clearance</li>
+                        <li>Unrestricted route access</li>
+                        <li>Command-level dispatch priority</li>
+                    </ul>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <div class="card">
-                <div class="card-content">
-                    <div class="card-tag">Our Hubs</div>
-                    <h3 class="card-title">Destinations</h3>
-                    <p class="card-text">Enjoy flying from our carefully chosen hubs.</p>
+    <section class="section-wrapper bg-white">
+        <div class="page-section">
+            <div class="section-header">
+                <h2>Development Programs</h2>
+                <p>Specialized training initiatives to rapidly advance your skills and career standing.</p>
+            </div>
+            <div class="dev-grid">
+                <div class="dev-card">
+                    <div class="dev-tag">Beginner Development</div>
+                    <h3>The Udyan Leaf</h3>
+                    <p>A foundational training program crafted for new pilots. Learn the essentials of flight operations, navigation, and company standards in a guided environment.</p>
+                    <ul class="rewards-list">
+                        <li>1-on-1 mentorship sessions</li>
+                        <li>Fast-track eligibility for Second Officer</li>
+                        <li>Exclusive training resources and manuals</li>
+                    </ul>
+                    <a href="#" class="btn">Apply for Udyan Leaf</a>
                 </div>
-                <div class="card-img-container">
-                    <img src="https://imgur.com/QXjs4Vb.png" alt="Pilot Careers">
+                
+                <div class="dev-card">
+                    <div class="dev-tag">Advanced Development</div>
+                    <h3>The Udyan Stem</h3>
+                    <p>Designed for seasoned aviators looking to transition into leadership roles. Focuses on command decision-making, advanced aircraft handling, and crew resource management.</p>
+                    <ul class="rewards-list">
+                        <li>Advanced simulator scenarios</li>
+                        <li>Fast-track eligibility for Captain rank</li>
+                        <li>Leadership and instructor endorsements</li>
+                    </ul>
+                    <a href="#" class="btn">Apply for Udyan Stem</a>
                 </div>
             </div>
-
         </div>
     </section>
 
@@ -377,8 +511,8 @@
             <div class="footer-col">
                 <h4>Quick Links</h4>
                 <ul>
-                    <li><a href="#">Programs</a></li>
-                    <li><a href="#">Fleet</a></li>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="programs.html">Programs</a></li>
                     <li><a href="#">Careers</a></li>
                 </ul>
             </div>
