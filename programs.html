@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         /* --- Base & Reset --- */
@@ -18,7 +18,7 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
         body {
-            background-color: #f8fafc; /* Slightly off-white to make cards pop */
+            background-color: #ffffff;
             color: #333;
             line-height: 1.5;
         }
@@ -86,23 +86,12 @@
         /* --- Hero Section --- */
         .hero {
             position: relative;
-            height: 50vh; /* Slightly shorter than home page */
+            height: 50vh; 
             background: linear-gradient(rgba(0, 42, 92, 0.7), rgba(0, 0, 0, 0.7)),
                         url('https://i.imgur.com/3zx6eLm.png') center/cover no-repeat;
             display: flex;
             align-items: center;
             padding: 0 5%;
-        }
-
-        .hero::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 60px;
-            background: linear-gradient(to bottom, transparent, #f8fafc);
-            pointer-events: none;
         }
 
         .hero-content {
@@ -126,27 +115,42 @@
             font-weight: 300;
         }
 
-        /* --- Section Layouts --- */
+        /* --- Full Width Section Wrappers --- */
+        .section-wrapper {
+            padding: 5rem 0;
+        }
+        
+        .bg-white {
+            background-color: #ffffff;
+        }
+        
+        .bg-light {
+            background-color: #f1f5f9; /* Slate 100 for visual variation */
+        }
+
         .page-section {
             max-width: 1400px;
-            margin: 4rem auto;
+            margin: 0 auto;
             padding: 0 5%;
         }
 
+        /* --- Left-Aligned & Unbolded Headers --- */
         .section-header {
-            margin-bottom: 2.5rem;
-            text-align: center;
+            margin-bottom: 3rem;
+            text-align: left;
         }
 
         .section-header h2 {
             font-size: 2.2rem;
             color: #002A5C;
             margin-bottom: 0.5rem;
+            font-weight: 400; /* Made not bold as requested */
         }
 
         .section-header p {
             color: #64748b;
-            font-size: 1rem;
+            font-size: 1.05rem;
+            font-weight: 300;
         }
 
         /* --- Pay Rates (Container Boxes) --- */
@@ -159,8 +163,8 @@
         .pay-box {
             background: #ffffff;
             border-radius: 12px;
-            padding: 2rem 1.5rem;
-            text-align: center;
+            padding: 2rem 1.75rem;
+            text-align: left; /* Moved to the left */
             box-shadow: 0 4px 15px rgba(0, 42, 92, 0.05);
             border: 1px solid rgba(0, 42, 92, 0.08);
             transition: transform 0.2s ease;
@@ -171,13 +175,22 @@
             box-shadow: 0 8px 25px rgba(0, 42, 92, 0.1);
         }
 
+        .rank-badge {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            margin-bottom: 1.25rem;
+            object-fit: cover;
+            display: block;
+        }
+
         .pay-role {
             font-size: 1.1rem;
             color: #475569;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
 
         .pay-amount {
@@ -195,7 +208,7 @@
         }
 
         .pay-req {
-            margin-top: 1.5rem;
+            margin-top: 1.25rem;
             display: inline-block;
             background-color: #f1f5f9;
             color: #334155;
@@ -216,7 +229,7 @@
             background: #ffffff;
             border-radius: 16px;
             padding: 2.5rem 2rem;
-            box-shadow: 0 8px 24px rgba(0, 42, 92, 0.06);
+            box-shadow: 0 8px 24px rgba(0, 42, 92, 0.04);
             border-top: 4px solid #002A5C;
         }
 
@@ -265,7 +278,7 @@
             background: #ffffff;
             border-radius: 16px;
             padding: 2.5rem;
-            box-shadow: 0 12px 30px rgba(0, 42, 92, 0.08);
+            box-shadow: 0 8px 24px rgba(0, 42, 92, 0.04);
             border: 1px solid #e2e8f0;
             display: flex;
             flex-direction: column;
@@ -307,7 +320,6 @@
             background-color: #002A5C;
             color: #ffffff;
             padding: 3rem 5% 1.5rem;
-            margin-top: 5rem;
         }
         .footer-content {
             max-width: 1400px;
@@ -368,8 +380,8 @@
     <nav>
         <div class="logo">Brand.</div>
         <ul class="nav-links">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Services</a></li>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="programs.html">Programs</a></li>
             <li><a href="#">Portfolio</a></li>
             <li><a href="#">Contact</a></li>
         </ul>
@@ -383,99 +395,109 @@
         </div>
     </header>
 
-    <section class="page-section">
-        <div class="section-header">
-            <h2>Pilot Compensation</h2>
-            <p>Industry-leading pay scales tailored to your experience and dedication.</p>
-        </div>
-        <div class="pay-grid">
-            <div class="pay-box">
-                <div class="pay-role">Second Officer</div>
-                <div class="pay-amount">45k <span class="pay-currency">WP/hr</span></div>
-                <div class="pay-req">Requirement: 2 hrs</div>
+    <section class="section-wrapper bg-white">
+        <div class="page-section">
+            <div class="section-header">
+                <h2>Pilot Compensation</h2>
+                <p>Industry-leading pay scales tailored to your experience and dedication.</p>
             </div>
-            <div class="pay-box">
-                <div class="pay-role">First Officer</div>
-                <div class="pay-amount">60k <span class="pay-currency">WP/hr</span></div>
-                <div class="pay-req">Requirement: 5 hrs</div>
-            </div>
-            <div class="pay-box">
-                <div class="pay-role">Captain</div>
-                <div class="pay-amount">75k <span class="pay-currency">WP/hr</span></div>
-                <div class="pay-req">Requirement: 10 hrs</div>
-            </div>
-            <div class="pay-box">
-                <div class="pay-role">Senior Captain</div>
-                <div class="pay-amount">90k <span class="pay-currency">WP/hr</span></div>
-                <div class="pay-req">Requirement: 20 hrs</div>
-            </div>
-        </div>
-    </section>
-
-    <section class="page-section">
-        <div class="section-header">
-            <h2>Flight Programs</h2>
-            <p>Ascend through the ranks and unlock new perks along your journey.</p>
-        </div>
-        <div class="programs-grid">
-            <div class="program-card">
-                <h3>Second Officer</h3>
-                <p>Begin your line-flying career. Perfect for junior aviators looking to build hours and get accustomed to our standard operational procedures.</p>
-                <ul class="rewards-list">
-                    <li>Access to regional fleet aircraft</li>
-                    <li>Short-haul route clearance</li>
-                    <li>Standard company benefits</li>
-                </ul>
-            </div>
-            <div class="program-card">
-                <h3>First Officer</h3>
-                <p>Take on more responsibility as an experienced pilot. This program opens doors to larger airframes and more lucrative, medium-haul assignments.</p>
-                <ul class="rewards-list">
-                    <li>Access to medium-haul fleet</li>
-                    <li>Priority route scheduling</li>
-                    <li>Increased hourly compensation</li>
-                </ul>
-            </div>
-            <div class="program-card">
-                <h3>Captain</h3>
-                <p>Command the skies. Reserved for our most dedicated aviators, this role offers the highest level of autonomy, respect, and long-haul capabilities.</p>
-                <ul class="rewards-list">
-                    <li>Heavy and long-haul aircraft clearance</li>
-                    <li>Unrestricted route access</li>
-                    <li>Command-level dispatch priority</li>
-                </ul>
+            <div class="pay-grid">
+                <div class="pay-box">
+                    <img src="https://placehold.co/100x100/002A5C/FFFFFF?text=SO" alt="Second Officer Badge" class="rank-badge">
+                    <div class="pay-role">Second Officer</div>
+                    <div class="pay-amount">45k <span class="pay-currency">WP/hr</span></div>
+                    <div class="pay-req">Requirement: 2 hrs</div>
+                </div>
+                <div class="pay-box">
+                    <img src="https://placehold.co/100x100/002A5C/FFFFFF?text=FO" alt="First Officer Badge" class="rank-badge">
+                    <div class="pay-role">First Officer</div>
+                    <div class="pay-amount">60k <span class="pay-currency">WP/hr</span></div>
+                    <div class="pay-req">Requirement: 5 hrs</div>
+                </div>
+                <div class="pay-box">
+                    <img src="https://placehold.co/100x100/002A5C/FFFFFF?text=CPT" alt="Captain Badge" class="rank-badge">
+                    <div class="pay-role">Captain</div>
+                    <div class="pay-amount">75k <span class="pay-currency">WP/hr</span></div>
+                    <div class="pay-req">Requirement: 10 hrs</div>
+                </div>
+                <div class="pay-box">
+                    <img src="https://placehold.co/100x100/002A5C/FFFFFF?text=SCP" alt="Senior Captain Badge" class="rank-badge">
+                    <div class="pay-role">Senior Captain</div>
+                    <div class="pay-amount">90k <span class="pay-currency">WP/hr</span></div>
+                    <div class="pay-req">Requirement: 20 hrs</div>
+                </div>
             </div>
         </div>
     </section>
 
-    <section class="page-section">
-        <div class="section-header">
-            <h2>Development Programs</h2>
-            <p>Specialized training initiatives to rapidly advance your skills and career standing.</p>
-        </div>
-        <div class="dev-grid">
-            <div class="dev-card">
-                <div class="dev-tag">Beginner Development</div>
-                <h3>The Udyan Leaf</h3>
-                <p>A foundational training program crafted for new pilots. Learn the essentials of flight operations, navigation, and company standards in a guided environment.</p>
-                <ul class="rewards-list">
-                    <li>1-on-1 mentorship sessions</li>
-                    <li>Fast-track eligibility for Second Officer</li>
-                    <li>Exclusive training resources and manuals</li>
-                </ul>
-                <a href="#" class="btn">Apply for Udyan Leaf</a>
+    <section class="section-wrapper bg-light">
+        <div class="page-section">
+            <div class="section-header">
+                <h2>Flight Programs</h2>
+                <p>Ascend through the ranks and unlock new perks along your journey.</p>
             </div>
-            
-            <div class="dev-card">
-                <div class="dev-tag">Advanced Development</div>
-                <h3>The Udyan Stem</h3>
-                <p>Designed for seasoned aviators looking to transition into leadership roles. Focuses on command decision-making, advanced aircraft handling, and crew resource management.</p>
-                <ul class="rewards-list">
-                    <li>Advanced simulator scenarios</li>
-                    <li>Fast-track eligibility for Captain rank</li>
-                    <li>Leadership and instructor endorsements</li>
-                </ul>
-                <a href="#" class="btn">Apply for Udyan Stem</a>
+            <div class="programs-grid">
+                <div class="program-card">
+                    <h3>Second Officer</h3>
+                    <p>Begin your line-flying career. Perfect for junior aviators looking to build hours and get accustomed to our standard operational procedures.</p>
+                    <ul class="rewards-list">
+                        <li>Access to regional fleet aircraft</li>
+                        <li>Short-haul route clearance</li>
+                        <li>Standard company benefits</li>
+                    </ul>
+                </div>
+                <div class="program-card">
+                    <h3>First Officer</h3>
+                    <p>Take on more responsibility as an experienced pilot. This program opens doors to larger airframes and more lucrative, medium-haul assignments.</p>
+                    <ul class="rewards-list">
+                        <li>Access to medium-haul fleet</li>
+                        <li>Priority route scheduling</li>
+                        <li>Increased hourly compensation</li>
+                    </ul>
+                </div>
+                <div class="program-card">
+                    <h3>Captain</h3>
+                    <p>Command the skies. Reserved for our most dedicated aviators, this role offers the highest level of autonomy, respect, and long-haul capabilities.</p>
+                    <ul class="rewards-list">
+                        <li>Heavy and long-haul aircraft clearance</li>
+                        <li>Unrestricted route access</li>
+                        <li>Command-level dispatch priority</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-wrapper bg-white">
+        <div class="page-section">
+            <div class="section-header">
+                <h2>Development Programs</h2>
+                <p>Specialized training initiatives to rapidly advance your skills and career standing.</p>
+            </div>
+            <div class="dev-grid">
+                <div class="dev-card">
+                    <div class="dev-tag">Beginner Development</div>
+                    <h3>The Udyan Leaf</h3>
+                    <p>A foundational training program crafted for new pilots. Learn the essentials of flight operations, navigation, and company standards in a guided environment.</p>
+                    <ul class="rewards-list">
+                        <li>1-on-1 mentorship sessions</li>
+                        <li>Fast-track eligibility for Second Officer</li>
+                        <li>Exclusive training resources and manuals</li>
+                    </ul>
+                    <a href="#" class="btn">Apply for Udyan Leaf</a>
+                </div>
+                
+                <div class="dev-card">
+                    <div class="dev-tag">Advanced Development</div>
+                    <h3>The Udyan Stem</h3>
+                    <p>Designed for seasoned aviators looking to transition into leadership roles. Focuses on command decision-making, advanced aircraft handling, and crew resource management.</p>
+                    <ul class="rewards-list">
+                        <li>Advanced simulator scenarios</li>
+                        <li>Fast-track eligibility for Captain rank</li>
+                        <li>Leadership and instructor endorsements</li>
+                    </ul>
+                    <a href="#" class="btn">Apply for Udyan Stem</a>
+                </div>
             </div>
         </div>
     </section>
@@ -489,8 +511,8 @@
             <div class="footer-col">
                 <h4>Quick Links</h4>
                 <ul>
-                    <li><a href="#">Programs</a></li>
-                    <li><a href="#">Fleet</a></li>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="programs.html">Programs</a></li>
                     <li><a href="#">Careers</a></li>
                 </ul>
             </div>
