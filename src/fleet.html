@@ -1,1 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fleet - The Airline of Udyanapura</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Raleway:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Base & Reset --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        body {
+            background-color: #ffffff;
+            color: #333;
+            line-height: 1.5;
+        }
+        h1, h2, h3, .logo {
+            font-family: 'Raleway', sans-serif;
+            font-weight: 700;
+        }
+
+        /* --- Top Navigation --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background-color: #ffffff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .logo { font-size: 1.8rem; color: #002A5C; letter-spacing: 0.5px; }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a { text-decoration: none; color: #555; font-weight: 500; font-size: 0.95rem; transition: color 0.2s ease; }
+        .nav-links a:hover { color: #002A5C; }
+        .btn {
+            background-color: #002A5C; color: white; border: none; padding: 0.6rem 1.5rem;
+            border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: all 0.2s ease;
+        }
+        .btn:hover { background-color: #001b3d; }
+
+        /* --- Hero Section --- */
+        .hero {
+            position: relative;
+            height: 40vh;
+            background: linear-gradient(rgba(0, 10, 25, 0.75), rgba(0, 10, 25, 0.75)), url('https://imgur.com/DNtb6bF.png') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, #ffffff);
+            pointer-events: none;
+        }
+        .hero-content { position: relative; z-index: 10; max-width: 750px; }
+        .hero-title { font-size: 3rem; line-height: 1.2; margin-bottom: 1rem; color: #ffffff; }
+        .hero-subtitle { font-size: 1rem; color: #e2e8f0; line-height: 1.6; max-width: 600px; font-weight: 300; }
+
+        /* --- Shared page/section wrappers --- */
+        .overlap-section { margin-top: -50px; position: relative; z-index: 20; padding-bottom: 5rem; }
+        .page-section { max-width: 1400px; margin: 0 auto; padding: 0 5%; }
+        .section-wrapper { padding: 5rem 0; }
+        .bg-neutral { background-color: #f9fafb; }
+        .section-header { margin-bottom: 3rem; text-align: left; }
+        .section-header h2 { font-size: 2.2rem; color: #111; margin-bottom: 0.5rem; }
+        .section-header p { color: #555; font-size: 1.05rem; font-weight: 300; }
+
+        /* --- Unified Card Styling (matches site-wide .card) --- */
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0, 42, 92, 0.08);
+            border: 1px solid rgba(0, 42, 92, 0.06);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .card-content { padding: 1.75rem 1.75rem 1.5rem 1.75rem; }
+        .card-tag { font-size: 0.75rem; color: #002A5C; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.5rem; }
+        .card-title { font-size: 1.6rem; color: #111; margin-bottom: 0.75rem; }
+        .card-text { font-size: 0.9rem; color: #555; line-height: 1.5; }
+
+        /* ==========================================================
+           Fleet Tree — interactive branch navigation
+           ========================================================== */
+        .tree-layout {
+            display: grid;
+            grid-template-columns: minmax(260px, 340px) 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .tree-intro p.lede {
+            color: #555;
+            font-size: 0.95rem;
+            font-weight: 300;
+            line-height: 1.6;
+            margin-bottom: 1.75rem;
+        }
+
+        .branch-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+        }
+        .branch-list li { border-bottom: 1px solid #f0f0f0; }
+        .branch-list li:first-child { border-top: 1px solid #f0f0f0; }
+        .branch-list button {
+            all: unset;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0.9rem 0.1rem;
+            cursor: pointer;
+            color: #333;
+            font-weight: 500;
+            font-size: 0.98rem;
+            transition: color 0.2s ease, padding-left 0.2s ease;
+        }
+        .branch-list button::before {
+            content: '\2726';
+            color: #002A5C;
+            font-size: 0.85rem;
+            margin-right: 0.65rem;
+        }
+        .branch-list button .arrow {
+            color: #002A5C;
+            font-weight: 700;
+            transition: transform 0.2s ease;
+        }
+        .branch-list li.active button,
+        .branch-list button:hover {
+            color: #002A5C;
+            padding-left: 0.4rem;
+        }
+        .branch-list li.active button .arrow,
+        .branch-list button:hover .arrow { transform: translateX(4px); }
+
+        .tree-stage {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+        .tree-frame { position: relative; width: 100%; }
+        .tree-frame img {
+            display: block;
+            width: 100%;
+            height: auto;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .leaf-btn {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+        .leaf-btn .badge {
+            width: clamp(30px, 4vw, 42px);
+            height: clamp(30px, 4vw, 42px);
+            border-radius: 50%;
+            background-color: #002A5C;
+            border: 2px solid #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 16px rgba(0, 42, 92, 0.28);
+            transition: transform 0.25s cubic-bezier(.34,1.56,.64,1), box-shadow 0.25s ease, background-color 0.25s ease;
+        }
+        .leaf-btn .badge svg { width: 50%; height: 50%; fill: #ffffff; }
+        .leaf-btn:hover .badge,
+        .leaf-btn.active .badge {
+            background-color: #ffbd59;
+            transform: scale(1.15);
+            box-shadow: 0 8px 20px rgba(0, 42, 92, 0.32);
+        }
+        .leaf-btn:hover .badge svg,
+        .leaf-btn.active .badge svg { fill: #002A5C; }
+
+        .leaf-btn .tag {
+            font-size: clamp(10px, 1.15vw, 12px);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #002A5C;
+            background: #ffffff;
+            padding: 3px 9px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 42, 92, 0.15);
+            white-space: nowrap;
+            box-shadow: 0 3px 10px rgba(0,42,92,0.08);
+        }
+
+        .leaf-btn.pos-advanced   { left: 51%;   top: 8%;   }
+        .leaf-btn.pos-advanced .tag   { order: -1; }
+        .leaf-btn.pos-retro      { left: 19%;   top: 24.5%;}
+        .leaf-btn.pos-retro .tag      { order: -1; }
+        .leaf-btn.pos-freighter  { left: 33%;   top: 29%;  }
+        .leaf-btn.pos-freighter .badge{ width: clamp(24px,3.2vw,32px); height: clamp(24px,3.2vw,32px); }
+        .leaf-btn.pos-fictional  { left: 70.5%; top: 32%;  }
+        .leaf-btn.pos-current    { left: 17%;   top: 58%;  }
+        .leaf-btn.pos-retired    { left: 80%;   top: 59.5%;}
+        .leaf-btn.pos-retired .tag    { order: -1; }
+
+        /* --- Result panel (reuses .card language) --- */
+        .fleet-result {
+            display: none;
+            margin-top: 1rem;
+        }
+        .fleet-result.open { display: block; }
+        .fleet-result .card-content { padding: 2.25rem 2.25rem 2rem; }
+        .fleet-result .result-copy {
+            color: #555;
+            font-size: 0.95rem;
+            font-weight: 300;
+            margin-bottom: 1.75rem;
+            max-width: 60ch;
+        }
+        .result-groups {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+        .result-group h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #999;
+            margin-bottom: 0.85rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .result-group ul { list-style: none; }
+        .result-group li {
+            display: flex;
+            align-items: baseline;
+            gap: 0.55rem;
+            padding: 0.55rem 0;
+            font-family: 'Raleway', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #111;
+        }
+        .result-group li::before {
+            content: '\2726';
+            color: #ffbd59;
+            font-size: 0.8rem;
+        }
+
+        footer { background-color: #002A5C; color: #ffffff; padding: 3rem 5% 1.5rem; }
+        .footer-content { max-width: 1400px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2.5rem; margin-bottom: 2.5rem; }
+        .footer-col { flex: 1; min-width: 220px; }
+        .footer-col h3, .footer-col h4 { color: #ffffff; margin-bottom: 0.75rem; font-size: 1.1rem; }
+        .footer-col p, .footer-col a { color: #cbd5e1; font-size: 0.9rem; text-decoration: none; }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+        .footer-bottom { max-width: 1400px; margin: 0 auto; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 1.25rem; text-align: center; }
+        .footer-bottom p { font-size: 0.8rem; color: #94a3b8; }
+
+        @media (max-width: 1024px) {
+            .nav-links { display: none; }
+            .hero-title { font-size: 2.2rem; }
+            .tree-layout { grid-template-columns: 1fr; }
+            .tree-stage { max-width: 480px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="header-placeholder"></div>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Our Fleet</h1>
+            <p class="hero-subtitle">From the entry-level workhorses to the flagships of the skies, explore the aircraft our pilots fly across every stage of their career.</p>
+        </div>
+    </header>
+
+    <section class="overlap-section">
+        <div class="page-section">
+            <div class="section-header">
+                <h2>Aircraft Selection</h2>
+                <p>Every branch tells part of the story. Tap one to see what's on it.</p>
+            </div>
+
+            <div class="tree-layout">
+                <div class="tree-intro">
+                    <p class="lede">From what's flying our routes today, back to where the airline started, and forward to what's still on the drawing board — six branches, one fleet.</p>
+                    <ul class="branch-list" id="branchList"></ul>
+                </div>
+
+                <div class="tree-stage">
+                    <div class="tree-frame" id="treeFrame">
+                        <img src="assets/tree-navy.png" alt="Illustrated tree representing the fleet, with each cluster of leaves marking a fleet category" draggable="false">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card fleet-result" id="fleetResult">
+                <div class="card-content">
+                    <div class="card-tag" id="resultTag">Category</div>
+                    <h3 class="card-title" id="resultTitle">Fleet</h3>
+                    <p class="result-copy" id="resultCopy"></p>
+                    <div class="result-groups" id="resultGroups"></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth-client.js"></script>
+    <script>
+        fetch('header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+                if (window.AirlineAuth) window.AirlineAuth.init();
+            });
+
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => document.getElementById('footer-placeholder').innerHTML = data);
+    </script>
+
+    <script>
+        const PLANE_SVG = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2.5 1.8V22L12 21l4.5 1v-1.2L14 19v-5.5l7 2.5z"/></svg>';
+
+        const FLEET = [
+            {
+                id: 'current',
+                pos: 'current',
+                tag: 'Current Fleet',
+                copy: 'The workhorses in service across the network right now.',
+                groups: [
+                    { label: 'Airbus', items: ['A350-900', 'A380-800'] },
+                    { label: 'Boeing', items: ['737-800', '737-8 MAX', '777-300ER', '777-9X', '787-10'] },
+                ]
+            },
+            {
+                id: 'freighter',
+                pos: 'freighter',
+                tag: 'Freighter',
+                copy: 'The current fleet\u2019s cargo-carrying siblings.',
+                groups: [
+                    { label: 'Freighters', items: ['747-400F', '777-F'] },
+                ]
+            },
+            {
+                id: 'retro',
+                pos: 'retro',
+                tag: 'Retro Fleet',
+                copy: 'The early airframes that first connected Udyanapura to the world.',
+                groups: [
+                    { label: 'Aircraft', items: ['707-320B', 'F27-100 Friendship', 'DC-3 Dakota', 'DC-4', 'L-1049G', 'Comet 4B', 'BN-2A Islander', 'BAC 1-11-200'] },
+                ]
+            },
+            {
+                id: 'advanced',
+                pos: 'advanced',
+                tag: 'Advanced Fleet',
+                copy: 'Supersonic ambitions \u2014 built, revived, and still on the board.',
+                groups: [
+                    { label: 'Aircraft', items: ['Concorde', 'Boom Overture \u201922', 'Boom Overture \u201916', 'Lockheed L-2000', 'Boeing 2707', 'K600', 'K500'] },
+                ]
+            },
+            {
+                id: 'retired',
+                pos: 'retired',
+                tag: 'Retired Fleet',
+                copy: 'Airframes that have completed their service and left the active fleet.',
+                groups: [
+                    { label: 'Airbus', items: ['A300-600R', 'A310-300', 'A330-300', 'A340-300', 'A340-500'] },
+                    { label: 'Boeing', items: ['737-200', '747-200', '747-300', '747-400', '757-200', '777-200'] },
+                    { label: 'Other', items: ['DC-10', '747-200F'] },
+                ]
+            },
+            {
+                id: 'fictional',
+                pos: 'fictional',
+                tag: 'Fictional Fleet',
+                copy: 'Aircraft that never quite made it into this fleet \u2014 but might have.',
+                groups: [
+                    { label: 'Boeing', items: ['747-8i', '787-9'] },
+                    { label: 'Airbus', items: ['A330-900neo', 'A350-800'] },
+                    { label: 'Other', items: ['MD-12'] },
+                ]
+            },
+        ];
+
+        const treeFrame = document.getElementById('treeFrame');
+        const branchList = document.getElementById('branchList');
+        const result = document.getElementById('fleetResult');
+        const resultTag = document.getElementById('resultTag');
+        const resultTitle = document.getElementById('resultTitle');
+        const resultCopy = document.getElementById('resultCopy');
+        const resultGroups = document.getElementById('resultGroups');
+
+        FLEET.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.className = `leaf-btn pos-${cat.pos}`;
+            btn.dataset.id = cat.id;
+            btn.setAttribute('aria-label', cat.tag);
+            btn.innerHTML = `<span class="badge">${PLANE_SVG}</span><span class="tag">${cat.tag}</span>`;
+            treeFrame.appendChild(btn);
+            btn.addEventListener('click', () => selectFleet(cat.id));
+
+            const li = document.createElement('li');
+            const row = document.createElement('button');
+            row.dataset.id = cat.id;
+            row.innerHTML = `<span>${cat.tag}</span><span class="arrow">&#8594;</span>`;
+            row.addEventListener('click', () => selectFleet(cat.id));
+            li.appendChild(row);
+            branchList.appendChild(li);
+        });
+
+        function selectFleet(id) {
+            const cat = FLEET.find(c => c.id === id);
+            if (!cat) return;
+
+            document.querySelectorAll('.leaf-btn').forEach(b => b.classList.toggle('active', b.dataset.id === id));
+            document.querySelectorAll('.branch-list li').forEach(li => {
+                li.classList.toggle('active', li.querySelector('button').dataset.id === id);
+            });
+
+            resultTag.textContent = cat.tag;
+            resultTitle.textContent = cat.tag;
+            resultCopy.textContent = cat.copy;
+            resultGroups.innerHTML = '';
+
+            cat.groups.forEach(g => {
+                const wrap = document.createElement('div');
+                wrap.className = 'result-group';
+                const h4 = document.createElement('h4');
+                h4.textContent = g.label;
+                wrap.appendChild(h4);
+                const ul = document.createElement('ul');
+                g.items.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    ul.appendChild(li);
+                });
+                wrap.appendChild(ul);
+                resultGroups.appendChild(wrap);
+            });
+
+            result.classList.add('open');
+            if (window.innerWidth < 1024) {
+                result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        selectFleet('current');
+    </script>
+
+</body>
+</html>
