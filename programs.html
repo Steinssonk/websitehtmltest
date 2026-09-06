@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
         /* --- Base & Reset --- */
@@ -24,9 +24,9 @@
         }
 
         /* --- Global Typography Theme --- */
-        h1, h2, h3, h4, .logo {
+        h1, h2, h3, .logo {
             font-family: 'Raleway', sans-serif;
-            font-weight: 700; 
+            font-weight: 700;
         }
 
         /* --- Top Navigation --- */
@@ -39,21 +39,21 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            border-bottom: 1px solid #eaeaea;
+            border-bottom: 1px solid #f0f0f0;
         }
-        
+
         .logo {
             font-size: 1.8rem;
-            color: #111111; /* Changed from blue to charcoal */
+            color: #002A5C;
             letter-spacing: 0.5px;
         }
-        
+
         .nav-links {
             display: flex;
             gap: 2rem;
             list-style: none;
         }
-        
+
         .nav-links a {
             text-decoration: none;
             color: #555;
@@ -61,37 +61,48 @@
             font-size: 0.95rem;
             transition: color 0.2s ease;
         }
-        
+
         .nav-links a:hover {
-            color: #111111;
+            color: #002A5C;
         }
 
         .btn {
-            background-color: #111111; /* Changed from blue to charcoal */
+            background-color: #002A5C;
             color: white;
             border: none;
             padding: 0.6rem 1.5rem;
-            border-radius: 4px; /* Slightly sharper edges for a modern look */
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
             font-size: 0.95rem;
             transition: all 0.2s ease;
             font-family: 'Inter', sans-serif;
         }
-        
+
         .btn:hover {
-            background-color: #333333;
+            background-color: #001b3d;
         }
 
-        /* --- Hero Section --- */
+        /* --- Hero Section (Matched to Home Page) --- */
         .hero {
             position: relative;
-            height: 55vh; 
-            background: linear-gradient(rgba(17, 17, 17, 0.6), rgba(17, 17, 17, 0.8)),
-                        url('https://images.unsplash.com/photo-1569154941061-e231b4732ef1?auto=format&fit=crop&q=80&w=2000') center/cover no-repeat;
+            height: 65vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.65)),
+                        url('https://i.imgur.com/3zx6eLm.png') center/cover no-repeat;
             display: flex;
             align-items: center;
             padding: 0 5%;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, #ffffff);
+            pointer-events: none;
         }
 
         .hero-content {
@@ -103,29 +114,25 @@
         .hero-title {
             font-size: 3.5rem;
             line-height: 1.2;
-            margin-bottom: 0.75rem;
+            margin-bottom: 1rem;
             color: #ffffff;
         }
-        
+
         .hero-subtitle {
-            font-size: 1.1rem;
-            color: #d1d5db;
+            font-size: 1rem;
+            color: #e2e8f0;
             line-height: 1.6;
             max-width: 600px;
             font-weight: 300;
+            margin-bottom: 1.5rem;
         }
 
-        /* --- Full Width Section Wrappers --- */
+        /* --- Section Styling & Colors --- */
+        .bg-white { background-color: #ffffff; }
+        .bg-neutral { background-color: #f9fafb; /* Clean neutral gray, no blue hue */ }
+
         .section-wrapper {
             padding: 5rem 0;
-        }
-        
-        .bg-white {
-            background-color: #ffffff;
-        }
-        
-        .bg-light {
-            background-color: #f9fafb; /* Very light neutral gray */
         }
 
         .page-section {
@@ -134,137 +141,141 @@
             padding: 0 5%;
         }
 
-        /* --- Left-Aligned & Unbolded Headers --- */
+        /* Unbolded Subheadings */
         .section-header {
-            margin-bottom: 3.5rem;
+            margin-bottom: 3rem;
             text-align: left;
         }
 
         .section-header h2 {
             font-size: 2.2rem;
-            color: #111111;
+            color: #002A5C;
             margin-bottom: 0.5rem;
-            font-weight: 400; /* Unbolded */
+            font-weight: 400; /* Removed bold */
         }
 
         .section-header p {
-            color: #666666;
+            color: #555;
             font-size: 1.05rem;
             font-weight: 300;
         }
 
-        /* --- Pay Rates (Container Boxes) --- */
+        /* --- Pay Rates (Overlapping matching home page) --- */
+        .overlap-section {
+            margin-top: -50px;
+            position: relative;
+            z-index: 20;
+            padding-bottom: 5rem;
+        }
+
         .pay-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
+            gap: 1.75rem;
         }
 
         .pay-box {
             background: #ffffff;
-            border-radius: 8px;
-            padding: 2.5rem 1.75rem;
-            text-align: left; 
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-            border: 1px solid #eaeaea;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border-radius: 16px;
+            padding: 2rem 1.75rem;
+            text-align: left;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
 
         .pay-box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transform: translateY(-6px);
+            box-shadow: 0 16px 35px rgba(0, 0, 0, 0.08);
         }
 
+        /* Simple Chevron Badges */
         .rank-badge {
-            width: 44px;
-            height: 44px;
-            margin-bottom: 1.5rem;
+            height: 32px;
+            margin-bottom: 1.25rem;
             display: block;
-            opacity: 0.85; /* Softens the stark black of the icons */
+            opacity: 0.9;
         }
 
         .pay-role {
-            font-size: 1rem;
-            color: #555555;
+            font-size: 1.1rem;
+            color: #111;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1.2px;
+            letter-spacing: 1px;
             margin-bottom: 0.5rem;
         }
 
         .pay-amount {
             font-size: 2.2rem;
-            color: #111111;
+            color: #002A5C;
             font-weight: 700;
             font-family: 'Raleway', sans-serif;
             margin-bottom: 0.25rem;
         }
         
         .pay-currency {
-            font-size: 1rem;
-            color: #888888;
+            font-size: 1.2rem;
+            color: #777;
             font-weight: 500;
         }
 
         .pay-req {
-            margin-top: 1.5rem;
+            margin-top: 1.25rem;
             display: inline-block;
             background-color: #f3f4f6;
-            color: #444444;
+            color: #333;
             padding: 0.4rem 1rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
         }
 
-        /* --- Standard Programs --- */
+        /* --- Standard Programs (Card Style matching home page) --- */
         .programs-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
+            gap: 1.75rem;
         }
 
         .program-card {
             background: #ffffff;
-            border-radius: 8px;
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-            border: 1px solid #eaeaea;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
 
-        .program-img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-bottom: 1px solid #eaeaea;
+        .program-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 35px rgba(0, 0, 0, 0.08);
         }
 
         .program-content {
-            padding: 2.5rem 2rem;
+            padding: 2rem 1.75rem 1.5rem 1.75rem;
             flex-grow: 1;
         }
 
         .program-card h3 {
-            font-size: 1.5rem;
-            color: #111111;
-            margin-bottom: 1rem;
+            font-size: 1.6rem;
+            color: #111;
+            margin-bottom: 0.75rem;
         }
 
         .program-card p {
             font-size: 0.95rem;
-            color: #666;
+            color: #555;
             margin-bottom: 1.5rem;
-            line-height: 1.6;
         }
 
         .rewards-list {
             list-style: none;
             border-top: 1px solid #eaeaea;
             padding-top: 1.5rem;
-            margin-top: auto;
         }
 
         .rewards-list li {
@@ -273,81 +284,87 @@
             margin-bottom: 0.75rem;
             display: flex;
             align-items: flex-start;
-            gap: 0.75rem;
+            gap: 0.5rem;
         }
 
         .rewards-list li::before {
-            content: '—';
-            color: #999;
-            font-weight: bold;
+            content: '✦';
+            color: #002A5C;
+            font-size: 0.9rem;
+        }
+
+        /* Image styling for cards that have them */
+        .card-img-container {
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+        }
+
+        .card-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .program-card:hover .card-img-container img {
+            transform: scale(1.04);
         }
 
         /* --- Development Programs --- */
         .dev-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
+            gap: 1.75rem;
         }
 
         .dev-card {
             background: #ffffff;
-            border-radius: 8px;
-            padding: 3rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-            border: 1px solid #eaeaea;
-            border-left: 4px solid #111111; /* Sleek side accent */
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
             display: flex;
             flex-direction: column;
         }
 
         .dev-tag {
             font-size: 0.75rem;
-            color: #666;
+            color: #002A5C;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
             margin-bottom: 0.75rem;
         }
 
         .dev-card h3 {
             font-size: 1.8rem;
-            color: #111111;
+            color: #111;
             margin-bottom: 1rem;
         }
 
         .dev-card p {
             font-size: 0.95rem;
-            color: #666;
-            margin-bottom: 2rem;
-            line-height: 1.6;
+            color: #555;
+            margin-bottom: 1.5rem;
         }
 
         .dev-card .rewards-list {
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
             flex-grow: 1;
-            border-top: none;
-            padding-top: 0;
+            border-color: #eaeaea;
         }
 
         .dev-card .btn {
             align-self: flex-start;
             text-decoration: none;
-            background-color: #f9fafb;
-            color: #111111;
-            border: 1px solid #eaeaea;
         }
 
-        .dev-card .btn:hover {
-            background-color: #111111;
-            color: #ffffff;
-            border-color: #111111;
-        }
-
-        /* --- Footer Section --- */
+        /* --- Footer Section (Matched to Home Page) --- */
         footer {
-            background-color: #111111;
+            background-color: #002A5C;
             color: #ffffff;
-            padding: 4rem 5% 2rem;
+            padding: 3rem 5% 1.5rem;
         }
         .footer-content {
             max-width: 1400px;
@@ -356,7 +373,7 @@
             flex-wrap: wrap;
             justify-content: space-between;
             gap: 2.5rem;
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
         }
         .footer-col {
             flex: 1;
@@ -364,43 +381,39 @@
         }
         .footer-col h3, .footer-col h4 {
             color: #ffffff;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
             font-size: 1.1rem;
         }
         .footer-col p, .footer-col a {
-            color: #999999;
+            color: #cbd5e1;
             font-size: 0.9rem;
             text-decoration: none;
-            line-height: 1.6;
-            transition: color 0.2s;
-        }
-        .footer-col a:hover {
-            color: #ffffff;
         }
         .footer-col ul {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
+            gap: 0.5rem;
         }
         .footer-bottom {
             max-width: 1400px;
             margin: 0 auto;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 1.5rem;
-            text-align: left;
+            padding-top: 1.25rem;
+            text-align: center;
         }
         .footer-bottom p {
             font-size: 0.8rem;
-            color: #666666;
+            color: #94a3b8;
         }
-        
+
         /* Responsive tweaks */
         @media (max-width: 1024px) {
             .pay-grid { grid-template-columns: repeat(2, 1fr); }
             .programs-grid { grid-template-columns: 1fr; }
             .dev-grid { grid-template-columns: 1fr; }
             .nav-links { display: none; }
+            .overlap-section { margin-top: 2rem; }
         }
         @media (max-width: 600px) {
             .pay-grid { grid-template-columns: 1fr; }
@@ -410,7 +423,6 @@
 </head>
 <body>
 
-    <!-- Header Navigation -->
     <nav>
         <div class="logo">Brand.</div>
         <ul class="nav-links">
@@ -422,7 +434,6 @@
         <button class="btn">Get Started</button>
     </nav>
 
-    <!-- Hero Section -->
     <header class="hero">
         <div class="hero-content">
             <h1 class="hero-title">Career Pathways</h1>
@@ -430,38 +441,29 @@
         </div>
     </header>
 
-    <!-- Pay Rates Section -->
-    <section class="section-wrapper bg-white">
+    <section class="overlap-section">
         <div class="page-section">
-            <div class="section-header">
-                <h2>Pilot Compensation</h2>
-                <p>Industry-leading pay scales tailored to your experience and dedication.</p>
-            </div>
             <div class="pay-grid">
-                <!-- Box 1 -->
                 <div class="pay-box">
-                    <img src="https://img.icons8.com/ios/100/111111/chevron-up.png" alt="Second Officer Badge" class="rank-badge">
+                    <img src="https://img.icons8.com/ios-filled/100/002A5C/chevron-up.png" alt="SO Badge" class="rank-badge">
                     <div class="pay-role">Second Officer</div>
                     <div class="pay-amount">45k <span class="pay-currency">WP/hr</span></div>
                     <div class="pay-req">Requirement: 2 hrs</div>
                 </div>
-                <!-- Box 2 -->
                 <div class="pay-box">
-                    <img src="https://img.icons8.com/ios/100/111111/double-up--v1.png" alt="First Officer Badge" class="rank-badge">
+                    <img src="https://img.icons8.com/ios-filled/100/002A5C/double-up.png" alt="FO Badge" class="rank-badge">
                     <div class="pay-role">First Officer</div>
                     <div class="pay-amount">60k <span class="pay-currency">WP/hr</span></div>
                     <div class="pay-req">Requirement: 5 hrs</div>
                 </div>
-                <!-- Box 3 -->
                 <div class="pay-box">
-                    <img src="https://img.icons8.com/ios/100/111111/triple-up.png" alt="Captain Badge" class="rank-badge">
+                    <img src="https://img.icons8.com/ios-filled/100/002A5C/triple-up.png" alt="CPT Badge" class="rank-badge">
                     <div class="pay-role">Captain</div>
                     <div class="pay-amount">75k <span class="pay-currency">WP/hr</span></div>
                     <div class="pay-req">Requirement: 10 hrs</div>
                 </div>
-                <!-- Box 4 -->
                 <div class="pay-box">
-                    <img src="https://img.icons8.com/ios/100/111111/pilot-wings.png" alt="Senior Captain Badge" class="rank-badge" style="width: 56px;">
+                    <img src="https://img.icons8.com/ios-filled/100/002A5C/military-rank.png" alt="SCP Badge" class="rank-badge">
                     <div class="pay-role">Senior Captain</div>
                     <div class="pay-amount">90k <span class="pay-currency">WP/hr</span></div>
                     <div class="pay-req">Requirement: 20 hrs</div>
@@ -470,17 +472,14 @@
         </div>
     </section>
 
-    <!-- Standard Programs Section -->
-    <section class="section-wrapper bg-light">
+    <section class="section-wrapper bg-neutral">
         <div class="page-section">
             <div class="section-header">
                 <h2>Flight Programs</h2>
                 <p>Ascend through the ranks and unlock new perks along your journey.</p>
             </div>
             <div class="programs-grid">
-                <!-- Card 1 (With Image) -->
                 <div class="program-card">
-                    <img src="https://images.unsplash.com/photo-1540962351504-03099e0a754b?auto=format&fit=crop&q=80&w=800" alt="Cockpit" class="program-img">
                     <div class="program-content">
                         <h3>Second Officer</h3>
                         <p>Begin your line-flying career. Perfect for junior aviators looking to build hours and get accustomed to our standard operational procedures.</p>
@@ -491,37 +490,38 @@
                         </ul>
                     </div>
                 </div>
-                <!-- Card 2 (No Image for variety) -->
                 <div class="program-card">
                     <div class="program-content">
                         <h3>First Officer</h3>
-                        <p>Take on more responsibility as an experienced pilot. This program opens doors to larger airframes and more lucrative, medium-haul assignments.</p>
+                        <p>Take on more responsibility as an experienced pilot. This program opens doors to larger airframes and lucrative medium-haul assignments.</p>
                         <ul class="rewards-list">
                             <li>Access to medium-haul fleet</li>
                             <li>Priority route scheduling</li>
                             <li>Increased hourly compensation</li>
-                            <li>Mentorship opportunities</li>
                         </ul>
                     </div>
+                    <div class="card-img-container">
+                        <img src="https://images.unsplash.com/photo-1540962351504-03099e0a754b?auto=format&fit=crop&w=600&q=80" alt="First Officer">
+                    </div>
                 </div>
-                <!-- Card 3 (With Image) -->
                 <div class="program-card">
-                    <img src="https://images.unsplash.com/photo-1559828558-86d1ff8f815a?auto=format&fit=crop&q=80&w=800" alt="Pilot looking out window" class="program-img">
                     <div class="program-content">
                         <h3>Captain</h3>
-                        <p>Command the skies. Reserved for our most dedicated aviators, this role offers the highest level of autonomy, respect, and long-haul capabilities.</p>
+                        <p>Command the skies. Reserved for dedicated aviators, this role offers the highest level of autonomy, respect, and long-haul capabilities.</p>
                         <ul class="rewards-list">
                             <li>Heavy and long-haul aircraft clearance</li>
                             <li>Unrestricted route access</li>
                             <li>Command-level dispatch priority</li>
                         </ul>
                     </div>
+                    <div class="card-img-container">
+                        <img src="https://images.unsplash.com/photo-1559160581-4465220c8cc4?auto=format&fit=crop&w=600&q=80" alt="Captain">
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Development Programs Section -->
     <section class="section-wrapper bg-white">
         <div class="page-section">
             <div class="section-header">
@@ -529,11 +529,10 @@
                 <p>Specialized training initiatives to rapidly advance your skills and career standing.</p>
             </div>
             <div class="dev-grid">
-                <!-- Leaf Program -->
                 <div class="dev-card">
-                    <div class="dev-tag">Beginner Pathway</div>
+                    <div class="dev-tag">Beginner Development</div>
                     <h3>The Udyan Leaf</h3>
-                    <p>A foundational training program crafted for new pilots. Learn the essentials of flight operations, navigation, and company standards in a guided, intensive environment.</p>
+                    <p>A foundational training program crafted for new pilots. Learn the essentials of flight operations, navigation, and company standards in a guided environment.</p>
                     <ul class="rewards-list">
                         <li>1-on-1 mentorship sessions</li>
                         <li>Fast-track eligibility for Second Officer</li>
@@ -542,9 +541,8 @@
                     <a href="#" class="btn">Apply for Udyan Leaf</a>
                 </div>
                 
-                <!-- Stem Program -->
                 <div class="dev-card">
-                    <div class="dev-tag">Advanced Pathway</div>
+                    <div class="dev-tag">Advanced Development</div>
                     <h3>The Udyan Stem</h3>
                     <p>Designed for seasoned aviators looking to transition into leadership roles. Focuses on command decision-making, advanced aircraft handling, and crew resource management.</p>
                     <ul class="rewards-list">
@@ -558,7 +556,6 @@
         </div>
     </section>
 
-    <!-- Footer Section -->
     <footer>
         <div class="footer-content">
             <div class="footer-col">
