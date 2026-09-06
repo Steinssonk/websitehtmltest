@@ -1,50 +1,377 @@
-<header class="hero">
-    <div class="hero-content">
-        <h1 class="hero-title">The Airline of Udyanapura</h1>
-        <p class="hero-subtitle">One of Aeronautica's Largest Airlines. We offer programs from beginners to advanced pilots, with top of the end pay, and quality. Welcome to the Airline of Udyanapura.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Airline of Udyanapura</title>
 
-        <div class="hero-buttons">
-            <a href="https://discord.gg/3rWUYV3wDu" target="_blank" rel="noopener noreferrer" class="hero-btn-discord">Join our Discord</a>
-            <a href="#about" class="hero-btn-secondary">Learn more about us</a>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Base & Reset --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        body {
+            background-color: #ffffff;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        /* --- Global Typography Theme --- */
+        h1, h2, h3, .logo {
+            font-family: 'Raleway', sans-serif;
+            font-weight: 700;
+        }
+
+        /* --- Top Navigation --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background-color: #ffffff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            color: #002A5C;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: #002A5C;
+        }
+
+        .btn {
+            background-color: #002A5C;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn:hover {
+            background-color: #001b3d;
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            position: relative;
+            height: 65vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.65)),
+                        url('https://i.imgur.com/3zx6eLm.png') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, #ffffff);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 750px;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            color: #e2e8f0;
+            line-height: 1.6;
+            max-width: 600px;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- Hero Buttons Container --- */
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* --- Discord Button --- */
+        .hero-btn-discord {
+            display: inline-block;
+            background-color: #5865F2;
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.75rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            box-shadow: 0 4px 12px rgba(88, 101, 242, 0.3);
+        }
+
+        .hero-btn-discord:hover {
+            background-color: #4752C4;
+            transform: translateY(-2px);
+        }
+
+        /* --- Secondary Learn More Button --- */
+        .hero-btn-secondary {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.75rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .hero-btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        /* --- Overlapping Wide Cards Section --- */
+        .cards-section {
+            max-width: 1400px;
+            margin: -50px auto 0 auto;
+            padding: 0 5%;
+            position: relative;
+            z-index: 20;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.75rem;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0, 42, 92, 0.08);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid rgba(0, 42, 92, 0.06);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 35px rgba(0, 42, 92, 0.12);
+        }
+
+        .card-content {
+            padding: 2rem 1.75rem 1rem 1.75rem;
+        }
+
+        .card-tag {
+            font-size: 0.75rem;
+            color: #002A5C;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-title {
+            font-size: 1.6rem;
+            color: #111;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-text {
+            font-size: 0.9rem;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .card-img-container {
+            width: 100%;
+            height: 150px;
+            overflow: hidden;
+        }
+
+        .card-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .card:hover .card-img-container img {
+            transform: scale(1.04);
+        }
+
+        /* --- Footer Section --- */
+        footer {
+            background-color: #002A5C;
+            color: #ffffff;
+            padding: 3rem 5% 1.5rem;
+            margin-top: 5rem;
+        }
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 2.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .footer-col {
+            flex: 1;
+            min-width: 220px;
+        }
+        .footer-col h3, .footer-col h4 {
+            color: #ffffff;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+        .footer-col p, .footer-col a {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+        .footer-col ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1.25rem;
+            text-align: center;
+        }
+        .footer-bottom p {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        /* Responsive tweaks */
+        @media (max-width: 1024px) {
+            .cards-container { grid-template-columns: 1fr; }
+            .cards-section { margin-top: 2rem; }
+            .nav-links { display: none; }
+            .hero-title { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="header-placeholder"></div>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">The Airline of Udyanapura</h1>
+            <p class="hero-subtitle">One of Aeronautica's Largest Airlines. We offer programs from beginners to advanced pilots, with top of the end pay, and quality. Welcome to the Airline of Udyanapura.</p>
+
+            <div class="hero-buttons">
+                <a href="https://discord.gg/3rWUYV3wDu" target="_blank" rel="noopener noreferrer" class="hero-btn-discord">Join our Discord</a>
+                <a href="#about" class="hero-btn-secondary">Learn more about us</a>
+            </div>
         </div>
-    </div>
-</header>
+    </header>
 
-<section class="cards-section" id="about">
-    <div class="cards-container">
+    <section class="cards-section" id="about">
+        <div class="cards-container">
 
-        <a href="programs.html" class="card">
-            <div class="card-content">
-                <div class="card-tag">Our Programs</div>
-                <h3 class="card-title">Your Career</h3>
-                <p class="card-text">Explore our one of a kind program.</p>
-            </div>
-            <div class="card-img-container">
-                <img src="https://i.imgur.com/t7PLNUA.png" alt="Our Programs">
-            </div>
-        </a>
+            <a href="programs.html" class="card">
+                <div class="card-content">
+                    <div class="card-tag">Our Programs</div>
+                    <h3 class="card-title">Your Career</h3>
+                    <p class="card-text">Explore our one of a kind program.</p>
+                </div>
+                <div class="card-img-container">
+                    <img src="https://i.imgur.com/t7PLNUA.png" alt="Our Programs">
+                </div>
+            </a>
 
-        <a href="fleet.html" class="card">
-            <div class="card-content">
-                <div class="card-tag">Our Fleet</div>
-                <h3 class="card-title">Aircrafts Selection</h3>
-                <p class="card-text">Learn more about our fleet.</p>
-            </div>
-            <div class="card-img-container">
-                <img src="https://imgur.com/DNtb6bF.png" alt="Modern Fleet">
-            </div>
-        </a>
+            <a href="fleet.html" class="card">
+                <div class="card-content">
+                    <div class="card-tag">Our Fleet</div>
+                    <h3 class="card-title">Aircrafts Selection</h3>
+                    <p class="card-text">Learn more about our fleet.</p>
+                </div>
+                <div class="card-img-container">
+                    <img src="https://imgur.com/DNtb6bF.png" alt="Modern Fleet">
+                </div>
+            </a>
 
-        <a href="hubs.html" class="card">
-            <div class="card-content">
-                <div class="card-tag">Our Hubs</div>
-                <h3 class="card-title">Destinations</h3>
-                <p class="card-text">Enjoy flying from our carefully chosen hubs.</p>
-            </div>
-            <div class="card-img-container">
-                <img src="https://imgur.com/QXjs4Vb.png" alt="Pilot Careers">
-            </div>
-        </a>
+            <a href="hubs.html" class="card">
+                <div class="card-content">
+                    <div class="card-tag">Our Hubs</div>
+                    <h3 class="card-title">Destinations</h3>
+                    <p class="card-text">Enjoy flying from our carefully chosen hubs.</p>
+                </div>
+                <div class="card-img-container">
+                    <img src="https://imgur.com/QXjs4Vb.png" alt="Pilot Careers">
+                </div>
+            </a>
 
-    </div>
-</section>
+        </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        fetch('header.html')
+            .then(response => response.text())
+            .then(data => document.getElementById('header-placeholder').innerHTML = data);
+
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => document.getElementById('footer-placeholder').innerHTML = data);
+    </script>
+
+</body>
+</html>
