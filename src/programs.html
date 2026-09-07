@@ -358,6 +358,9 @@
             align-items: center;
         }
 
+        /* Fixed: width was locked to 44px, which clipped the Senior Captain
+           badge (star + 4 stripes). Now it sizes to its content with a
+           sensible floor instead of a hard cap. */
         .rank-badge {
             width: auto;
             min-width: 44px;
