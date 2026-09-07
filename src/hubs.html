@@ -55,13 +55,17 @@
         }
         .btn:hover { background-color: #001b3d; }
 
-        /* --- Hero Section --- */
+        /* --- Hero Section (Parallax Added) --- */
         .hero {
             position: relative;
             height: 52vh;
             min-height: 380px;
-            background: linear-gradient(rgba(0, 10, 25, 0.55), rgba(0, 10, 25, 0.72)),
-                        url('https://imgur.com/QXjs4Vb.png') center/cover no-repeat;
+            background-image: linear-gradient(rgba(0, 10, 25, 0.55), rgba(0, 10, 25, 0.72)),
+                              url('https://imgur.com/QXjs4Vb.png');
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Parallax effect */
             display: flex;
             align-items: center;
             padding: 0 5%;
@@ -186,10 +190,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: transparent; /* Box removed completely */
+            background: transparent;
             border: none;
             box-shadow: none;
-            padding: 4rem 3rem; /* Generous padding around the map canvas to prevent cutoffs */
+            padding: 4rem 3rem;
             overflow: visible;
         }
         
@@ -198,7 +202,7 @@
             width: 100%;
             max-width: 680px;
             aspect-ratio: 1 / 1;
-            overflow: visible; /* Ensures edge tooltips/pins never get clipped */
+            overflow: visible;
         }
         
         .hubs-map-img {
@@ -296,6 +300,13 @@
             .hubs-panel { flex: none; width: 100%; }
             .hubs-map { padding: 2rem 1rem; width: 100%; }
             .hubs-map-inner { max-width: 500px; margin: 0 auto; }
+        }
+
+        /* Fallback for touch/mobile devices to ensure smooth scrolling */
+        @media (hover: none) {
+            .hero {
+                background-attachment: scroll;
+            }
         }
 
         @media (max-width: 600px) {
