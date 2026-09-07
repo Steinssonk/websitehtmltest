@@ -90,13 +90,17 @@
       background-color: #001b3d;
     }
 
-    /* --- Hero Section --- */
+    /* --- Hero Section (Parallax Added) --- */
     .hero {
       position: relative;
       height: 52vh;
       min-height: 380px;
-      background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.65)),
-                  url('https://imgur.com/DNtb6bF.png') center 40% / cover no-repeat;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.65)),
+                        url('https://imgur.com/DNtb6bF.png');
+      background-position: center 40%;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed; /* Parallax effect */
       display: flex;
       align-items: center;
       padding: 0 5%;
@@ -390,6 +394,15 @@
       .nav-links { display: none; }
       .hero-title { font-size: 2.3rem; }
     }
+
+    /* Fallback for touch/mobile devices to ensure smooth scrolling */
+    @media (hover: none) {
+      .hero,
+      .fleet-category-section.pattern-bg {
+        background-attachment: scroll;
+      }
+    }
+
     @media (max-width: 560px) {
       .fleet-grid-boxes { grid-template-columns: 1fr; }
       .fleet-box-title { font-size: 1.8rem; }
