@@ -90,7 +90,8 @@
         /* --- Hero Section --- */
         .hero {
             position: relative;
-            height: 65vh;
+            height: 52vh;
+            min-height: 380px;
             background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.65)),
                         url('https://imgur.com/txMpJ8Y.png') center/cover no-repeat;
             display: flex;
@@ -358,9 +359,6 @@
             align-items: center;
         }
 
-        /* Fixed: width was locked to 44px, which clipped the Senior Captain
-           badge (star + 4 stripes). Now it sizes to its content with a
-           sensible floor instead of a hard cap. */
         .rank-badge {
             width: auto;
             min-width: 44px;
