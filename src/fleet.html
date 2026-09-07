@@ -49,31 +49,8 @@
         }
         .btn:hover { background-color: #001b3d; }
 
-        /* --- Hero Section --- */
-        .hero {
-            position: relative;
-            height: 40vh;
-            background: linear-gradient(rgba(0, 10, 25, 0.75), rgba(0, 10, 25, 0.75)), url('https://imgur.com/DNtb6bF.png') center/cover no-repeat;
-            display: flex;
-            align-items: center;
-            padding: 0 5%;
-        }
-        .hero::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background: linear-gradient(to bottom, transparent, #ffffff);
-            pointer-events: none;
-        }
-        .hero-content { position: relative; z-index: 10; max-width: 750px; }
-        .hero-title { font-size: 3rem; line-height: 1.2; margin-bottom: 1rem; color: #ffffff; }
-        .hero-subtitle { font-size: 1rem; color: #e2e8f0; line-height: 1.6; max-width: 600px; font-weight: 300; }
-
         /* --- Shared page/section wrappers --- */
-        .overlap-section { margin-top: -50px; position: relative; z-index: 20; padding-bottom: 5rem; }
+        .overlap-section { position: relative; padding: 3.5rem 0 5rem; }
         .page-section { max-width: 1400px; margin: 0 auto; padding: 0 5%; }
         .section-wrapper { padding: 5rem 0; }
         .bg-neutral { background-color: #f9fafb; }
@@ -102,56 +79,23 @@
             display: grid;
             grid-template-columns: minmax(260px, 340px) 1fr;
             gap: 3rem;
-            align-items: center;
+            align-items: start;
             margin-bottom: 3rem;
         }
+        .tree-intro { padding-top: 2.5rem; }
 
+        .tree-intro .fleet-title {
+            font-size: 2.6rem;
+            line-height: 1.15;
+            color: #002A5C;
+            margin-bottom: 1rem;
+        }
         .tree-intro p.lede {
             color: #555;
-            font-size: 0.95rem;
-            font-weight: 300;
-            line-height: 1.6;
-            margin-bottom: 1.75rem;
-        }
-
-        .branch-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-        }
-        .branch-list li { border-bottom: 1px solid #f0f0f0; }
-        .branch-list li:first-child { border-top: 1px solid #f0f0f0; }
-        .branch-list button {
-            all: unset;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            padding: 0.9rem 0.1rem;
-            cursor: pointer;
-            color: #333;
-            font-weight: 500;
             font-size: 0.98rem;
-            transition: color 0.2s ease, padding-left 0.2s ease;
+            font-weight: 300;
+            line-height: 1.65;
         }
-        .branch-list button::before {
-            content: '\2726';
-            color: #002A5C;
-            font-size: 0.85rem;
-            margin-right: 0.65rem;
-        }
-        .branch-list button .arrow {
-            color: #002A5C;
-            font-weight: 700;
-            transition: transform 0.2s ease;
-        }
-        .branch-list li.active button,
-        .branch-list button:hover {
-            color: #002A5C;
-            padding-left: 0.4rem;
-        }
-        .branch-list li.active button .arrow,
-        .branch-list button:hover .arrow { transform: translateX(4px); }
 
         .tree-stage {
             position: relative;
@@ -286,7 +230,8 @@
 
         @media (max-width: 1024px) {
             .nav-links { display: none; }
-            .hero-title { font-size: 2.2rem; }
+            .tree-intro { padding-top: 0; }
+            .tree-intro .fleet-title { font-size: 2.1rem; }
             .tree-layout { grid-template-columns: 1fr; }
             .tree-stage { max-width: 480px; }
         }
@@ -295,13 +240,6 @@
 <body>
 
     <div id="header-placeholder"></div>
-
-    <header class="hero">
-        <div class="hero-content">
-            <h1 class="hero-title">Our Fleet</h1>
-            <p class="hero-subtitle">From the entry-level workhorses to the flagships of the skies, explore the aircraft our pilots fly across every stage of their career.</p>
-        </div>
-    </header>
 
     <section class="overlap-section">
         <div class="page-section">
@@ -312,8 +250,8 @@
 
             <div class="tree-layout">
                 <div class="tree-intro">
-                    <p class="lede">From what's flying our routes today, back to where the airline started, and forward to what's still on the drawing board — six branches, one fleet.</p>
-                    <ul class="branch-list" id="branchList"></ul>
+                    <h1 class="fleet-title">Our Fleet</h1>
+                    <p class="lede">From the entry-level workhorses to the flagships of the skies, explore the aircraft our pilots fly across every stage of their career — from what's flying our routes today, back to where the airline started, and forward to what's still on the drawing board.</p>
                 </div>
 
                 <div class="tree-stage">
@@ -417,7 +355,6 @@
         ];
 
         const treeFrame = document.getElementById('treeFrame');
-        const branchList = document.getElementById('branchList');
         const result = document.getElementById('fleetResult');
         const resultTag = document.getElementById('resultTag');
         const resultTitle = document.getElementById('resultTitle');
@@ -432,14 +369,6 @@
             btn.innerHTML = `<span class="badge">${PLANE_SVG}</span><span class="tag">${cat.tag}</span>`;
             treeFrame.appendChild(btn);
             btn.addEventListener('click', () => selectFleet(cat.id));
-
-            const li = document.createElement('li');
-            const row = document.createElement('button');
-            row.dataset.id = cat.id;
-            row.innerHTML = `<span>${cat.tag}</span><span class="arrow">&#8594;</span>`;
-            row.addEventListener('click', () => selectFleet(cat.id));
-            li.appendChild(row);
-            branchList.appendChild(li);
         });
 
         function selectFleet(id) {
@@ -447,9 +376,6 @@
             if (!cat) return;
 
             document.querySelectorAll('.leaf-btn').forEach(b => b.classList.toggle('active', b.dataset.id === id));
-            document.querySelectorAll('.branch-list li').forEach(li => {
-                li.classList.toggle('active', li.querySelector('button').dataset.id === id);
-            });
 
             resultTag.textContent = cat.tag;
             resultTitle.textContent = cat.tag;
