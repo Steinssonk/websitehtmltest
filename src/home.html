@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@600;700;800&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
     /* --- Base & Reset --- */
@@ -19,13 +19,18 @@
     }
 
     body {
-      background-color: ##ffffff;
+      background-color: #ffffff;
       color: #333;
       line-height: 1.5;
     }
 
     /* --- Global Typography Theme --- */
-    h1, h2, h3, .logo {
+    h1, h2, h3 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+    }
+
+    .logo {
       font-family: 'Raleway', sans-serif;
       font-weight: 700;
     }
@@ -110,6 +115,16 @@
       position: relative;
       z-index: 10;
       max-width: 750px;
+    }
+
+    .hero-tag {
+      font-size: 0.8rem;
+      color: #ffbd59;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 0.75rem;
+      font-family: 'Inter', sans-serif;
     }
 
     .hero-title {
@@ -320,6 +335,7 @@
 
   <header class="hero">
     <div class="hero-content">
+      <div class="hero-tag">Welcome to Udyanapura</div>
       <h1 class="hero-title">The Airline of Udyanapura</h1>
       <p class="hero-subtitle">One of Aeronautica's Largest Airlines. We offer programs from beginners to advanced pilots, with top of the end pay, and quality. Welcome to the Airline of Udyanapura.</p>
 
@@ -384,3 +400,5 @@
         .then(response => response.text())
         .then(data => document.getElementById('footer-placeholder').innerHTML = data);
 </script>
+</body>
+</html>
