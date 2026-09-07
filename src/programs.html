@@ -288,6 +288,28 @@
             gap: 1.75rem;
         }
 
+        .dev-card .card-img-container {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+        }
+
+        .dev-card .card-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .dev-card:hover .card-img-container img {
+            transform: scale(1.04);
+        }
+
+        .dev-card .card-content {
+            padding-top: 1.75rem;
+        }
+
         /* --- Flight Programs: rank timeline (compact, horizontal) --- */
         .flight-programs-bg {
             background: linear-gradient(rgba(0, 10, 25, 0.82), rgba(0, 10, 25, 0.82)),
@@ -337,7 +359,8 @@
         }
 
         .rank-badge {
-            width: 44px;
+            width: auto;
+            min-width: 44px;
             height: 36px;
             background-color: #4a5160;
             border-radius: 6px;
@@ -345,7 +368,7 @@
             align-items: center;
             justify-content: center;
             gap: 4px;
-            padding: 0 6px;
+            padding: 0 9px;
             box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
             margin-bottom: 0.85rem;
         }
@@ -355,12 +378,14 @@
             height: 62%;
             background-color: #ffbd59;
             border-radius: 1px;
+            flex-shrink: 0;
         }
 
         .badge-star {
             color: #f19d53;
             font-size: 13px;
             margin-right: 1px;
+            flex-shrink: 0;
         }
 
         .rank-name {
@@ -391,11 +416,11 @@
         .reward-panel {
             margin-top: 0.9rem;
             width: 100%;
-            max-width: 190px;
+            max-width: 210px;
             background: rgba(255, 255, 255, 0.06);
             border: 1px solid rgba(255, 255, 255, 0.14);
             border-radius: 10px;
-            padding: 0.7rem 0.75rem;
+            padding: 0.85rem 0.9rem;
         }
 
         .reward-tag {
@@ -404,7 +429,14 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1.2px;
-            margin-bottom: 0.35rem;
+            margin-bottom: 0.45rem;
+        }
+
+        .reward-text {
+            font-size: 0.72rem;
+            line-height: 1.45;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.6rem;
         }
 
         .reward-list {
@@ -620,6 +652,7 @@
                         </div>
                         <div class="reward-panel">
                             <div class="reward-tag">Merlion Development</div>
+                            <p class="reward-text">Supports pilots in their early game experience.</p>
                             <ul class="reward-list">
                                 <li>A330-300 or 787-8</li>
                             </ul>
@@ -641,8 +674,9 @@
                         </div>
                         <div class="reward-panel">
                             <div class="reward-tag">Merlion Advanced</div>
+                            <p class="reward-text">Supports pilots in their mid game experience.</p>
                             <ul class="reward-list">
-                                <li>A350-900 or 777-300er</li>
+                                <li>A350-900ULR or 777-300ER</li>
                             </ul>
                         </div>
                     </div>
@@ -663,6 +697,7 @@
                         </div>
                         <div class="reward-panel">
                             <div class="reward-tag">Merlion Excellence</div>
+                            <p class="reward-text">Supports pilots in their end game experience.</p>
                             <ul class="reward-list">
                                 <li>A380-800 or 747-8i</li>
                             </ul>
@@ -698,7 +733,10 @@
                 <p>Specialized training initiatives to rapidly advance your skills and career standing.</p>
             </div>
             <div class="dev-grid">
-                <div class="card">
+                <div class="card dev-card">
+                    <div class="card-img-container">
+                        <img src="https://imgur.com/t7PLNUA.png" alt="Jet Engine License Program">
+                    </div>
                     <div class="card-content">
                         <div class="card-tag">Jet Engine License Program</div>
                         <h3 class="card-title">The Udyan Leaf</h3>
@@ -711,7 +749,10 @@
                     </div>
                 </div>
                 
-                <div class="card">
+                <div class="card dev-card">
+                    <div class="card-img-container">
+                        <img src="https://imgur.com/DNtb6bF.png" alt="Supersonic Transport License">
+                    </div>
                     <div class="card-content">
                         <div class="card-tag">Supersonic Transport License</div>
                         <h3 class="card-title">The Udyan Stem</h3>
