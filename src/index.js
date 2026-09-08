@@ -180,11 +180,13 @@ async function handleDiscordCallback(request, env, url) {
 
   // Look up the Discord username in the Google Sheet (column C), pull the
   // matching Roblox username (column B) from the same row
-  const robloxUsername = await lookupRobloxUsername(env, discordUsername);
+  const rosterRow = await lookupRosterRow(env, discordUsername);
 
-  if (!robloxUsername) {
+  if (!rosterRow) {
     return redirectWithError(url, 'not_registered', clearState);
   }
+
+  const robloxUsername = rosterRow.robloxUsername;
 
   const robloxAvatarUrl = await lookupRobloxAvatar(robloxUsername);
 
@@ -230,7 +232,18 @@ async function handleMe(request, env) {
     return jsonResponse({ error: 'not_authenticated' }, 401);
   }
 
-  return jsonResponse(session, 200);
+  // Pull the pilot's current rank / payment owed / logged time straight
+  // from the roster sheet on every /api/me call, rather than baking a
+  // stale snapshot into the signed session cookie at login time — this
+  // way the dashboard always reflects the sheet's current values.
+  const rosterRow = await lookupRosterRow(env, session.discordUsername);
+
+  return jsonResponse({
+    ...session,
+    rank: rosterRow?.rank ?? null,
+    paymentOwed: rosterRow?.paymentOwed ?? null,
+    loggedTime: rosterRow?.loggedTime ?? null,
+  }, 200);
 }
 
 function redirectWithError(url, code, extraCookie) {
@@ -255,7 +268,10 @@ function jsonResponse(obj, status) {
 // Google Sheet lookup
 // ---------------------------------------------------------------------
 
-async function lookupRobloxUsername(env, discordUsername) {
+// Looks up a pilot's roster row by matching their Discord username against
+// column C, and returns the columns the dashboard needs from that same
+// row: rank (A), Roblox username (B), payment owed (D), logged time (E).
+async function lookupRosterRow(env, discordUsername) {
   const sheetId = env.SHEET_ID;
   const gid = env.SHEET_GID || '0';
   const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&gid=${gid}`;
@@ -271,8 +287,15 @@ async function lookupRobloxUsername(env, discordUsername) {
   for (const row of rows) {
     const discordCell = (row[2] || '').trim().toLowerCase(); // Column C
     if (discordCell && discordCell === target) {
-      const robloxCell = (row[1] || '').trim(); // Column B
-      return robloxCell || null;
+      const robloxUsername = (row[1] || '').trim(); // Column B
+      if (!robloxUsername) return null;
+
+      return {
+        robloxUsername,
+        rank: (row[0] || '').trim() || null,        // Column A
+        paymentOwed: (row[3] || '').trim() || null,  // Column D
+        loggedTime: (row[4] || '').trim() || null,   // Column E
+      };
     }
   }
 
