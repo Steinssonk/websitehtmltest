@@ -707,8 +707,22 @@
             if (user.robloxUsername) {
                 greeting.textContent = 'Welcome back, ' + user.robloxUsername;
             }
+
+            // Pull rank / payment owed / logged time straight from the
+            // roster sheet row matched to this pilot's Discord username.
+            if (user.rank) {
+                state.rank = user.rank;
+            }
+            if (user.paymentOwed) {
+                const parsedPay = parseFloat(String(user.paymentOwed).replace(/[^0-9.-]/g, ''));
+                if (!isNaN(parsedPay)) state.payEarned = parsedPay;
+            }
+            if (user.loggedTime) {
+                const parsedTime = parseFloat(String(user.loggedTime).replace(/[^0-9.-]/g, ''));
+                if (!isNaN(parsedTime)) state.flightTime = parsedTime;
+            }
+
+            renderUI();
         })
         .catch(() => { showAuthGate(); });
 </script>
-</body>
-</html>
