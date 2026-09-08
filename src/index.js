@@ -4,6 +4,7 @@ import homeContent from './home.html';
 import programsContent from './programs.html';
 import fleetContent from './fleet.html';
 import hubsContent from './hubs.html';
+import dashboardContent from './dashboard.html';
 
 // Each page here is a complete, self-contained HTML document (it has its
 // own <!DOCTYPE>, <head>, and <body>, and fetches header.html/footer.html
@@ -24,6 +25,9 @@ const pageRoutes = {
   '/hubs': hubsContent,
   '/hubs.html': hubsContent,
 
+  '/dashboard': dashboardContent,
+  '/dashboard.html': dashboardContent,
+
   '/header.html': headerHtml,
   '/footer.html': footerHtml,
 };
@@ -31,6 +35,29 @@ const pageRoutes = {
 const SESSION_COOKIE = 'session';
 const STATE_COOKIE = 'oauth_state';
 const SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
+
+// Mirrors the Flight Programs rank timeline on the Programs page. Kept here
+// as the single source of truth for pay rates + hour requirements so the
+// dashboard's server-side pay math always matches what's advertised.
+const RANKS = [
+  { id: 'cadet', name: 'Cadet', reqHours: 0, payRate: 30000 },
+  { id: 'second_officer', name: 'Second Officer', reqHours: 2, payRate: 45000 },
+  { id: 'first_officer', name: 'First Officer', reqHours: 5, payRate: 60000 },
+  { id: 'captain', name: 'Captain', reqHours: 10, payRate: 75000 },
+  { id: 'senior_captain', name: 'Senior Captain', reqHours: 20, payRate: 90000 },
+];
+
+function rankForHours(hours) {
+  let current = RANKS[0];
+  for (const rank of RANKS) {
+    if (hours >= rank.reqHours) current = rank;
+  }
+  return current;
+}
+
+const MAX_LOG_ENTRIES = 25;
+const MAX_FLIGHT_HOURS_SINGLE = 24; // sanity cap on a single logged flight
+const MAX_DISTANCE_SINGLE = 20000; // sanity cap, in whatever unit was chosen
 
 export default {
   async fetch(request, env) {
@@ -61,6 +88,18 @@ export default {
 
       if (pathname === '/api/me') {
         return handleMe(request, env);
+      }
+
+      if (pathname === '/api/pilot' && request.method === 'GET') {
+        return handlePilotGet(request, env);
+      }
+
+      if (pathname === '/api/pilot/claim' && request.method === 'POST') {
+        return handlePilotClaim(request, env);
+      }
+
+      if (pathname === '/api/pilot/log' && request.method === 'POST') {
+        return handlePilotLog(request, env);
       }
 
       if (pathname in pageRoutes) {
@@ -201,6 +240,164 @@ async function handleMe(request, env) {
   }
 
   return jsonResponse(session, 200);
+}
+
+// ---------------------------------------------------------------------
+// Pilot dashboard: session + KV-backed pilot data
+// ---------------------------------------------------------------------
+
+async function requireSession(request, env) {
+  const cookies = parseCookies(request.headers.get('Cookie') || '');
+  const raw = cookies[SESSION_COOKIE];
+  if (!raw) return null;
+  return verifySessionCookie(env, raw);
+}
+
+function pilotKey(session) {
+  const id = session.robloxUsername || session.discordUsername;
+  return `pilot:${id.toLowerCase()}`;
+}
+
+function defaultPilotState() {
+  return {
+    flightHours: 0,
+    pendingPay: 0,
+    totalEarned: 0,
+    logs: [],
+  };
+}
+
+async function loadPilotState(env, key) {
+  const raw = await env.PILOTS_KV.get(key);
+  if (!raw) return defaultPilotState();
+  try {
+    const parsed = JSON.parse(raw);
+    return {
+      flightHours: Number(parsed.flightHours) || 0,
+      pendingPay: Number(parsed.pendingPay) || 0,
+      totalEarned: Number(parsed.totalEarned) || 0,
+      logs: Array.isArray(parsed.logs) ? parsed.logs : [],
+    };
+  } catch {
+    return defaultPilotState();
+  }
+}
+
+async function savePilotState(env, key, state) {
+  await env.PILOTS_KV.put(key, JSON.stringify(state));
+}
+
+function pilotPublicView(state) {
+  const rank = rankForHours(state.flightHours);
+  const rankIndex = RANKS.findIndex((r) => r.id === rank.id);
+  const nextRank = RANKS[rankIndex + 1] || null;
+  return {
+    rank: rank.name,
+    rankId: rank.id,
+    payRate: rank.payRate,
+    flightHours: round2(state.flightHours),
+    pendingPay: Math.round(state.pendingPay),
+    totalEarned: Math.round(state.totalEarned),
+    logs: state.logs,
+    nextRank: nextRank
+      ? { name: nextRank.name, hoursNeeded: round2(Math.max(0, nextRank.reqHours - state.flightHours)) }
+      : null,
+    ranks: RANKS.map((r) => ({
+      id: r.id,
+      name: r.name,
+      payRate: r.payRate,
+      reqHours: r.reqHours,
+      achieved: state.flightHours >= r.reqHours,
+      current: r.id === rank.id,
+    })),
+  };
+}
+
+function round2(n) {
+  return Math.round(n * 100) / 100;
+}
+
+async function handlePilotGet(request, env) {
+  const session = await requireSession(request, env);
+  if (!session) return jsonResponse({ error: 'not_authenticated' }, 401);
+
+  const key = pilotKey(session);
+  const state = await loadPilotState(env, key);
+  return jsonResponse(pilotPublicView(state), 200);
+}
+
+async function handlePilotClaim(request, env) {
+  const session = await requireSession(request, env);
+  if (!session) return jsonResponse({ error: 'not_authenticated' }, 401);
+
+  const key = pilotKey(session);
+  const state = await loadPilotState(env, key);
+
+  if (state.pendingPay <= 0) {
+    return jsonResponse({ error: 'nothing_to_claim' }, 400);
+  }
+
+  state.totalEarned += state.pendingPay;
+  const claimed = Math.round(state.pendingPay);
+  state.pendingPay = 0;
+
+  await savePilotState(env, key, state);
+  return jsonResponse({ claimed, ...pilotPublicView(state) }, 200);
+}
+
+async function handlePilotLog(request, env) {
+  const session = await requireSession(request, env);
+  if (!session) return jsonResponse({ error: 'not_authenticated' }, 401);
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonResponse({ error: 'invalid_body' }, 400);
+  }
+
+  const departure = String(body.departure || '').trim().slice(0, 40);
+  const destination = String(body.destination || '').trim().slice(0, 40);
+  const unit = ['nm', 'km', 'mi'].includes(body.unit) ? body.unit : null;
+  const aircraft = String(body.aircraft || '').trim().slice(0, 60);
+  const distance = Number(body.distance);
+  const timeHours = Number(body.timeHours);
+
+  if (!departure || !destination || !unit || !aircraft) {
+    return jsonResponse({ error: 'missing_fields' }, 400);
+  }
+  if (!Number.isFinite(distance) || distance <= 0 || distance > MAX_DISTANCE_SINGLE) {
+    return jsonResponse({ error: 'invalid_distance' }, 400);
+  }
+  if (!Number.isFinite(timeHours) || timeHours <= 0 || timeHours > MAX_FLIGHT_HOURS_SINGLE) {
+    return jsonResponse({ error: 'invalid_time' }, 400);
+  }
+
+  const key = pilotKey(session);
+  const state = await loadPilotState(env, key);
+
+  // Pay is earned at the rank held *before* this flight is added.
+  const rankBefore = rankForHours(state.flightHours);
+  const payEarned = Math.round(rankBefore.payRate * timeHours);
+
+  state.flightHours += timeHours;
+  state.pendingPay += payEarned;
+
+  state.logs.unshift({
+    date: new Date().toISOString(),
+    departure,
+    destination,
+    unit,
+    aircraft,
+    distance: round2(distance),
+    timeHours: round2(timeHours),
+    rank: rankBefore.name,
+    payEarned,
+  });
+  state.logs = state.logs.slice(0, MAX_LOG_ENTRIES);
+
+  await savePilotState(env, key, state);
+  return jsonResponse(pilotPublicView(state), 200);
 }
 
 function redirectWithError(url, code, extraCookie) {
