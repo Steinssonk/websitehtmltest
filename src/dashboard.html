@@ -89,8 +89,9 @@
             #header-placeholder .nav-links { display: none; }
         }
 
-        /* --- Textured navy pattern for Banners/Timelines --- */
-        .textured-banner {
+        /* --- Flight Programs & Rewards timeline: same textured navy
+           pattern used on the public Flight Programs page --- */
+        #rewards-timeline {
             background-color: #000a19;
             background-image: linear-gradient(rgba(0, 10, 25, 0.82), rgba(0, 10, 25, 0.82)),
                 url('https://imgur.com/m2bcxBM.png');
@@ -152,7 +153,7 @@
 
 <div id="app-shell">
 
-    <!-- Shared site header -->
+    <!-- Shared site header, matching every other page -->
     <div id="header-placeholder"></div>
 
     <!-- Main Content Layout -->
@@ -168,10 +169,6 @@
                 <button onclick="switchTab('logger')" id="btn-logger" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900">
                     <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
                     <span>Flight Logger</span>
-                </button>
-                <button onclick="switchTab('rewards')" id="btn-rewards" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900">
-                    <i data-lucide="gift" class="w-4 h-4"></i>
-                    <span>Claim Rewards</span>
                 </button>
                 <button onclick="switchTab('settings')" id="btn-settings" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900">
                     <i data-lucide="settings" class="w-4 h-4"></i>
@@ -250,8 +247,14 @@
                     </div>
                 </div>
 
+                <!-- Claim Reward Button (moved here from the banner) -->
+                <button onclick="scrollToTimeline()" id="claim-reward-btn" class="w-full bg-gold hover:bg-gold-deep text-navy-deep font-bold px-5 py-4 rounded-2xl shadow-lg transition-transform transform hover:scale-[1.01] flex items-center justify-center space-x-2 text-xs uppercase tracking-wider">
+                    <i data-lucide="gift" class="w-4 h-4"></i>
+                    <span>Claim Reward</span>
+                </button>
+
                 <!-- Flight Programs & Rewards Timeline -->
-                <div id="rewards-timeline" class="rounded-3xl p-8 shadow-md relative overflow-hidden textured-banner">
+                <div id="rewards-timeline" class="rounded-3xl p-8 shadow-md relative overflow-hidden">
                     <div class="relative z-10">
                         <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                             <div>
@@ -290,13 +293,13 @@
                             </div>
                         </button>
 
-                        <button onclick="switchTab('rewards')" class="p-4 rounded-2xl bg-slate-50 border border-slate-200 hover:border-navy hover:bg-navy/5 transition-all text-left flex items-center space-x-4 group">
-                            <div class="w-10 h-10 rounded-xl bg-gold-deep text-white flex items-center justify-center group-hover:scale-110 transition-transform">
-                                <i data-lucide="gift" class="w-5 h-5"></i>
+                        <button onclick="switchTab('settings')" class="p-4 rounded-2xl bg-slate-50 border border-slate-200 hover:border-navy hover:bg-navy/5 transition-all text-left flex items-center space-x-4 group">
+                            <div class="w-10 h-10 rounded-xl bg-slate-800 text-white flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <i data-lucide="settings" class="w-5 h-5"></i>
                             </div>
                             <div>
-                                <div class="font-semibold text-sm text-slate-900">Claim Rewards</div>
-                                <div class="text-xs text-slate-500">Acquire unlocks & payment</div>
+                                <div class="font-semibold text-sm text-slate-900">Settings</div>
+                                <div class="text-xs text-slate-500">Preferences & Units</div>
                             </div>
                         </button>
                     </div>
@@ -309,6 +312,7 @@
                     <h2 class="font-serif text-xl font-bold text-slate-900 mb-1">Flight Logger System</h2>
                     <p class="text-xs text-slate-500 mb-6">Select your parameters using the search filters below to log a new flight.</p>
 
+                    <!-- Fill this in with any flight logging instructions for your pilots -->
                     <div class="bg-navy/5 border border-navy/10 rounded-2xl p-4 mb-6 text-xs text-slate-600 leading-relaxed">
                         Add your flight logging instructions here.
                     </div>
@@ -372,63 +376,6 @@
                 </div>
             </div>
 
-            <!-- CLAIM REWARDS TAB -->
-            <div id="tab-rewards" class="space-y-6 hidden">
-                <!-- Banner Header -->
-                <div class="rounded-3xl textured-banner text-white p-8 shadow-md relative overflow-hidden">
-                    <div class="relative z-10">
-                        <span class="text-[11px] font-semibold uppercase tracking-wider text-gold bg-white/10 px-3 py-1 rounded-full border border-white/20">Merlion Fleet Store</span>
-                        <h1 class="font-serif text-3xl font-bold mt-3">Flight Programs & Rewards</h1>
-                        <p class="text-slate-300 text-xs mt-1 max-w-xl">Select aircraft rewards unlocked by your career rank and add them to your claim payload along with your accrued paycheck balance.</p>
-                    </div>
-                </div>
-
-                <!-- Program Reward Choices Grid (Dynamically Populated) -->
-                <div id="rewards-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Populated by JS -->
-                </div>
-
-                <!-- Claim Summary & Action Center -->
-                <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-6">
-                    <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-                        <div>
-                            <h3 class="font-serif font-bold text-lg text-slate-900">Payout Summary & Items</h3>
-                            <p class="text-xs text-slate-500">Review your selected items and paycheck payout options before finalizing.</p>
-                        </div>
-                        <i data-lucide="receipt" class="w-6 h-6 text-navy"></i>
-                    </div>
-
-                    <!-- Items Payload Display -->
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
-                                    <i data-lucide="badge-dollar-sign" class="w-5 h-5"></i>
-                                </div>
-                                <div>
-                                    <div class="font-semibold text-sm text-slate-900">Current Unclaimed Paycheck</div>
-                                    <div class="text-xs text-slate-500">Accrued flight earnings</div>
-                                </div>
-                            </div>
-                            <span class="font-serif text-lg font-bold text-slate-900" id="summary-pay-amount">$18,450</span>
-                        </div>
-
-                        <!-- Multi-item Cart Payload -->
-                        <div id="cart-item-container" class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between transition-all">
-                            <!-- Dynamically populated by renderCartItems() -->
-                        </div>
-                    </div>
-
-                    <!-- Single Combined Action Button -->
-                    <div class="pt-2">
-                        <button onclick="submitClaim()" id="btn-claim-action" class="w-full bg-gold hover:bg-gold-deep text-navy-deep font-bold py-4 px-6 rounded-2xl shadow-md transition-all transform hover:scale-[1.01] flex items-center justify-center space-x-2 text-xs uppercase tracking-wider disabled:opacity-40 disabled:cursor-not-allowed disabled:grayscale">
-                            <i data-lucide="wallet" id="icon-claim-action" class="w-4 h-4"></i>
-                            <span id="label-claim-action">Claim Paycheck</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
             <!-- SETTINGS TAB -->
             <div id="tab-settings" class="space-y-6 hidden">
                 <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
@@ -458,7 +405,7 @@
 </div><!-- /#app-shell -->
 
 
-<!-- AUTH GATE POPUP -->
+<!-- AUTH GATE POPUP (shown when not signed in) -->
 <div id="auth-gate" class="fixed inset-0 z-[60] flex items-center justify-center bg-navy-deep/50 backdrop-blur-sm hidden">
     <div class="bg-white rounded-3xl w-full max-w-sm p-8 shadow-2xl m-4 text-center">
         <div class="w-14 h-14 rounded-2xl bg-navy/5 border border-navy/10 flex items-center justify-center mx-auto mb-5">
@@ -474,32 +421,35 @@
     </div>
 </div>
 
-<!-- Toast notifications -->
+<!-- Toast notifications (e.g. "Flight submitted") -->
 <div id="toast-container" class="fixed bottom-6 right-6 z-[70] flex flex-col items-end gap-2 pointer-events-none"></div>
 
 <!-- Application Script Logic -->
 <script src="/auth-client.js"></script>
 <script>
+    // Airports, fleet, and paycheck status all come from the operations
+    // sheet (fetched below) — these start empty and are populated once
+    // /api/operations resolves. isHub on an airport comes straight from
+    // that sheet's hub column.
     let airports = [];
     let aircraftList = [];
-    let selectedRewards = []; // Array of reward objects { rankId, title, aircraft }
 
     let state = {
         flightTime: 142.5,
         rank: "Senior Captain",
         payEarned: 18450,
         payRate: 90000,
-        unit: 'nm',
-        claimedRewards: [] // Mock claim state
+        unit: 'nm'
     };
 
     lucide.createIcons();
 
-    // Map all tabs
+    // Maps each dashboard tab to its own URL, so the tab can be
+    // deep-linked, bookmarked, or reached with the browser's
+    // back/forward buttons instead of only via the in-page nav.
     const TAB_PATHS = {
         dashboard: '/dashboard',
         logger: '/dashboard/flight-logger',
-        rewards: '/dashboard/claim-rewards',
         settings: '/dashboard/settings'
     };
 
@@ -511,7 +461,7 @@
     }
 
     function switchTab(tabId, updateUrl = true) {
-        ['dashboard', 'logger', 'rewards', 'settings'].forEach(id => {
+        ['dashboard', 'logger', 'settings'].forEach(id => {
             const el = document.getElementById(`tab-${id}`);
             const btn = document.getElementById(`btn-${id}`);
             if (id === tabId) {
@@ -536,23 +486,28 @@
         switchTab(tabFromPath(window.location.pathname), false);
     });
 
-    // Milestones updated with specific rewardOptions array for the dropdowns
+    // Milestones data — mirrors the same rank ladder used on the public
+    // Flight Programs page, plus the per-milestone reward info.
     const milestones = [
         { id: 'cadet', title: 'Cadet', badgeStripes: 1, payRate: 30000, wp: '30,000 WP/hr', req: 'Req. 0 hours', minHours: 0 },
         { id: 'secondOfficer', title: 'Second Officer', badgeStripes: 2, payRate: 45000, wp: '45,000 WP/hr', req: 'Req. 2 hours', minHours: 2,
-            rewardTag: 'Merlion Development', rewardText: 'Supports pilots in their early game experience.', rewardList: 'A330-300 or 787-8', rewardOptions: ['Airbus A330-300', 'Boeing 787-8'] },
+            rewardTag: 'Merlion Development', rewardText: 'Supports pilots in their early game experience.', rewardList: 'A330-300 or 787-8' },
         { id: 'firstOfficer', title: 'First Officer', badgeStripes: 3, payRate: 60000, wp: '60,000 WP/hr', req: 'Req. 5 hours', minHours: 5,
-            rewardTag: 'Merlion Advanced', rewardText: 'Supports pilots in their mid game experience.', rewardList: 'A350-900ULR or 777-300ER', rewardOptions: ['Airbus A350-900ULR', 'Boeing 777-300ER'] },
+            rewardTag: 'Merlion Advanced', rewardText: 'Supports pilots in their mid game experience.', rewardList: 'A350-900ULR or 777-300ER' },
         { id: 'captain', title: 'Captain', badgeStripes: 4, payRate: 75000, wp: '75,000 WP/hr', req: 'Req. 10 hours', minHours: 10,
-            rewardTag: 'Merlion Excellence', rewardText: 'Supports pilots in their end game experience.', rewardList: 'A380-800 or 747-8i', rewardOptions: ['Airbus A380-800', 'Boeing 747-8i'] },
+            rewardTag: 'Merlion Excellence', rewardText: 'Supports pilots in their end game experience.', rewardList: 'A380-800 or 747-8i' },
         { id: 'seniorCaptain', title: 'Senior Captain', badgeStripes: 4, star: true, payRate: 90000, wp: '90,000 WP/hr', req: 'Req. 20 hours', minHours: 20 },
     ];
 
+    // Looks up the WP/hr rate for a given rank title (used to keep the
+    // "Pilot Rank" card's earnings figure in sync with whatever rank
+    // came back from the roster sheet).
     function getPayRateForRank(rankTitle) {
         const match = milestones.find(m => m.title.toLowerCase() === String(rankTitle || '').toLowerCase());
         return match ? match.payRate : null;
     }
 
+    // Formats a decimal hours value (e.g. 16.7) as "16h 42m".
     function formatHoursMinutes(decimalHours) {
         const totalMinutes = Math.round(decimalHours * 60);
         const hours = Math.floor(totalMinutes / 60);
@@ -560,19 +515,42 @@
         return `${hours}h ${minutes}m`;
     }
 
+    // Scrolls the inline Flight Programs & Rewards timeline into view —
+    // used by both the relocated "Claim Reward" button and the Quick
+    // Navigation card, since the rewards panel now lives on the page
+    // itself instead of behind a popup.
+    function scrollToTimeline() {
+        const el = document.getElementById('rewards-timeline');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // The rank badges below are laid out evenly spaced (flex justify-between),
+    // so badge i sits at roughly i/(count-1) of the track's width — NOT at
+    // milestone.minHours/maxHours. The progress bar has to be calculated the
+    // same way (interpolated between whichever two milestones the pilot is
+    // currently between), or it drifts out of sync with the badges the
+    // further the milestone hour requirements are from being evenly spaced.
     function computeTimelineProgressPercent(hours) {
         const count = milestones.length;
         if (count <= 1) return 100;
+
+        // Find the last milestone the pilot has already reached.
         let currentIndex = 0;
         for (let i = 0; i < count; i++) {
             if (hours >= milestones[i].minHours) currentIndex = i;
             else break;
         }
+
+        // Already at (or past) the final milestone.
         if (currentIndex >= count - 1) return 100;
+
         const current = milestones[currentIndex];
         const next = milestones[currentIndex + 1];
         const span = next.minHours - current.minHours;
-        const progressIntoSegment = span > 0 ? Math.min(1, Math.max(0, (hours - current.minHours) / span)) : 1;
+        const progressIntoSegment = span > 0
+            ? Math.min(1, Math.max(0, (hours - current.minHours) / span))
+            : 1;
+
         const segmentWidth = 100 / (count - 1);
         return (currentIndex * segmentWidth) + (progressIntoSegment * segmentWidth);
     }
@@ -587,16 +565,22 @@
         grid.innerHTML = milestones.map(m => {
             const achieved = state.flightTime >= m.minHours;
             const isCurrent = state.rank === m.title;
+
             const stripes = Array.from({ length: m.badgeStripes }).map(() =>
                 `<div class="w-[5px] h-[62%] bg-gold rounded-sm flex-shrink-0"></div>`
             ).join('');
             const star = m.star ? `<span class="text-gold-deep text-sm flex-shrink-0">★</span>` : '';
+
             const rewardBox = m.rewardTag
-                ? `<div class="mt-3 w-full max-w-[200px] bg-white/5 border border-white/10 rounded-xl p-3 text-left">
+                ? `
+                    <div class="mt-3 w-full max-w-[200px] bg-white/5 border border-white/10 rounded-xl p-3 text-left">
                         <div class="text-[10px] text-gold font-bold uppercase tracking-wider mb-1.5">${m.rewardTag}</div>
                         <p class="text-[11px] leading-relaxed text-white/70 mb-2">${m.rewardText}</p>
                         <div class="text-xs text-white font-medium">${m.rewardList}</div>
-                   </div>` : '';
+                    </div>
+                `
+                : '';
+
             return `
                 <div class="relative flex-1 min-w-0 flex flex-col items-center text-center transition-opacity ${achieved ? '' : 'opacity-40'}">
                     <div class="h-9 w-fit min-w-[44px] flex-shrink-0 rounded-md bg-slate-700 flex items-center justify-center gap-1 px-2.5 shadow-lg mb-3 relative z-10 ${isCurrent ? 'ring-2 ring-gold' : ''}">
@@ -608,25 +592,16 @@
                         <span class="text-white/50 text-xs">${m.req}</span>
                     </div>
                     ${rewardBox}
-                </div>`;
+                </div>
+            `;
         }).join('');
     }
 
-    // Dynamic Dropdown Search logic
-    const allDropdowns = ['dep', 'dest', 'aircraft', 'reward-secondOfficer', 'reward-firstOfficer', 'reward-captain'];
 
+    // Dropdown Search logic
     function populateDropdown(type, filterText = '') {
         const container = document.getElementById(`dropdown-${type}`);
-        if(!container) return;
-
-        let items = [];
-        if (type === 'aircraft') items = aircraftList;
-        else if (type === 'dep' || type === 'dest') items = airports;
-        else if (type.startsWith('reward-')) {
-            const milestoneId = type.split('-')[1];
-            const milestone = milestones.find(m => m.id === milestoneId);
-            if(milestone && milestone.rewardOptions) items = milestone.rewardOptions;
-        }
+        let items = type === 'aircraft' ? aircraftList : airports;
 
         if (filterText) {
             const query = filterText.toLowerCase();
@@ -644,41 +619,38 @@
         container.innerHTML = items.map(i => {
             const code = typeof i === 'string' ? i : i.code;
             const isHub = typeof i === 'object' && i.isHub;
-            const hubTag = isHub ? `<span class="text-[10px] font-bold text-gold-deep bg-gold/20 px-1.5 py-0.5 rounded ml-2">HUB</span>` : '';
+            const hubTag = isHub
+                ? `<span class="text-[10px] font-bold text-gold-deep bg-gold/20 px-1.5 py-0.5 rounded ml-2">HUB</span>`
+                : '';
             const rowClasses = isHub
                 ? 'p-2.5 text-xs text-navy bg-gold/10 hover:bg-gold/20 cursor-pointer border-b border-slate-50 last:border-none font-bold flex items-center justify-between'
                 : 'p-2.5 text-xs text-slate-700 hover:bg-navy/5 hover:text-navy cursor-pointer border-b border-slate-50 last:border-none font-medium flex items-center justify-between';
             const safeCode = code.replace(/'/g, "\\'");
             return `
-                <div onclick="selectDropdownItem('${type}', '${safeCode}', '${safeCode}')" class="${rowClasses}">
+                <div onclick="selectDropdownItem('${type}', '${safeCode}', '${safeCode}')"
+                     class="${rowClasses}">
                     <span>${code}</span>${hubTag}
-                </div>`;
+                </div>
+            `;
         }).join('');
     }
 
     function toggleDropdown(type) {
-        allDropdowns.forEach(t => {
-            if (t !== type) {
-                const d = document.getElementById(`dropdown-${t}`);
-                if (d) d.classList.add('hidden');
-            }
+        ['dep', 'dest', 'aircraft'].forEach(t => {
+            if (t !== type) document.getElementById(`dropdown-${t}`).classList.add('hidden');
         });
         const dropdown = document.getElementById(`dropdown-${type}`);
-        if(dropdown) {
-            dropdown.classList.toggle('hidden');
-            if (!dropdown.classList.contains('hidden')) {
-                populateDropdown(type, document.getElementById(`search-${type}`).value);
-            }
+        dropdown.classList.toggle('hidden');
+        if (!dropdown.classList.contains('hidden')) {
+            populateDropdown(type, document.getElementById(`search-${type}`).value);
         }
     }
 
     function filterDropdown(type) {
         const text = document.getElementById(`search-${type}`).value;
         const dropdown = document.getElementById(`dropdown-${type}`);
-        if(dropdown) {
-            dropdown.classList.remove('hidden');
-            populateDropdown(type, text);
-        }
+        dropdown.classList.remove('hidden');
+        populateDropdown(type, text);
     }
 
     function selectDropdownItem(type, val, label) {
@@ -688,7 +660,7 @@
     }
 
     window.addEventListener('click', function(e) {
-        allDropdowns.forEach(type => {
+        ['dep', 'dest', 'aircraft'].forEach(type => {
             const searchInput = document.getElementById(`search-${type}`);
             const dropdown = document.getElementById(`dropdown-${type}`);
             if (searchInput && dropdown && !searchInput.contains(e.target) && !dropdown.contains(e.target)) {
@@ -697,227 +669,21 @@
         });
     });
 
-    // Renders the Locked/Available/Claimed cards in the Rewards Tab
-    function renderRewardsUI() {
-        const grid = document.getElementById('rewards-grid');
-        if(!grid) return;
-
-        const rewardTiers = milestones.filter(m => m.rewardTag);
-        
-        grid.innerHTML = rewardTiers.map(m => {
-            const isLocked = state.flightTime < m.minHours;
-            const isClaimed = state.claimedRewards.includes(m.id);
-            const inCart = selectedRewards.some(r => r.rankId === m.id);
-            
-            let statusHTML = '';
-            let wrapperClasses = 'bg-white border border-slate-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between transition-all';
-
-            if (isClaimed) {
-                wrapperClasses += ' border-emerald-400 bg-emerald-50/20';
-                statusHTML = `
-                    <div class="mt-auto pt-6">
-                        <div class="flex items-center justify-center p-3 rounded-xl bg-emerald-100 text-emerald-700 font-semibold text-xs">
-                            <i data-lucide="check-circle-2" class="w-4 h-4 mr-2"></i> Reward Claimed
-                        </div>
-                    </div>`;
-            } else if (isLocked) {
-                wrapperClasses += ' opacity-70 grayscale';
-                statusHTML = `
-                    <div class="mt-auto pt-6">
-                        <div class="flex items-center justify-center p-3 rounded-xl bg-slate-100 text-slate-500 font-semibold text-xs border border-slate-200">
-                            <i data-lucide="lock" class="w-4 h-4 mr-2"></i> Locked (Req. ${m.minHours} hrs)
-                        </div>
-                    </div>`;
-            } else {
-                wrapperClasses += ' hover:border-navy/30';
-                statusHTML = `
-                    <div class="mt-auto pt-4 space-y-4">
-                        <div class="relative">
-                            <label class="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-2">Select Aircraft</label>
-                            <div class="relative">
-                                <input type="text" id="search-reward-${m.id}" placeholder="Search options..." autocomplete="off" oninput="filterDropdown('reward-${m.id}')" onclick="toggleDropdown('reward-${m.id}')" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
-                                <input type="hidden" id="input-reward-${m.id}">
-                                <div class="absolute right-3 top-3 text-slate-400 pointer-events-none"><i data-lucide="chevron-down" class="w-4 h-4"></i></div>
-                            </div>
-                            <div id="dropdown-reward-${m.id}" class="hidden absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-30 max-h-48 overflow-y-auto dropdown-results"></div>
-                        </div>
-                        <button onclick="addToCart('${m.id}', '${m.title}')" class="w-full ${inCart ? 'bg-amber-600 hover:bg-amber-700' : 'bg-navy hover:bg-navy-deep'} text-white font-semibold py-2.5 rounded-xl shadow-sm transition-all flex items-center justify-center space-x-2 text-xs">
-                            <i data-lucide="${inCart ? 'check' : 'shopping-bag'}" class="w-3.5 h-3.5"></i>
-                            <span>${inCart ? 'Update in Cart' : 'Add Reward to Cart'}</span>
-                        </button>
-                    </div>`;
-            }
-
-            return `
-                <div class="${wrapperClasses}">
-                    <div>
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-[10px] font-bold text-gold-deep bg-gold/15 px-2.5 py-1 rounded-lg border border-gold/30 uppercase tracking-wider">${m.rewardTag}</span>
-                            <span class="text-xs text-slate-400 font-medium">Req. ${m.minHours} hrs</span>
-                        </div>
-                        <div class="flex items-center space-x-2 mb-1">
-                            <div class="w-2 h-2 rounded-full bg-navy"></div>
-                            <h3 class="font-serif font-bold text-lg text-slate-900">${m.title}</h3>
-                        </div>
-                        <p class="text-xs text-slate-500 mb-2 leading-relaxed">${m.rewardText}</p>
-                    </div>
-                    ${statusHTML}
-                </div>
-            `;
-        }).join('');
-        lucide.createIcons();
-    }
-
     function renderUI() {
         document.getElementById('stat-flight-time').innerText = formatHoursMinutes(state.flightTime);
         document.getElementById('stat-rank').innerText = state.rank;
         document.getElementById('stat-pay').innerText = `$${state.payEarned.toLocaleString()}`;
         document.getElementById('stat-payrate').innerText = `${state.payRate.toLocaleString()} WP/hr`;
-        document.getElementById('summary-pay-amount').innerText = `$${state.payEarned.toLocaleString()}`;
     }
 
-    // --- Reward Claim Cart Logic ---
-    function updateClaimButtonLabel() {
-        const labelEl = document.getElementById('label-claim-action');
-        const iconEl = document.getElementById('icon-claim-action');
-        if (!labelEl || !iconEl) return;
+    // ─────────────────────────────────────────────
+    // FLIGHT LOGGER — submit system
+    // Same pattern as the reference script's submitViaAppwrite():
+    // disable the button -> POST the entry -> on success, poll /api/me
+    // until the sheet reflects it -> flash success (or show an error /
+    // "taking longer than expected" message instead of hanging forever).
+    // ─────────────────────────────────────────────
 
-        if (selectedRewards.length > 0) {
-            labelEl.textContent = 'Claim Paycheck + Reward';
-            iconEl.setAttribute('data-lucide', 'gift');
-        } else {
-            labelEl.textContent = 'Claim Paycheck';
-            iconEl.setAttribute('data-lucide', 'wallet');
-        }
-        lucide.createIcons();
-    }
-
-    function renderCartItems() {
-        const container = document.getElementById('cart-item-container');
-        if (!container) return;
-
-        if (selectedRewards.length === 0) {
-            container.className = "p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between transition-all";
-            container.innerHTML = `
-                <div class="flex items-center space-x-3">
-                    <div class="w-9 h-9 rounded-xl bg-navy/10 text-navy flex items-center justify-center">
-                        <i data-lucide="plane" class="w-5 h-5"></i>
-                    </div>
-                    <div>
-                        <div class="font-semibold text-sm text-slate-900">No Reward Selected</div>
-                        <div class="text-xs text-slate-500">Optional reward payload empty</div>
-                    </div>
-                </div>`;
-        } else {
-            container.className = "p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col space-y-3 transition-all";
-            container.innerHTML = `
-                <div class="flex items-center justify-between pb-2 border-b border-slate-200 w-full">
-                    <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Selected Rewards (${selectedRewards.length})</span>
-                    <button onclick="clearCart()" class="text-xs text-red-500 hover:text-red-700 font-medium transition-colors">Clear All</button>
-                </div>
-                ${selectedRewards.map(item => `
-                    <div class="flex items-center justify-between p-3 rounded-xl bg-white border border-slate-200 w-full">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-lg bg-navy/10 text-navy flex items-center justify-center">
-                                <i data-lucide="plane" class="w-4 h-4"></i>
-                            </div>
-                            <div>
-                                <div class="font-semibold text-xs text-slate-900">${item.aircraft}</div>
-                                <div class="text-[11px] text-slate-500">${item.title} Reward</div>
-                            </div>
-                        </div>
-                        <button onclick="removeFromCart('${item.rankId}')" class="text-xs text-red-500 hover:text-red-700 font-medium p-1">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                        </button>
-                    </div>
-                `).join('')}`;
-        }
-        lucide.createIcons();
-    }
-
-    function addToCart(rankId, rankTitle) {
-        const inputVal = document.getElementById(`input-reward-${rankId}`).value;
-        if (!inputVal) {
-            showToast("Please search and select an aircraft option from the dropdown first.", "error");
-            return;
-        }
-
-        // Check if a reward for this specific rank tier is already in cart
-        const existingIndex = selectedRewards.findIndex(r => r.rankId === rankId);
-        if (existingIndex !== -1) {
-            selectedRewards[existingIndex].aircraft = inputVal;
-            showToast(`Updated ${rankTitle} reward aircraft to ${inputVal}.`);
-        } else {
-            selectedRewards.push({ rankId, title: rankTitle, aircraft: inputVal });
-            showToast(`Added ${inputVal} to your reward claim payload!`);
-        }
-        
-        renderCartItems();
-        updateClaimButtonLabel();
-        renderRewardsUI();
-    }
-
-    function removeFromCart(rankId) {
-        selectedRewards = selectedRewards.filter(r => r.rankId !== rankId);
-        renderCartItems();
-        updateClaimButtonLabel();
-        renderRewardsUI();
-        showToast("Reward removed from cart.");
-    }
-
-    function clearCart() {
-        selectedRewards = [];
-        renderCartItems();
-
-        // Clear all reward dropdown inputs visually
-        allDropdowns.filter(d => d.startsWith('reward-')).forEach(id => {
-            const search = document.getElementById(`search-${id}`);
-            const input = document.getElementById(`input-${id}`);
-            if(search) search.value = "";
-            if(input) input.value = "";
-        });
-
-        updateClaimButtonLabel();
-        renderRewardsUI();
-        showToast("Reward selection cleared.");
-    }
-
-    function submitClaim() {
-        const btn = document.getElementById('btn-claim-action');
-        if (state.payEarned <= 0 && selectedRewards.length === 0) {
-            showToast("You have no balance to claim and no reward selected.", "error");
-            return;
-        }
-
-        btn.disabled = true;
-        document.getElementById('label-claim-action').textContent = 'Processing Claim...';
-
-        // Simulate API Processing Time
-        setTimeout(() => {
-            const rewardNames = selectedRewards.map(r => r.aircraft).join(', ');
-            const msg = selectedRewards.length > 0 
-                ? `Successfully claimed paycheck ($${state.payEarned.toLocaleString()}) and ${rewardNames}!` 
-                : `Successfully claimed paycheck ($${state.payEarned.toLocaleString()})!`;
-
-            selectedRewards.forEach(r => {
-                if (!state.claimedRewards.includes(r.rankId)) {
-                    state.claimedRewards.push(r.rankId);
-                }
-            });
-            state.payEarned = 0;
-            
-            showToast(msg);
-            
-            clearCart();
-            renderUI();
-            renderRewardsUI();
-            
-            btn.disabled = false;
-        }, 1200);
-    }
-
-
-    // --- Toasts and Errors ---
     let loggerErrorTimeoutId = null;
 
     function showLoggerError(message, duration = 6000) {
@@ -931,13 +697,11 @@
         }, duration);
     }
 
-    function showToast(message, type = "success") {
+    function showToast(message) {
         const container = document.getElementById('toast-container');
         const toast = document.createElement('div');
-        const icon = type === "error" ? "alert-circle" : "check-circle-2";
-        const iconColor = type === "error" ? "text-red-400" : "text-emerald-400";
         toast.className = 'pointer-events-auto bg-navy-deep text-white text-sm font-medium px-4 py-3 rounded-xl shadow-lg flex items-center space-x-2 opacity-0 translate-y-2 transition-all duration-300';
-        toast.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4 ${iconColor} flex-shrink-0"></i><span>${message}</span>`;
+        toast.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i><span>${message}</span>`;
         container.appendChild(toast);
         lucide.createIcons();
 
@@ -951,13 +715,17 @@
         }, 4000);
     }
 
-    // --- Authentication & Operations Status ---
+    // Fetches the pilot's current stats without touching the auth gate —
+    // used both by the initial page load and by the post-submit poll.
+    // Returns null if unauthenticated or the request fails.
     function fetchPilotStats() {
         return fetch('/api/me', { credentials: 'same-origin' })
             .then(res => res.ok ? res.json() : Promise.reject())
             .catch(() => null);
     }
 
+    // Applies a /api/me response to local state and re-renders. Shared by
+    // the initial load and by the confirmation step after a submit.
     function applyPilotStats(user) {
         if (!user) return;
         if (user.rank) {
@@ -973,24 +741,25 @@
             const parsedMinutes = parseFloat(String(user.loggedTime).replace(/[^0-9.-]/g, ''));
             if (!isNaN(parsedMinutes)) state.flightTime = parsedMinutes / 60;
         }
-        if (user.claimedRewards && Array.isArray(user.claimedRewards)) {
-            state.claimedRewards = user.claimedRewards;
-        }
         renderUI();
         renderTimelineUI();
-        renderRewardsUI();
     }
 
+    // Polls fetchFn on an interval until condition(result) is true, or
+    // gives up after timeoutMs. Resolves with the confirming result, or
+    // null if it timed out.
     function waitForConfirmation(fetchFn, condition, { intervalMs = 3000, timeoutMs = 30000 } = {}) {
         const startedAt = Date.now();
         return new Promise(resolve => {
             (function poll() {
                 fetchFn().then(result => {
                     if (result && condition(result)) {
-                        resolve(result); return;
+                        resolve(result);
+                        return;
                     }
                     if (Date.now() - startedAt >= timeoutMs) {
-                        resolve(null); return;
+                        resolve(null);
+                        return;
                     }
                     setTimeout(poll, intervalMs);
                 });
@@ -1015,11 +784,13 @@
             showLoggerError('Please select valid options and fill out every field before submitting.');
             return;
         }
+
         if (dep === dest) {
             showLoggerError('Departure and destination can\'t be the same airport.');
             return;
         }
 
+        // A flight must either depart from or arrive at a hub airport.
         const depAirport = airports.find(a => a.code === dep);
         const destAirport = airports.find(a => a.code === dest);
         const touchesHub = (depAirport && depAirport.isHub) || (destAirport && destAirport.isHub);
@@ -1030,6 +801,9 @@
 
         const submitBtn = document.getElementById('flight-submit-btn');
         const defaultLabel = 'Commit Entry & Earn WP';
+
+        // Snapshot logged minutes *before* submitting so we know what to
+        // wait for once the sheet updates.
         const loggedTimeBeforeSubmit = state.flightTime * 60;
 
         submitBtn.disabled = true;
@@ -1040,7 +814,14 @@
                 method: 'POST',
                 credentials: 'same-origin',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ departure: dep, destination: dest, aircraft, time: timeMinutes, distance, unit: state.unit }),
+                body: JSON.stringify({
+                    departure: dep,
+                    destination: dest,
+                    aircraft,
+                    time: timeMinutes,
+                    distance,
+                    unit: state.unit,
+                }),
             });
             const result = await res.json().catch(() => ({}));
 
@@ -1048,16 +829,23 @@
                 throw new Error(result.message || 'Submission failed.');
             }
 
-            document.getElementById('search-dep').value = ''; document.getElementById('input-dep').value = '';
-            document.getElementById('search-dest').value = ''; document.getElementById('input-dest').value = '';
-            document.getElementById('input-time').value = ''; document.getElementById('input-distance').value = '';
+            // Clear departure/destination/time/distance, but leave the
+            // aircraft selection in place for the next entry.
+            document.getElementById('search-dep').value = '';
+            document.getElementById('input-dep').value = '';
+            document.getElementById('search-dest').value = '';
+            document.getElementById('input-dest').value = '';
+            document.getElementById('input-time').value = '';
+            document.getElementById('input-distance').value = '';
 
             setSubmitButtonLabel('Confirming...');
 
             const confirmedUser = await waitForConfirmation(
                 fetchPilotStats,
                 user => {
-                    const logged = user && user.loggedTime ? parseFloat(String(user.loggedTime).replace(/[^0-9.-]/g, '')) : NaN;
+                    const logged = user && user.loggedTime
+                        ? parseFloat(String(user.loggedTime).replace(/[^0-9.-]/g, ''))
+                        : NaN;
                     return !isNaN(logged) && logged > loggedTimeBeforeSubmit;
                 }
             );
@@ -1076,6 +864,7 @@
                 submitBtn.disabled = false;
             }
         } catch (err) {
+            console.log('Flight submit error:', err);
             showLoggerError('Flight log failed: ' + err.message);
             setSubmitButtonLabel(defaultLabel);
             submitBtn.disabled = false;
@@ -1097,17 +886,25 @@
         }
     }
 
-    // Applies status to the new combined action button
+    populateDropdown('dep');
+    populateDropdown('dest');
+    populateDropdown('aircraft');
+    renderUI();
+    renderTimelineUI();
+    switchTab(tabFromPath(window.location.pathname), false);
+
+    // --- Airports/hubs, fleet, and paycheck status, from the operations
+    // sheet (a different tab from the pilot roster). ---
     function applyPaycheckStatus(enabled) {
-        const btn = document.getElementById('btn-claim-action');
+        const btn = document.getElementById('claim-reward-btn');
         if (!btn) return;
         btn.disabled = !enabled;
         if (enabled) {
             btn.classList.remove('opacity-40', 'cursor-not-allowed', 'grayscale');
-            updateClaimButtonLabel();
+            btn.querySelector('span').textContent = 'Claim Reward';
         } else {
             btn.classList.add('opacity-40', 'cursor-not-allowed', 'grayscale');
-            document.getElementById('label-claim-action').textContent = 'Rewards Currently Unavailable';
+            btn.querySelector('span').textContent = 'Rewards Currently Unavailable';
         }
     }
 
@@ -1123,6 +920,7 @@
         })
         .catch(() => { applyPaycheckStatus(false); });
 
+    // --- Shared site header & footer, matching every other page ---
     fetch('/header.html')
         .then(response => response.text())
         .then(data => {
@@ -1134,6 +932,11 @@
         .then(response => response.text())
         .then(data => { document.getElementById('footer-placeholder').innerHTML = data; });
 
+    // --- Auth gate: blur the dashboard + show a sign-in popup unless
+    // there's a valid, roster-verified session. This is a UX gate, not a
+    // security boundary — nothing secret is embedded in this page, it's
+    // all client-side demo state, so it's safe to serve to anyone and
+    // simply hide it behind the popup until they sign in. ---
     function showAuthGate() {
         document.getElementById('app-shell').classList.add('gated');
         document.getElementById('auth-gate').classList.remove('hidden');
@@ -1163,19 +966,10 @@
             heroAvatar.classList.remove('hidden');
         }
 
+        // Pull rank / payment owed / logged time straight from the
+        // roster sheet row matched to this pilot's Discord username.
         applyPilotStats(user);
     });
-
-    // Initial renders
-    populateDropdown('dep');
-    populateDropdown('dest');
-    populateDropdown('aircraft');
-    renderCartItems();
-    renderUI();
-    renderTimelineUI();
-    renderRewardsUI();
-    switchTab(tabFromPath(window.location.pathname), false);
-
 </script>
 </body>
 </html>
