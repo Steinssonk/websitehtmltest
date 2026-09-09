@@ -317,7 +317,9 @@
                         Add your flight logging instructions here.
                     </div>
 
-                    <form id="flight-form" onsubmit="logFlight(event)" class="space-y-4">
+                    <div id="logger-error" class="hidden bg-red-50 border border-red-200 text-red-700 text-xs rounded-2xl p-3 mb-4"></div>
+
+                    <form id="flight-form" onsubmit="submitFlight(event)" class="space-y-4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
                             <!-- Departure -->
@@ -365,9 +367,9 @@
                         </div>
 
                         <div class="pt-2">
-                            <button type="submit" class="w-full bg-navy hover:bg-navy-deep text-white font-medium py-3 rounded-xl shadow-sm transition-colors flex items-center justify-center space-x-2 text-sm">
+                            <button type="submit" id="flight-submit-btn" class="w-full bg-navy hover:bg-navy-deep text-white font-medium py-3 rounded-xl shadow-sm transition-colors flex items-center justify-center space-x-2 text-sm disabled:opacity-60 disabled:cursor-not-allowed">
                                 <i data-lucide="check" class="w-4 h-4"></i>
-                                <span>Commit Entry & Earn WP</span>
+                                <span id="flight-submit-label">Commit Entry & Earn WP</span>
                             </button>
                         </div>
                     </form>
@@ -418,6 +420,9 @@
         <a href="/" class="block text-xs text-slate-400 hover:text-slate-600 mt-4 transition-colors">Return to homepage</a>
     </div>
 </div>
+
+<!-- Toast notifications (e.g. "Flight submitted") -->
+<div id="toast-container" class="fixed bottom-6 right-6 z-[70] flex flex-col items-end gap-2 pointer-events-none"></div>
 
 <!-- Application Script Logic -->
 <script src="/auth-client.js"></script>
@@ -640,20 +645,117 @@
         document.getElementById('stat-payrate').innerText = `${state.payRate.toLocaleString()} WP/hr`;
     }
 
-    function logFlight(e) {
+    // ─────────────────────────────────────────────
+    // FLIGHT LOGGER — submit system
+    // Same pattern as the reference script's submitViaAppwrite():
+    // disable the button -> POST the entry -> on success, poll /api/me
+    // until the sheet reflects it -> flash success (or show an error /
+    // "taking longer than expected" message instead of hanging forever).
+    // ─────────────────────────────────────────────
+
+    let loggerErrorTimeoutId = null;
+
+    function showLoggerError(message, duration = 6000) {
+        clearTimeout(loggerErrorTimeoutId);
+        const el = document.getElementById('logger-error');
+        el.textContent = message;
+        el.classList.remove('hidden');
+        loggerErrorTimeoutId = setTimeout(() => {
+            el.textContent = '';
+            el.classList.add('hidden');
+        }, duration);
+    }
+
+    function showToast(message) {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = 'pointer-events-auto bg-navy-deep text-white text-sm font-medium px-4 py-3 rounded-xl shadow-lg flex items-center space-x-2 opacity-0 translate-y-2 transition-all duration-300';
+        toast.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i><span>${message}</span>`;
+        container.appendChild(toast);
+        lucide.createIcons();
+
+        requestAnimationFrame(() => {
+            toast.classList.remove('opacity-0', 'translate-y-2');
+        });
+
+        setTimeout(() => {
+            toast.classList.add('opacity-0', 'translate-y-2');
+            setTimeout(() => toast.remove(), 300);
+        }, 4000);
+    }
+
+    // Fetches the pilot's current stats without touching the auth gate —
+    // used both by the initial page load and by the post-submit poll.
+    // Returns null if unauthenticated or the request fails.
+    function fetchPilotStats() {
+        return fetch('/api/me', { credentials: 'same-origin' })
+            .then(res => res.ok ? res.json() : Promise.reject())
+            .catch(() => null);
+    }
+
+    // Applies a /api/me response to local state and re-renders. Shared by
+    // the initial load and by the confirmation step after a submit.
+    function applyPilotStats(user) {
+        if (!user) return;
+        if (user.rank) {
+            state.rank = user.rank;
+            const matchedPayRate = getPayRateForRank(user.rank);
+            if (matchedPayRate) state.payRate = matchedPayRate;
+        }
+        if (user.paymentOwed) {
+            const parsedPay = parseFloat(String(user.paymentOwed).replace(/[^0-9.-]/g, ''));
+            if (!isNaN(parsedPay)) state.payEarned = parsedPay;
+        }
+        if (user.loggedTime) {
+            const parsedMinutes = parseFloat(String(user.loggedTime).replace(/[^0-9.-]/g, ''));
+            if (!isNaN(parsedMinutes)) state.flightTime = parsedMinutes / 60;
+        }
+        renderUI();
+        renderTimelineUI();
+    }
+
+    // Polls fetchFn on an interval until condition(result) is true, or
+    // gives up after timeoutMs. Resolves with the confirming result, or
+    // null if it timed out.
+    function waitForConfirmation(fetchFn, condition, { intervalMs = 3000, timeoutMs = 30000 } = {}) {
+        const startedAt = Date.now();
+        return new Promise(resolve => {
+            (function poll() {
+                fetchFn().then(result => {
+                    if (result && condition(result)) {
+                        resolve(result);
+                        return;
+                    }
+                    if (Date.now() - startedAt >= timeoutMs) {
+                        resolve(null);
+                        return;
+                    }
+                    setTimeout(poll, intervalMs);
+                });
+            })();
+        });
+    }
+
+    function setSubmitButtonLabel(label) {
+        document.getElementById('flight-submit-label').textContent = label;
+    }
+
+    async function submitFlight(e) {
         e.preventDefault();
+
         const dep = document.getElementById('input-dep').value;
         const dest = document.getElementById('input-dest').value;
         const aircraft = document.getElementById('input-aircraft').value;
-        const timeMinutes = parseFloat(document.getElementById('input-time').value);
+        const timeMinutes = document.getElementById('input-time').value;
+        const distance = document.getElementById('input-distance').value;
 
-        if (!dep || !dest || !aircraft) {
-            alert('Please select valid options from the dropdown search filters.');
+        if (!dep || !dest || !aircraft || !timeMinutes || !distance) {
+            showLoggerError('Please select valid options and fill out every field before submitting.');
             return;
         }
 
         if (dep === dest) {
-            alert('Departure and destination can\'t be the same airport.');
+            showLoggerError('Departure and destination can\'t be the same airport.');
             return;
         }
 
@@ -662,41 +764,80 @@
         const destAirport = airports.find(a => a.code === dest);
         const touchesHub = (depAirport && depAirport.isHub) || (destAirport && destAirport.isHub);
         if (!touchesHub) {
-            alert('Every flight must either depart from or arrive at a hub airport.');
+            showLoggerError('Every flight must either depart from or arrive at a hub airport.');
             return;
         }
 
-        const time = timeMinutes / 60; // logged in minutes, tracked internally in hours
-        state.flightTime += time;
-        state.payEarned += Math.round(time * 150);
+        const submitBtn = document.getElementById('flight-submit-btn');
+        const defaultLabel = 'Commit Entry & Earn WP';
 
-        if (state.flightTime >= 20) {
-            state.rank = "Senior Captain";
-            state.payRate = 90000;
-        } else if (state.flightTime >= 10) {
-            state.rank = "Captain";
-            state.payRate = 75000;
-        } else if (state.flightTime >= 5) {
-            state.rank = "First Officer";
-            state.payRate = 60000;
-        } else if (state.flightTime >= 2) {
-            state.rank = "Second Officer";
-            state.payRate = 45000;
-        } else {
-            state.rank = "Cadet";
-            state.payRate = 30000;
+        // Snapshot logged minutes *before* submitting so we know what to
+        // wait for once the sheet updates.
+        const loggedTimeBeforeSubmit = state.flightTime * 60;
+
+        submitBtn.disabled = true;
+        setSubmitButtonLabel('Submitting...');
+
+        try {
+            const res = await fetch('/api/flight/submit', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    departure: dep,
+                    destination: dest,
+                    aircraft,
+                    time: timeMinutes,
+                    distance,
+                    unit: state.unit,
+                }),
+            });
+            const result = await res.json().catch(() => ({}));
+
+            if (!res.ok || result.status !== 'completed') {
+                throw new Error(result.message || 'Submission failed.');
+            }
+
+            // Clear departure/destination/time/distance, but leave the
+            // aircraft selection in place for the next entry.
+            document.getElementById('search-dep').value = '';
+            document.getElementById('input-dep').value = '';
+            document.getElementById('search-dest').value = '';
+            document.getElementById('input-dest').value = '';
+            document.getElementById('input-time').value = '';
+            document.getElementById('input-distance').value = '';
+
+            setSubmitButtonLabel('Confirming...');
+
+            const confirmedUser = await waitForConfirmation(
+                fetchPilotStats,
+                user => {
+                    const logged = user && user.loggedTime
+                        ? parseFloat(String(user.loggedTime).replace(/[^0-9.-]/g, ''))
+                        : NaN;
+                    return !isNaN(logged) && logged > loggedTimeBeforeSubmit;
+                }
+            );
+
+            if (confirmedUser) {
+                applyPilotStats(confirmedUser);
+                showToast('Flight submitted successfully!');
+                setSubmitButtonLabel('Submitted!');
+                setTimeout(() => {
+                    setSubmitButtonLabel(defaultLabel);
+                    submitBtn.disabled = false;
+                }, 3000);
+            } else {
+                showLoggerError('Flight logged, but confirmation is taking longer than expected. Refresh to check.');
+                setSubmitButtonLabel(defaultLabel);
+                submitBtn.disabled = false;
+            }
+        } catch (err) {
+            console.log('Flight submit error:', err);
+            showLoggerError('Flight log failed: ' + err.message);
+            setSubmitButtonLabel(defaultLabel);
+            submitBtn.disabled = false;
         }
-
-        // Clear departure/destination/time/distance, but leave the
-        // aircraft selection in place for the next entry.
-        document.getElementById('search-dep').value = '';
-        document.getElementById('input-dep').value = '';
-        document.getElementById('search-dest').value = '';
-        document.getElementById('input-dest').value = '';
-        document.getElementById('input-time').value = '';
-        document.getElementById('input-distance').value = '';
-
-        renderUI();
     }
 
     function setUnit(unit) {
@@ -776,43 +917,28 @@
         document.getElementById('auth-gate').classList.add('hidden');
     }
 
-    fetch('/api/me', { credentials: 'same-origin' })
-        .then(res => res.ok ? res.json() : Promise.reject())
-        .then(user => {
-            hideAuthGate();
-            const greeting = document.getElementById('hero-greeting');
-            if (user.robloxUsername) {
-                greeting.textContent = 'Welcome back, ' + user.robloxUsername;
-            }
-            if (user.robloxAvatarUrl) {
-                const heroAvatar = document.getElementById('hero-avatar');
-                heroAvatar.src = user.robloxAvatarUrl;
-                heroAvatar.alt = user.robloxUsername || '';
-                heroAvatar.classList.remove('hidden');
-            }
+    fetchPilotStats().then(user => {
+        if (!user) {
+            showAuthGate();
+            return;
+        }
 
-            // Pull rank / payment owed / logged time straight from the
-            // roster sheet row matched to this pilot's Discord username.
-            if (user.rank) {
-                state.rank = user.rank;
-                const matchedPayRate = getPayRateForRank(user.rank);
-                if (matchedPayRate) state.payRate = matchedPayRate;
-            }
-            if (user.paymentOwed) {
-                const parsedPay = parseFloat(String(user.paymentOwed).replace(/[^0-9.-]/g, ''));
-                if (!isNaN(parsedPay)) state.payEarned = parsedPay;
-            }
-            if (user.loggedTime) {
-                // The sheet stores logged flight time in minutes, so
-                // convert to hours for display everywhere on the dashboard.
-                const parsedMinutes = parseFloat(String(user.loggedTime).replace(/[^0-9.-]/g, ''));
-                if (!isNaN(parsedMinutes)) state.flightTime = parsedMinutes / 60;
-            }
+        hideAuthGate();
+        const greeting = document.getElementById('hero-greeting');
+        if (user.robloxUsername) {
+            greeting.textContent = 'Welcome back, ' + user.robloxUsername;
+        }
+        if (user.robloxAvatarUrl) {
+            const heroAvatar = document.getElementById('hero-avatar');
+            heroAvatar.src = user.robloxAvatarUrl;
+            heroAvatar.alt = user.robloxUsername || '';
+            heroAvatar.classList.remove('hidden');
+        }
 
-            renderUI();
-            renderTimelineUI();
-        })
-        .catch(() => { showAuthGate(); });
+        // Pull rank / payment owed / logged time straight from the
+        // roster sheet row matched to this pilot's Discord username.
+        applyPilotStats(user);
+    });
 </script>
 </body>
 </html>
