@@ -1,4 +1,4 @@
-import { handleFlightSubmit } from './flightSubmit.js';
+import { handleFlightSubmit } from './flightsubmit.js';
 import headerHtml from './header.html';
 import footerHtml from './footer.html';
 import homeContent from './home.html';
@@ -89,7 +89,7 @@ export default {
         return handleOperations(env);
       }
 
-      // Flight log submissions get their own file (flightSubmit.js) rather
+      // Flight log submissions get their own file (flightsubmit.js) rather
       // than living here — see that file for what it actually does.
       if (pathname === '/api/flight/submit') {
         return handleFlightSubmit(request, env);
