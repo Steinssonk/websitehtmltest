@@ -13,7 +13,7 @@ SHEET_GID = "0"
 # GID of the operations sheet tab (airports/hubs, fleet, paycheck status).
 # Replace with the actual GID from that tab's URL — the number after
 # "gid=" when you have that sheet open in your browser.
-OPERATIONS_SHEET_GID = "REPLACE_WITH_OPERATIONS_SHEET_GID"
+OPERATIONS_SHEET_GID = "337983586"
 
 # Set these with the wrangler CLI (never commit real secrets to git):
 #   wrangler secret put DISCORD_CLIENT_SECRET
