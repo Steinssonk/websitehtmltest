@@ -1,3 +1,4 @@
+import { handleFlightSubmit } from './flightSubmit.js';
 import headerHtml from './header.html';
 import footerHtml from './footer.html';
 import homeContent from './home.html';
@@ -28,15 +29,20 @@ const pageRoutes = {
   // The pilot dashboard is a normal, publicly-fetchable page — it gates
   // itself client-side (blurred content + a sign-in popup) by checking
   // /api/me, rather than the server refusing to serve it. Nothing secret
-  // lives in the HTML itself.
+  // lives in the HTML itself. The tab sub-paths all serve the exact same
+  // document; the dashboard's own client-side JS reads the URL on load
+  // to decide which tab to show, and updates the URL (without reloading)
+  // whenever the pilot switches tabs.
   '/dashboard': dashboardContent,
   '/dashboard.html': dashboardContent,
+  '/dashboard/flight-logger': dashboardContent,
+  '/dashboard/settings': dashboardContent,
 
   '/header.html': headerHtml,
   '/footer.html': footerHtml,
 };
 
-const SESSION_COOKIE = 'session';
+export const SESSION_COOKIE = 'session';
 const STATE_COOKIE = 'oauth_state';
 const NEXT_COOKIE = 'oauth_next';
 const SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
@@ -81,6 +87,12 @@ export default {
 
       if (pathname === '/api/operations') {
         return handleOperations(env);
+      }
+
+      // Flight log submissions get their own file (flightSubmit.js) rather
+      // than living here — see that file for what it actually does.
+      if (pathname === '/api/flight/submit') {
+        return handleFlightSubmit(request, env);
       }
 
       if (pathname in pageRoutes) {
@@ -272,7 +284,7 @@ function redirectWithError(url, code, extraCookie) {
   return new Response(null, { status: 302, headers });
 }
 
-function jsonResponse(obj, status) {
+export function jsonResponse(obj, status) {
   return new Response(JSON.stringify(obj), {
     status,
     headers: {
@@ -460,7 +472,7 @@ function serializeCookie(name, value, { maxAge } = {}) {
   return parts.join('; ');
 }
 
-function parseCookies(cookieHeader) {
+export function parseCookies(cookieHeader) {
   const out = {};
   cookieHeader.split(';').forEach((pair) => {
     const idx = pair.indexOf('=');
@@ -478,7 +490,7 @@ async function createSessionCookie(env, payloadObj) {
   return `${payloadB64}.${signature}`;
 }
 
-async function verifySessionCookie(env, cookieValue) {
+export async function verifySessionCookie(env, cookieValue) {
   const dotIndex = cookieValue.lastIndexOf('.');
   if (dotIndex === -1) return null;
 
