@@ -51,14 +51,16 @@ export async function handleFlightSubmit(request, env) {
     return jsonResponse({ status: 'error', message: "Departure and destination can't be the same airport." }, 400);
   }
 
-  const baseUrl = env.WISPBYTE_BASE_URL;
+  const baseUrl = (env.WISPBYTE_BASE_URL || '').replace(/\/+$/, '');
   if (!baseUrl) {
     console.error('WISPBYTE_BASE_URL is not configured — see flightsubmit.js');
     return jsonResponse({ status: 'error', message: 'Flight submission isn\'t configured yet.' }, 501);
   }
 
+  const targetUrl = `${baseUrl}/flight-log`;
+
   try {
-    const forwardRes = await fetch(`${baseUrl}/flight-log`, {
+    const forwardRes = await fetch(targetUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -74,7 +76,10 @@ export async function handleFlightSubmit(request, env) {
     });
 
     if (!forwardRes.ok) {
-      console.error('Flight log request failed:', forwardRes.status);
+      // Logged (not returned to the client) so you can see exactly which
+      // URL 404'd/500'd via `wrangler tail` without exposing internal
+      // infrastructure details to pilots submitting flights.
+      console.error('Flight log request failed:', forwardRes.status, targetUrl);
       return jsonResponse({ status: 'error', message: `Flight log request failed: HTTP ${forwardRes.status}` }, 502);
     }
 
