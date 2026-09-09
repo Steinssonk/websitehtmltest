@@ -1,20 +1,19 @@
 // Handles POST /api/flight/submit — the flight logger's "submit system".
 //
 // Kept in its own file rather than folded into index.js so this can grow
-// (extra validation, retries, a different backend, etc.) without turning
-// index.js into a dumping ground.
+// (extra validation, retries, etc.) without turning index.js into a
+// dumping ground.
 //
-// This does NOT know how to write to your roster sheet itself — it just
-// validates the request, confirms who's submitting via the same signed
-// session cookie the rest of the site uses, and forwards the flight entry
-// to whatever service actually records it (your wispbyte-hosted app, an
-// Apps Script webhook, etc). Point it there by setting FLIGHT_SUBMIT_WEBHOOK_URL,
-// e.g.:
-//   wrangler secret put FLIGHT_SUBMIT_WEBHOOK_URL
+// This does NOT write to the roster sheet itself — it validates the
+// request, confirms who's submitting via the same signed session cookie
+// the rest of the site uses, then forwards the flight entry to the
+// Wispbyte-hosted flightLog.js endpoint (mirrors the old Wix
+// submitFlightData() backend function). Set the base URL with:
+//   wrangler secret put WISPBYTE_BASE_URL
 //
-// That service is expected to respond 2xx on success. If it needs a
-// different request shape than the one built below, that's the only
-// place you need to change.
+// flightLog.js on Wispbyte responds with { success: true/false, status:
+// <Google's HTTP status> } rather than a plain 2xx, so that's what gets
+// unpacked below.
 
 import { parseCookies, verifySessionCookie, jsonResponse, SESSION_COOKIE } from './index.js';
 
@@ -52,14 +51,14 @@ export async function handleFlightSubmit(request, env) {
     return jsonResponse({ status: 'error', message: "Departure and destination can't be the same airport." }, 400);
   }
 
-  const webhookUrl = env.FLIGHT_SUBMIT_WEBHOOK_URL;
-  if (!webhookUrl) {
-    console.error('FLIGHT_SUBMIT_WEBHOOK_URL is not configured — see flightSubmit.js');
+  const baseUrl = env.WISPBYTE_BASE_URL;
+  if (!baseUrl) {
+    console.error('WISPBYTE_BASE_URL is not configured — see flightsubmit.js');
     return jsonResponse({ status: 'error', message: 'Flight submission isn\'t configured yet.' }, 501);
   }
 
   try {
-    const forwardRes = await fetch(webhookUrl, {
+    const forwardRes = await fetch(`${baseUrl}/flight-log`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -75,12 +74,24 @@ export async function handleFlightSubmit(request, env) {
     });
 
     if (!forwardRes.ok) {
-      const text = await forwardRes.text().catch(() => '');
-      console.error('Flight submit webhook rejected the request:', forwardRes.status, text);
-      return jsonResponse({ status: 'error', message: 'Flight submission was rejected. Please try again.' }, 502);
+      console.error('Flight log request failed:', forwardRes.status);
+      return jsonResponse({ status: 'error', message: `Flight log request failed: HTTP ${forwardRes.status}` }, 502);
     }
 
-    return jsonResponse({ status: 'completed' }, 200);
+    let result;
+    try {
+      result = await forwardRes.json();
+    } catch {
+      console.error('Flight log response was not valid JSON');
+      return jsonResponse({ status: 'error', message: 'Flight submission service returned an unexpected response.' }, 502);
+    }
+
+    // flightLog.js on Wispbyte returns { success: true/false, status: <Google's HTTP status> }
+    if (result.success && result.status === 200) {
+      return jsonResponse({ status: 'completed' }, 200);
+    }
+
+    return jsonResponse({ status: 'error', message: result.error || 'Flight submission failed' }, 502);
   } catch (err) {
     console.error('Flight submit webhook error:', err);
     return jsonResponse({ status: 'error', message: 'Could not reach the flight submission service.' }, 502);
