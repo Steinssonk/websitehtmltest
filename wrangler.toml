@@ -18,3 +18,6 @@ OPERATIONS_SHEET_GID = "337983586"
 # Set these with the wrangler CLI (never commit real secrets to git):
 #   wrangler secret put DISCORD_CLIENT_SECRET
 #   wrangler secret put SESSION_SECRET
+#   wrangler secret put FLIGHT_SUBMIT_WEBHOOK_URL
+# FLIGHT_SUBMIT_WEBHOOK_URL is where submitted flights get forwarded to
+# (see src/flightSubmit.js) — point it at whatever actually records them.
