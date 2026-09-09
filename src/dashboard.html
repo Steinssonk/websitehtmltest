@@ -413,17 +413,9 @@
                             <span class="font-serif text-lg font-bold text-slate-900" id="summary-pay-amount">$18,450</span>
                         </div>
 
+                        <!-- Multi-item Cart Payload -->
                         <div id="cart-item-container" class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between transition-all">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-9 h-9 rounded-xl bg-navy/10 text-navy flex items-center justify-center">
-                                    <i data-lucide="plane" class="w-5 h-5"></i>
-                                </div>
-                                <div>
-                                    <div class="font-semibold text-sm text-slate-900" id="cart-item-title">No Reward Selected</div>
-                                    <div class="text-xs text-slate-500" id="cart-item-subtitle">Optional reward payload empty</div>
-                                </div>
-                            </div>
-                            <button id="clear-cart-btn" onclick="clearCart()" class="hidden text-xs text-red-500 hover:text-red-700 font-medium transition-colors">Remove</button>
+                            <!-- Dynamically populated by renderCartItems() -->
                         </div>
                     </div>
 
@@ -490,7 +482,7 @@
 <script>
     let airports = [];
     let aircraftList = [];
-    let selectedReward = null; // Holds cart item { rankId, title, aircraft }
+    let selectedRewards = []; // Array of reward objects { rankId, title, aircraft }
 
     let state = {
         flightTime: 142.5,
@@ -715,6 +707,7 @@
         grid.innerHTML = rewardTiers.map(m => {
             const isLocked = state.flightTime < m.minHours;
             const isClaimed = state.claimedRewards.includes(m.id);
+            const inCart = selectedRewards.some(r => r.rankId === m.id);
             
             let statusHTML = '';
             let wrapperClasses = 'bg-white border border-slate-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between transition-all';
@@ -748,9 +741,9 @@
                             </div>
                             <div id="dropdown-reward-${m.id}" class="hidden absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-30 max-h-48 overflow-y-auto dropdown-results"></div>
                         </div>
-                        <button onclick="addToCart('${m.id}', '${m.title}')" class="w-full bg-navy hover:bg-navy-deep text-white font-semibold py-2.5 rounded-xl shadow-sm transition-all flex items-center justify-center space-x-2 text-xs">
-                            <i data-lucide="shopping-bag" class="w-3.5 h-3.5"></i>
-                            <span>Add Reward to Cart</span>
+                        <button onclick="addToCart('${m.id}', '${m.title}')" class="w-full ${inCart ? 'bg-amber-600 hover:bg-amber-700' : 'bg-navy hover:bg-navy-deep'} text-white font-semibold py-2.5 rounded-xl shadow-sm transition-all flex items-center justify-center space-x-2 text-xs">
+                            <i data-lucide="${inCart ? 'check' : 'shopping-bag'}" class="w-3.5 h-3.5"></i>
+                            <span>${inCart ? 'Update in Cart' : 'Add Reward to Cart'}</span>
                         </button>
                     </div>`;
             }
@@ -789,12 +782,55 @@
         const iconEl = document.getElementById('icon-claim-action');
         if (!labelEl || !iconEl) return;
 
-        if (selectedReward) {
+        if (selectedRewards.length > 0) {
             labelEl.textContent = 'Claim Paycheck + Reward';
             iconEl.setAttribute('data-lucide', 'gift');
         } else {
             labelEl.textContent = 'Claim Paycheck';
             iconEl.setAttribute('data-lucide', 'wallet');
+        }
+        lucide.createIcons();
+    }
+
+    function renderCartItems() {
+        const container = document.getElementById('cart-item-container');
+        if (!container) return;
+
+        if (selectedRewards.length === 0) {
+            container.className = "p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between transition-all";
+            container.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 rounded-xl bg-navy/10 text-navy flex items-center justify-center">
+                        <i data-lucide="plane" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-sm text-slate-900">No Reward Selected</div>
+                        <div class="text-xs text-slate-500">Optional reward payload empty</div>
+                    </div>
+                </div>`;
+        } else {
+            container.className = "p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col space-y-3 transition-all";
+            container.innerHTML = `
+                <div class="flex items-center justify-between pb-2 border-b border-slate-200 w-full">
+                    <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Selected Rewards (${selectedRewards.length})</span>
+                    <button onclick="clearCart()" class="text-xs text-red-500 hover:text-red-700 font-medium transition-colors">Clear All</button>
+                </div>
+                ${selectedRewards.map(item => `
+                    <div class="flex items-center justify-between p-3 rounded-xl bg-white border border-slate-200 w-full">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-lg bg-navy/10 text-navy flex items-center justify-center">
+                                <i data-lucide="plane" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-xs text-slate-900">${item.aircraft}</div>
+                                <div class="text-[11px] text-slate-500">${item.title} Reward</div>
+                            </div>
+                        </div>
+                        <button onclick="removeFromCart('${item.rankId}')" class="text-xs text-red-500 hover:text-red-700 font-medium p-1">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `).join('')}`;
         }
         lucide.createIcons();
     }
@@ -806,21 +842,32 @@
             return;
         }
 
-        selectedReward = { rankId, title: rankTitle, aircraft: inputVal };
+        // Check if a reward for this specific rank tier is already in cart
+        const existingIndex = selectedRewards.findIndex(r => r.rankId === rankId);
+        if (existingIndex !== -1) {
+            selectedRewards[existingIndex].aircraft = inputVal;
+            showToast(`Updated ${rankTitle} reward aircraft to ${inputVal}.`);
+        } else {
+            selectedRewards.push({ rankId, title: rankTitle, aircraft: inputVal });
+            showToast(`Added ${inputVal} to your reward claim payload!`);
+        }
         
-        document.getElementById('cart-item-title').innerText = `${inputVal} (${rankTitle} Reward)`;
-        document.getElementById('cart-item-subtitle').innerText = "Selected reward added to payload";
-        document.getElementById('clear-cart-btn').classList.remove('hidden');
-        
+        renderCartItems();
         updateClaimButtonLabel();
-        showToast(`Added ${inputVal} to your reward claim payload!`);
+        renderRewardsUI();
+    }
+
+    function removeFromCart(rankId) {
+        selectedRewards = selectedRewards.filter(r => r.rankId !== rankId);
+        renderCartItems();
+        updateClaimButtonLabel();
+        renderRewardsUI();
+        showToast("Reward removed from cart.");
     }
 
     function clearCart() {
-        selectedReward = null;
-        document.getElementById('cart-item-title').innerText = "No Reward Selected";
-        document.getElementById('cart-item-subtitle').innerText = "Optional reward payload empty";
-        document.getElementById('clear-cart-btn').classList.add('hidden');
+        selectedRewards = [];
+        renderCartItems();
 
         // Clear all reward dropdown inputs visually
         allDropdowns.filter(d => d.startsWith('reward-')).forEach(id => {
@@ -831,29 +878,32 @@
         });
 
         updateClaimButtonLabel();
+        renderRewardsUI();
         showToast("Reward selection cleared.");
     }
 
     function submitClaim() {
         const btn = document.getElementById('btn-claim-action');
-        if (state.payEarned <= 0 && !selectedReward) {
+        if (state.payEarned <= 0 && selectedRewards.length === 0) {
             showToast("You have no balance to claim and no reward selected.", "error");
             return;
         }
 
         btn.disabled = true;
-        const defaultLabel = document.getElementById('label-claim-action').textContent;
         document.getElementById('label-claim-action').textContent = 'Processing Claim...';
 
         // Simulate API Processing Time
         setTimeout(() => {
-            const msg = selectedReward 
-                ? `Successfully claimed paycheck ($${state.payEarned.toLocaleString()}) and ${selectedReward.aircraft}!` 
+            const rewardNames = selectedRewards.map(r => r.aircraft).join(', ');
+            const msg = selectedRewards.length > 0 
+                ? `Successfully claimed paycheck ($${state.payEarned.toLocaleString()}) and ${rewardNames}!` 
                 : `Successfully claimed paycheck ($${state.payEarned.toLocaleString()})!`;
 
-            if (selectedReward) {
-                state.claimedRewards.push(selectedReward.rankId);
-            }
+            selectedRewards.forEach(r => {
+                if (!state.claimedRewards.includes(r.rankId)) {
+                    state.claimedRewards.push(r.rankId);
+                }
+            });
             state.payEarned = 0;
             
             showToast(msg);
@@ -1120,6 +1170,7 @@
     populateDropdown('dep');
     populateDropdown('dest');
     populateDropdown('aircraft');
+    renderCartItems();
     renderUI();
     renderTimelineUI();
     renderRewardsUI();
