@@ -1,4 +1,5 @@
 import { handleFlightSubmit } from './flightsubmit.js';
+import { handleClaimSubmit } from './claimsubmit.js';
 import headerHtml from './header.html';
 import footerHtml from './footer.html';
 import homeContent from './home.html';
@@ -93,6 +94,12 @@ export default {
       // than living here — see that file for what it actually does.
       if (pathname === '/api/flight/submit') {
         return handleFlightSubmit(request, env);
+      }
+
+      // Claim submissions get their own file (claimsubmit.js) — see that
+      // file for what it actually does.
+      if (pathname === '/api/claim/submit') {
+        return handleClaimSubmit(request, env);
       }
 
       if (pathname in pageRoutes) {
@@ -259,6 +266,7 @@ async function handleMe(request, env) {
     rank: rosterRow?.rank ?? null,
     paymentOwed: rosterRow?.paymentOwed ?? null,
     loggedTime: rosterRow?.loggedTime ?? null,
+    claimedRewards: rosterRow?.claimedRewards ?? [],
   }, 200);
 }
 
@@ -300,7 +308,11 @@ export function jsonResponse(obj, status) {
 
 // Looks up a pilot's roster row by matching their Discord username against
 // column C, and returns the columns the dashboard needs from that same
-// row: rank (A), Roblox username (B), payment owed (D), logged time (E).
+// row: rank (A), Roblox username (B), payment owed (D), logged time (E),
+// plus reward-claimed status (G/H/I). The G/H/I columns are written by
+// the roster spreadsheet's onFormSubmit Apps Script trigger, which sets
+// the cell to "claimed" the first time each reward is claimed and treats
+// any non-empty cell as already-claimed — matched here the same way.
 async function lookupRosterRow(env, discordUsername) {
   const sheetId = env.SHEET_ID;
   const gid = env.SHEET_GID || '0';
@@ -320,11 +332,17 @@ async function lookupRosterRow(env, discordUsername) {
       const robloxUsername = (row[1] || '').trim(); // Column B
       if (!robloxUsername) return null;
 
+      const claimedRewards = [];
+      if ((row[6] || '').trim() !== '') claimedRewards.push('captain');       // Column G
+      if ((row[7] || '').trim() !== '') claimedRewards.push('firstOfficer');  // Column H
+      if ((row[8] || '').trim() !== '') claimedRewards.push('secondOfficer'); // Column I
+
       return {
         robloxUsername,
         rank: (row[0] || '').trim() || null,        // Column A
         paymentOwed: (row[3] || '').trim() || null,  // Column D
         loggedTime: (row[4] || '').trim() || null,   // Column E
+        claimedRewards,                              // Columns G, H, I
       };
     }
   }
