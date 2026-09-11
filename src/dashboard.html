@@ -84,6 +84,20 @@
         html.dashboard-dark #dropdown-dest,
         html.dashboard-dark #dropdown-aircraft { background-color: #131c2e !important; }
 
+        /* Accent colors that keep their light-mode (dark-toned) values
+           weren't covered above, so they ended up nearly invisible against
+           the newly dark cards/badges — e.g. navy icons on a navy-tinted
+           chip, or dark-red/dark-green badge text on a now near-black
+           red/green badge background. Brighten just those for dark mode. */
+        html.dashboard-dark .text-navy { color: #8fb4ff !important; }
+        html.dashboard-dark .bg-navy\/5 { background-color: rgba(143, 180, 255, 0.10) !important; }
+        html.dashboard-dark .bg-navy\/10 { background-color: rgba(143, 180, 255, 0.16) !important; }
+        html.dashboard-dark .border-navy\/10 { border-color: rgba(143, 180, 255, 0.35) !important; }
+        html.dashboard-dark .text-emerald-600,
+        html.dashboard-dark .text-emerald-700 { color: #34d399 !important; }
+        html.dashboard-dark .text-red-700 { color: #f87171 !important; }
+        html.dashboard-dark .hover\:text-red-700:hover { color: #fca5a5 !important; }
+
         /* Header, dark mode only — the header itself lives in header.html
            and is styled below under "Shared site header"; these overrides
            only take effect once html.dashboard-dark is set (dashboard page
@@ -98,14 +112,19 @@
         html.dashboard-dark #header-placeholder #user-name { color: #eaf1ff !important; }
 
         /* --- Shared site header, matching every other page --- */
+        html {
+            --header-h: 76px; /* fallback until JS measures the real nav height below */
+        }
         #header-placeholder nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 1rem 5%;
             background-color: #ffffff;
-            position: fixed; left: 0; width: 100%;
+            position: fixed;
             top: 0;
+            left: 0;
+            width: 100%;
             z-index: 100;
             border-bottom: 1px solid #f0f0f0;
         }
@@ -151,6 +170,9 @@
         }
 
         /* --- Textured navy pattern for Banners/Timelines --- */
+        body {
+            padding-top: var(--header-h);
+        }
         .textured-banner {
             background-color: #000a19;
             background-image: linear-gradient(rgba(0, 10, 25, 0.82), rgba(0, 10, 25, 0.82)),
@@ -230,7 +252,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full grid grid-cols-1 lg:grid-cols-4 gap-8">
 
         <!-- Sidebar Navigation -->
-        <aside class="lg:col-span-1 space-y-2 lg:sticky lg:top-24 self-start">
+        <aside class="lg:col-span-1 space-y-2 lg:sticky lg:top-[calc(var(--header-h)+1rem)] self-start">
             <nav class="space-y-1 bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
                 <button onclick="switchTab('dashboard')" id="btn-dashboard" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 bg-navy/5 text-navy border border-navy/10">
                     <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
@@ -1330,6 +1352,20 @@
         .then(data => {
             document.getElementById('header-placeholder').innerHTML = data;
             if (window.AirlineAuth) window.AirlineAuth.init();
+
+            // nav is position:fixed (see #header-placeholder nav above), so
+            // it no longer takes up space in the document flow — push the
+            // page content down by the header's real rendered height
+            // instead of a guessed pixel value, and keep it correct across
+            // resizes.
+            const nav = document.querySelector('#header-placeholder nav');
+            if (nav) {
+                const offsetForHeader = () => {
+                    document.documentElement.style.setProperty('--header-h', nav.offsetHeight + 'px');
+                };
+                offsetForHeader();
+                window.addEventListener('resize', offsetForHeader);
+            }
         })
         .catch(err => console.error('Failed to load header:', err));
 
