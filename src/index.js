@@ -3,6 +3,7 @@ import { handleClaimSubmit } from './claimsubmit.js';
 import { handleGetSettings, handleSaveSettings } from './settingssave.js';
 import headerHtml from './header.html';
 import footerHtml from './footer.html';
+import metaTags from './meta.html';
 import homeContent from './home.html';
 import programsContent from './programs.html';
 import fleetContent from './fleet.html';
@@ -114,7 +115,13 @@ export default {
 
       if (pathname in pageRoutes) {
         const isFragment = pathname === '/header.html' || pathname === '/footer.html';
-        return new Response(pageRoutes[pathname], {
+        // Drop the shared Discord/Open Graph preview tags into every real
+        // page's <head> (not the header/footer fragments, which aren't
+        // full documents). Edit src/meta.html to change what shows up.
+        const body = isFragment
+          ? pageRoutes[pathname]
+          : pageRoutes[pathname].replace('<head>', `<head>\n${metaTags}`);
+        return new Response(body, {
           headers: {
             'Content-Type': 'text/html;charset=UTF-8',
             // header.html/footer.html rarely change, so cache them longer.
