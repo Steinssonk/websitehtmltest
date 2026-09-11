@@ -1,5 +1,6 @@
 import { handleFlightSubmit } from './flightsubmit.js';
 import { handleClaimSubmit } from './claimsubmit.js';
+import { handleGetSettings, handleSaveSettings } from './settingssave.js';
 import headerHtml from './header.html';
 import footerHtml from './footer.html';
 import homeContent from './home.html';
@@ -100,6 +101,15 @@ export default {
       // file for what it actually does.
       if (pathname === '/api/claim/submit') {
         return handleClaimSubmit(request, env);
+      }
+
+      // Dashboard settings (unit, swap-after-log, theme) get their own
+      // file (settingssave.js) — GET reads the pilot's saved settings
+      // from KV, POST writes them.
+      if (pathname === '/api/settings') {
+        if (request.method === 'GET') return handleGetSettings(request, env);
+        if (request.method === 'POST') return handleSaveSettings(request, env);
+        return jsonResponse({ status: 'error', message: 'Method not allowed' }, 405);
       }
 
       if (pathname in pageRoutes) {
