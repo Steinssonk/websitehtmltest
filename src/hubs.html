@@ -57,51 +57,38 @@
         }
         .btn:hover { background-color: #001b3d; }
 
-        /* --- Hero Section (Parallax Added) --- */
-        .hero {
-            position: relative;
-            height: 52vh;
-            min-height: 380px;
-            background-image: linear-gradient(rgba(0, 10, 25, 0.55), rgba(0, 10, 25, 0.72)),
-                              url('https://imgur.com/QXjs4Vb.png');
-            background-position: center;
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed; /* Parallax effect */
-            display: flex;
-            align-items: center;
-            padding: 0 5%;
+        /* --- Page Header ---
+           No photo, no hero box — just the page title sitting directly on
+           the page, same treatment as the Fleet page, flowing straight
+           into the hubs content below. */
+        .page-header {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 6.5rem 5% 1.5rem;
         }
 
-        .hero-content {
-            position: relative;
-            z-index: 10;
-            max-width: 750px;
-        }
-
-        .hero-kicker {
-            display: inline-block;
-            font-family: 'Roboto', sans-serif;
-            font-size: 0.75rem;
+        .page-header-kicker {
+            font-size: 0.8rem;
+            color: #b8860b;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #ffbd59;
-            margin-bottom: 0.85rem;
+            letter-spacing: 1.5px;
+            margin-bottom: 0.75rem;
+            font-family: 'Inter', sans-serif;
         }
 
-        .hero-title {
-            font-size: 3.4rem;
-            line-height: 1.15;
+        .page-header-title {
+            font-size: 3.5rem;
+            line-height: 1.2;
             margin-bottom: 1rem;
-            color: #ffffff;
+            color: #111;
         }
 
-        .hero-subtitle {
+        .page-header-subtitle {
             font-size: 1rem;
-            color: #e2e8f0;
+            color: #555;
             line-height: 1.6;
-            max-width: 560px;
+            max-width: 600px;
             font-weight: 300;
         }
 
@@ -109,7 +96,7 @@
         .hubs-overlap {
             max-width: 1440px;
             margin: 0 auto;
-            padding: 6rem 5% 7rem;
+            padding: 1.5rem 5% 7rem;
             position: relative;
             z-index: 20;
         }
@@ -130,21 +117,22 @@
             padding: 0;
         }
 
-        .hubs-panel-kicker {
-            font-family: 'Roboto', sans-serif;
-            font-size: 0.72rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.6px;
-            color: #002A5C;
-            margin-bottom: 0.8rem;
+        .hubs-section-header {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #eef0f3;
+            padding-bottom: 0.75rem;
         }
 
-        .hubs-panel-title {
-            font-size: 2.3rem;
-            line-height: 1.2;
-            color: #111;
-            margin-bottom: 2.2rem;
+        .hubs-section-header h2 {
+            font-size: 1.7rem;
+            color: #002A5C;
+            margin-bottom: 0.25rem;
+        }
+
+        .hubs-section-header p {
+            color: #555;
+            font-size: 0.95rem;
+            font-weight: 300;
         }
 
         .hub-list {
@@ -293,8 +281,7 @@
         /* --- Responsive Queries --- */
         @media (max-width: 1024px) {
             .nav-links { display: none; }
-            .hero-title { font-size: 2.6rem; }
-            .hubs-overlap { padding: 4rem 5%; }
+            .page-header-title { font-size: 2.5rem; }
             .hubs-card {
                 flex-direction: column;
                 gap: 3.5rem;
@@ -304,16 +291,7 @@
             .hubs-map-inner { max-width: 500px; margin: 0 auto; }
         }
 
-        /* Fallback for touch/mobile devices to ensure smooth scrolling */
-        @media (hover: none) {
-            .hero {
-                background-attachment: scroll;
-            }
-        }
-
         @media (max-width: 600px) {
-            .hero { height: 44vh; min-height: 320px; }
-            .hero-title { font-size: 2.1rem; }
             .hub-pin-tooltip { width: 180px; padding: 0.75rem 0.9rem; }
             .hub-pin-tooltip-title { font-size: 0.9rem; }
             .hub-pin-tooltip-text { font-size: 0.75rem; }
@@ -324,19 +302,19 @@
 
     <div id="header-placeholder"></div>
 
-    <header class="hero">
-        <div class="hero-content">
-            <span class="hero-kicker">THE NETWORK</span>
-            <h1 class="hero-title">Our Hubs</h1>
-            <p class="hero-subtitle">Five hubs, one connected network — from our operational nerve center to a remote outpost on the edge of the ice shelf. Explore where we fly from.</p>
-        </div>
-    </header>
+    <div class="page-header">
+        <div class="page-header-kicker">The Network</div>
+        <h1 class="page-header-title">Our Hubs</h1>
+        <p class="page-header-subtitle">Five hubs, one connected network — from our operational nerve center to a remote outpost on the edge of the ice shelf. Explore where we fly from.</p>
+    </div>
 
     <section class="hubs-overlap">
+        <div class="hubs-section-header">
+            <h2>The Network</h2>
+            <p>Where we fly from, hub by hub.</p>
+        </div>
         <div class="hubs-card">
             <div class="hubs-panel">
-                <span class="hubs-panel-kicker">Our Hubs</span>
-                <h2 class="hubs-panel-title">Our Network</h2>
                 <ul class="hub-list">
 
                     <li class="hub-item hub-item--main" data-hub="clarence" tabindex="0">
