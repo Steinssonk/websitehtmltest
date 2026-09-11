@@ -92,31 +92,19 @@
       background-color: #001b3d;
     }
 
-    /* --- Hero Section (Parallax Added) --- */
-    .hero {
-      position: relative;
-      height: 52vh;
-      min-height: 380px;
-      background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.65)),
-                        url('https://imgur.com/DNtb6bF.png');
-      background-position: center 40%;
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-attachment: fixed; /* Parallax effect */
-      display: flex;
-      align-items: center;
-      padding: 0 5%;
+    /* --- Page Header ---
+       No photo, no hero box — just the page title sitting directly on the
+       page, same treatment as the Hubs page, flowing straight into the
+       fleet content below. */
+    .page-header {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 6.5rem 5% 1.5rem;
     }
 
-    .hero-content {
-      position: relative;
-      z-index: 10;
-      max-width: 750px;
-    }
-
-    .hero-tag {
+    .page-header-kicker {
       font-size: 0.8rem;
-      color: #ffbd59;
+      color: #b8860b;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1.5px;
@@ -124,16 +112,16 @@
       font-family: 'Inter', sans-serif;
     }
 
-    .hero-title {
-      font-size: 3.2rem;
+    .page-header-title {
+      font-size: 3.5rem;
       line-height: 1.2;
-      margin-bottom: 0.75rem;
-      color: #ffffff;
+      margin-bottom: 1rem;
+      color: #111;
     }
 
-    .hero-subtitle {
-      font-size: 0.95rem;
-      color: #e2e8f0;
+    .page-header-subtitle {
+      font-size: 1rem;
+      color: #555;
       line-height: 1.6;
       max-width: 600px;
       font-weight: 300;
@@ -141,7 +129,7 @@
 
     /* --- Fleet Sections --- */
     .fleet-sections {
-      padding-top: 2rem;
+      padding-top: 0;
     }
 
     .page-section {
@@ -176,27 +164,6 @@
       color: #555;
       font-size: 0.95rem;
       font-weight: 300;
-    }
-
-    /* Pattern Background Section */
-    .fleet-category-section.pattern-bg {
-      background: linear-gradient(rgba(0, 10, 25, 0.85), rgba(0, 10, 25, 0.85)), url('https://imgur.com/m2bcxBM.png');
-      background-repeat: repeat;
-      background-size: 450px;
-      background-position: center;
-      background-attachment: fixed;
-    }
-
-    .fleet-category-section.pattern-bg .fleet-category-header {
-      border-bottom-color: rgba(255, 255, 255, 0.15);
-    }
-
-    .fleet-category-section.pattern-bg .fleet-category-header h2 {
-      color: #ffffff;
-    }
-
-    .fleet-category-section.pattern-bg .fleet-category-header p {
-      color: rgba(255, 255, 255, 0.75);
     }
 
     /* Fleet Grid Boxes (Compact & Fancy) */
@@ -287,55 +254,6 @@
       border-color: #cbd5e1;
     }
 
-    /* Muted styling for retired / fictional aircraft */
-    .fleet-category.muted .fleet-box { 
-      background: #fafbfc; 
-      border-color: rgba(0, 0, 0, 0.06);
-    }
-    .fleet-category.muted .fleet-box-mark { color: rgba(0, 0, 0, 0.06); }
-    .fleet-category.muted .fleet-box-tag { color: #64748b; }
-    .fleet-category.muted .fleet-box-title { color: #334155; }
-    .fleet-category.muted .fleet-box-desc { color: #94a3b8; }
-    .fleet-category.muted .fleet-box-divider { border-top-color: #edf2f7; }
-    .fleet-category.muted .fleet-box-list li { 
-      background: #f1f5f9; 
-      color: #475569; 
-      border-color: #e2e8f0; 
-    }
-    .fleet-category.muted .fleet-category-header h2 { color: #334155; }
-
-    /* Pattern background adjustments for muted cards */
-    .fleet-category-section.pattern-bg .fleet-category.muted .fleet-box {
-      background: rgba(255, 255, 255, 0.04);
-      border-color: rgba(255, 255, 255, 0.1);
-    }
-    .fleet-category-section.pattern-bg .fleet-category.muted .fleet-box-tag { color: #ffbd59; }
-    .fleet-category-section.pattern-bg .fleet-category.muted .fleet-box-title { color: #ffffff; }
-    .fleet-category-section.pattern-bg .fleet-category.muted .fleet-box-desc { color: rgba(255, 255, 255, 0.6); }
-    .fleet-category-section.pattern-bg .fleet-category.muted .fleet-box-divider { border-top-color: rgba(255, 255, 255, 0.1); }
-    .fleet-category-section.pattern-bg .fleet-category.muted .fleet-box-list li {
-      background: rgba(255, 255, 255, 0.06);
-      color: rgba(255, 255, 255, 0.85);
-      border-color: rgba(255, 255, 255, 0.12);
-    }
-    .fleet-category-section.pattern-bg .fleet-category.muted .fleet-category-header h2 { color: #ffffff; }
-    .fleet-category-section.pattern-bg .fleet-category.muted .fleet-category-header p { color: rgba(255, 255, 255, 0.7); }
-
-    /* Non-muted pattern-bg cards */
-    .fleet-category-section.pattern-bg .fleet-category:not(.muted) .fleet-box {
-      background: rgba(255, 255, 255, 0.06);
-      border-color: rgba(255, 255, 255, 0.12);
-    }
-    .fleet-category-section.pattern-bg .fleet-category:not(.muted) .fleet-box-tag { color: #ffbd59; }
-    .fleet-category-section.pattern-bg .fleet-category:not(.muted) .fleet-box-title { color: #ffffff; }
-    .fleet-category-section.pattern-bg .fleet-category:not(.muted) .fleet-box-desc { color: rgba(255, 255, 255, 0.7); }
-    .fleet-category-section.pattern-bg .fleet-category:not(.muted) .fleet-box-divider { border-top-color: rgba(255, 255, 255, 0.15); }
-    .fleet-category-section.pattern-bg .fleet-category:not(.muted) .fleet-box-list li {
-      background: rgba(255, 255, 255, 0.08);
-      color: #ffffff;
-      border-color: rgba(255, 255, 255, 0.18);
-    }
-
     /* --- Footer Section --- */
     footer {
       background-color: #002A5C;
@@ -394,15 +312,7 @@
     /* Responsive tweaks */
     @media (max-width: 1024px) {
       .nav-links { display: none; }
-      .hero-title { font-size: 2.3rem; }
-    }
-
-    /* Fallback for touch/mobile devices to ensure smooth scrolling */
-    @media (hover: none) {
-      .hero,
-      .fleet-category-section.pattern-bg {
-        background-attachment: scroll;
-      }
+      .page-header-title { font-size: 2.5rem; }
     }
 
     @media (max-width: 560px) {
@@ -422,22 +332,19 @@
 
   <div id="header-placeholder"></div>
 
-  <header class="hero">
-    <div class="hero-content">
-      <div class="hero-tag">Aircraft & Operations</div>
-      <h1 class="hero-title">Our Fleet</h1>
-      <p class="hero-subtitle">From the entry-level workhorses to the flagships of the skies, explore the aircraft our pilots fly across every stage of their career.</p>
-    </div>
-  </header>
+  <div class="page-header">
+    <div class="page-header-kicker">Aircraft & Operations</div>
+    <h1 class="page-header-title">Our Fleet</h1>
+    <p class="page-header-subtitle">From the entry-level workhorses to the flagships of the skies, explore the aircraft our pilots fly across every stage of their career.</p>
+  </div>
 
   <section class="fleet-sections">
 
-    <!-- Current Fleet -->
     <div class="fleet-category-section">
       <div class="fleet-category">
         <div class="fleet-category-header">
-          <h2>Current Fleet</h2>
-          <p>The aircraft actively flying our network today.</p>
+          <h2>The Fleet</h2>
+          <p>Every aircraft we fly, grouped by manufacturer.</p>
         </div>
 
         <div class="fleet-grid-boxes">
@@ -446,180 +353,16 @@
             <svg class="fleet-box-mark"><use href="#fleet-mark"></use></svg>
             <div class="fleet-box-tag">Our Airbus Fleet</div>
             <h3 class="fleet-box-title">Airbus</h3>
-            <p class="fleet-box-desc">Modern widebodies flying our long-haul and flagship routes.</p>
+            <p class="fleet-box-desc">Every Airbus type we fly, from current widebodies to retired and reimagined variants.</p>
             <hr class="fleet-box-divider">
             <ul class="fleet-box-list">
               <li>A350-900</li>
               <li>A380-800</li>
-            </ul>
-          </div>
-
-          <div class="fleet-box">
-            <svg class="fleet-box-mark"><use href="#fleet-mark"></use></svg>
-            <div class="fleet-box-tag">Our Boeing Fleet</div>
-            <h3 class="fleet-box-title">Boeing</h3>
-            <p class="fleet-box-desc">The core lineup covering short-haul through ultra-long-haul flying.</p>
-            <hr class="fleet-box-divider">
-            <ul class="fleet-box-list">
-              <li>737-800</li>
-              <li>737-8 MAX</li>
-              <li>777-300ER</li>
-              <li>777-9X</li>
-              <li>787-10</li>
-            </ul>
-          </div>
-
-          <div class="fleet-box">
-            <svg class="fleet-box-mark"><use href="#fleet-mark"></use></svg>
-            <div class="fleet-box-tag">Our Freighter Fleet</div>
-            <h3 class="fleet-box-title">Freighter</h3>
-            <p class="fleet-box-desc">Dedicated cargo aircraft supporting our freight operations.</p>
-            <hr class="fleet-box-divider">
-            <ul class="fleet-box-list">
-              <li>747-400F</li>
-              <li>777-F</li>
-            </ul>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <!-- Retro Fleet -->
-    <div class="fleet-category-section pattern-bg">
-      <div class="fleet-category">
-        <div class="fleet-category-header">
-          <h2>Retro Fleet</h2>
-          <p>Classic and pioneering aircraft from earlier eras of aviation.</p>
-        </div>
-
-        <div class="fleet-grid-boxes">
-
-          <div class="fleet-box">
-            <svg class="fleet-box-mark"><use href="#fleet-mark"></use></svg>
-            <div class="fleet-box-tag">Retro Fleet</div>
-            <h3 class="fleet-box-title">Aircrafts</h3>
-            <p class="fleet-box-desc">Vintage aircraft that shaped the airline's early years.</p>
-            <hr class="fleet-box-divider">
-            <ul class="fleet-box-list">
-              <li>707-320B</li>
-              <li>F27-100 Friendship</li>
-              <li>DC-3 Dakota</li>
-              <li>DC-4</li>
-              <li>L-1049G</li>
-              <li>Comet 4B</li>
-              <li>BN-2A Islander</li>
-              <li>BAC 1-11-200</li>
-            </ul>
-          </div>
-
-          <div class="fleet-box">
-            <svg class="fleet-box-mark"><use href="#fleet-mark"></use></svg>
-            <div class="fleet-box-tag">Retro Fleet</div>
-            <h3 class="fleet-box-title">Advanced Fleet</h3>
-            <p class="fleet-box-desc">Supersonic and next-generation aircraft available through special licenses.</p>
-            <hr class="fleet-box-divider">
-            <ul class="fleet-box-list">
-              <li>Concorde</li>
-              <li>Boom Overture '22</li>
-              <li>Boom Overture '16</li>
-              <li>Lockheed L-2000</li>
-              <li>Boeing 2707</li>
-              <li>K600</li>
-              <li>K500</li>
-            </ul>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <!-- Retired Fleet -->
-    <div class="fleet-category-section">
-      <div class="fleet-category muted">
-        <div class="fleet-category-header">
-          <h2>Retired Fleet</h2>
-          <p>Aircraft that have been phased out of active service.</p>
-        </div>
-
-        <div class="fleet-grid-boxes">
-
-          <div class="fleet-box">
-            <svg class="fleet-box-mark"><use href="#fleet-mark"></use></svg>
-            <div class="fleet-box-tag">Retired Fleet</div>
-            <h3 class="fleet-box-title">Airbus</h3>
-            <p class="fleet-box-desc">Airbus types that have completed their service with us.</p>
-            <hr class="fleet-box-divider">
-            <ul class="fleet-box-list">
               <li>A300-600R</li>
               <li>A310-300</li>
               <li>A330-300</li>
               <li>A340-300</li>
               <li>A340-500</li>
-            </ul>
-          </div>
-
-          <div class="fleet-box">
-            <svg class="fleet-box-mark"><use href="#fleet-mark"></use></svg>
-            <div class="fleet-box-tag">Retired Fleet</div>
-            <h3 class="fleet-box-title">Boeing</h3>
-            <p class="fleet-box-desc">Boeing types phased out of active rotation.</p>
-            <hr class="fleet-box-divider">
-            <ul class="fleet-box-list">
-              <li>737-200</li>
-              <li>747-200</li>
-              <li>747-300</li>
-              <li>747-400</li>
-              <li>757-200</li>
-              <li>777-200</li>
-            </ul>
-          </div>
-
-          <div class="fleet-box">
-            <svg class="fleet-box-mark"><use href="#fleet-mark"></use></svg>
-            <div class="fleet-box-tag">Retired Fleet</div>
-            <h3 class="fleet-box-title">Other</h3>
-            <p class="fleet-box-desc">Other aircraft retired from the fleet.</p>
-            <hr class="fleet-box-divider">
-            <ul class="fleet-box-list">
-              <li>DC-10</li>
-              <li>747-200F</li>
-            </ul>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <!-- Fictional Fleet -->
-    <div class="fleet-category-section pattern-bg">
-      <div class="fleet-category muted">
-        <div class="fleet-category-header">
-          <h2>Fictional Fleet</h2>
-          <p>Hypothetical and what-if variants imagined for the fleet.</p>
-        </div>
-
-        <div class="fleet-grid-boxes">
-
-          <div class="fleet-box">
-            <svg class="fleet-box-mark"><use href="#fleet-mark"></use></svg>
-            <div class="fleet-box-tag">Fictional Fleet</div>
-            <h3 class="fleet-box-title">Boeing</h3>
-            <p class="fleet-box-desc">Hypothetical Boeing variants imagined for the fleet.</p>
-            <hr class="fleet-box-divider">
-            <ul class="fleet-box-list">
-              <li>747-8i</li>
-              <li>787-9</li>
-            </ul>
-          </div>
-
-          <div class="fleet-box">
-            <svg class="fleet-box-mark"><use href="#fleet-mark"></use></svg>
-            <div class="fleet-box-tag">Fictional Fleet</div>
-            <h3 class="fleet-box-title">Airbus</h3>
-            <p class="fleet-box-desc">Hypothetical Airbus variants imagined for the fleet.</p>
-            <hr class="fleet-box-divider">
-            <ul class="fleet-box-list">
               <li>A330-900neo</li>
               <li>A350-800</li>
             </ul>
@@ -627,11 +370,53 @@
 
           <div class="fleet-box">
             <svg class="fleet-box-mark"><use href="#fleet-mark"></use></svg>
-            <div class="fleet-box-tag">Fictional Fleet</div>
-            <h3 class="fleet-box-title">Other</h3>
-            <p class="fleet-box-desc">Other hypothetical aircraft imagined for the fleet.</p>
+            <div class="fleet-box-tag">Our Boeing Fleet</div>
+            <h3 class="fleet-box-title">Boeing</h3>
+            <p class="fleet-box-desc">Every Boeing type we fly, from current workhorses to retired classics and reimagined variants.</p>
             <hr class="fleet-box-divider">
             <ul class="fleet-box-list">
+              <li>737-800</li>
+              <li>737-8 MAX</li>
+              <li>777-300ER</li>
+              <li>777-9X</li>
+              <li>787-10</li>
+              <li>747-400F</li>
+              <li>777-F</li>
+              <li>737-200</li>
+              <li>747-200</li>
+              <li>747-300</li>
+              <li>747-400</li>
+              <li>757-200</li>
+              <li>777-200</li>
+              <li>747-200F</li>
+              <li>707-320B</li>
+              <li>Boeing 2707</li>
+              <li>747-8i</li>
+              <li>787-9</li>
+            </ul>
+          </div>
+
+          <div class="fleet-box">
+            <svg class="fleet-box-mark"><use href="#fleet-mark"></use></svg>
+            <div class="fleet-box-tag">Other Aircraft</div>
+            <h3 class="fleet-box-title">Other</h3>
+            <p class="fleet-box-desc">Vintage classics, supersonic icons, and hypothetical variants outside the Airbus and Boeing lineups.</p>
+            <hr class="fleet-box-divider">
+            <ul class="fleet-box-list">
+              <li>F27-100 Friendship</li>
+              <li>DC-3 Dakota</li>
+              <li>DC-4</li>
+              <li>L-1049G</li>
+              <li>Comet 4B</li>
+              <li>BN-2A Islander</li>
+              <li>BAC 1-11-200</li>
+              <li>Concorde</li>
+              <li>Boom Overture '22</li>
+              <li>Boom Overture '16</li>
+              <li>Lockheed L-2000</li>
+              <li>K600</li>
+              <li>K500</li>
+              <li>DC-10</li>
               <li>MD-12</li>
             </ul>
           </div>
