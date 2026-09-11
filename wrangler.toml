@@ -27,3 +27,7 @@ OPERATIONS_SHEET_GID = "337983586"
 # namespace once with the wrangler CLI, then paste the id(s) below:
 #   wrangler kv namespace create SETTINGS_KV
 #   wrangler kv namespace create SETTINGS_KV --preview
+[[kv_namespaces]]
+binding = "SETTINGS_KV"
+id = "e128530e6ef947bbb09fc18f768e0d88"
+preview_id = "REPLACE_WITH_PREVIEW_KV_NAMESPACE_ID"
