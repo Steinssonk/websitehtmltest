@@ -41,8 +41,10 @@
             align-items: center;
             padding: 1rem 5%;
             background-color: #ffffff;
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
+            width: 100%;
             z-index: 100;
             border-bottom: 1px solid #f0f0f0;
         }
@@ -790,6 +792,19 @@
         .then(data => {
             document.getElementById('header-placeholder').innerHTML = data;
             if (window.AirlineAuth) window.AirlineAuth.init();
+
+            // nav is position:fixed (see <style> above), so it no longer
+            // takes up space in the document flow — push the page content
+            // down by the header's real rendered height instead of a
+            // guessed pixel value, and keep it correct across resizes.
+            var nav = document.querySelector('#header-placeholder nav');
+            if (nav) {
+                var offsetForHeader = function () {
+                    document.body.style.paddingTop = nav.offsetHeight + 'px';
+                };
+                offsetForHeader();
+                window.addEventListener('resize', offsetForHeader);
+            }
         });
 
     fetch('footer.html')
