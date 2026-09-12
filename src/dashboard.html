@@ -819,11 +819,18 @@
             if(milestone && milestone.rewardOptions) items = milestone.rewardOptions;
         }
 
+        // For airports, the dropdown is keyed/matched internally by ICAO
+        // code (column D), but every row is translated to its airport
+        // name (column A, same row) for anything the pilot actually
+        // sees — the search box label, the dropdown list, and later the
+        // submitted flight — via displayLabel() below.
         if (filterText) {
             const query = filterText.toLowerCase();
             items = items.filter(i => {
-                const code = typeof i === 'string' ? i : i.code;
-                return code.toLowerCase().includes(query);
+                if (typeof i === 'string') return i.toLowerCase().includes(query);
+                const code = (i.code || '').toLowerCase();
+                const name = (i.name || '').toLowerCase();
+                return code.includes(query) || name.includes(query);
             });
         }
 
@@ -834,17 +841,28 @@
 
         container.innerHTML = items.map(i => {
             const code = typeof i === 'string' ? i : i.code;
+            const label = displayLabel(i);
             const isHub = typeof i === 'object' && i.isHub;
             const hubTag = isHub ? `<span class="text-[10px] font-bold text-gold-deep bg-gold/20 px-1.5 py-0.5 rounded ml-2">HUB</span>` : '';
             const rowClasses = isHub
                 ? 'p-2.5 text-xs text-navy bg-gold/10 hover:bg-gold/20 cursor-pointer border-b border-slate-50 last:border-none font-bold flex items-center justify-between'
                 : 'p-2.5 text-xs text-slate-700 hover:bg-navy/5 hover:text-navy cursor-pointer border-b border-slate-50 last:border-none font-medium flex items-center justify-between';
             const safeCode = code.replace(/'/g, "\\'");
+            const safeLabel = label.replace(/'/g, "\\'");
             return `
-                <div onclick="selectDropdownItem('${type}', '${safeCode}', '${safeCode}')" class="${rowClasses}">
-                    <span>${code}</span>${hubTag}
+                <div onclick="selectDropdownItem('${type}', '${safeCode}', '${safeLabel}')" class="${rowClasses}">
+                    <span>${label}</span>${hubTag}
                 </div>`;
         }).join('');
+    }
+
+    // Translates a dropdown item to what the pilot should see: for
+    // airports, that's the name from column A (falling back to the
+    // ICAO code if a row has no name); for plain strings (aircraft,
+    // reward options) there's nothing to translate.
+    function displayLabel(i) {
+        if (typeof i === 'string') return i;
+        return i.name || i.code;
     }
 
     function toggleDropdown(type) {
@@ -1494,6 +1512,11 @@
             return;
         }
 
+        // Translate the selected ICAO codes to their airport names (column
+        // A of the matching row) — that's what actually gets submitted.
+        const depName = depAirport ? depAirport.name : dep;
+        const destName = destAirport ? destAirport.name : dest;
+
         const submitBtn = document.getElementById('flight-submit-btn');
         const defaultLabel = 'Commit Entry & Earn WP';
         const loggedTimeBeforeSubmit = state.flightTime * 60;
@@ -1506,7 +1529,7 @@
                 method: 'POST',
                 credentials: 'same-origin',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ departure: dep, destination: dest, aircraft, time: timeMinutes, distance, unit: state.unit }),
+                body: JSON.stringify({ departure: depName, destination: destName, aircraft, time: timeMinutes, distance, unit: state.unit }),
             });
             const result = await res.json().catch(() => ({}));
 

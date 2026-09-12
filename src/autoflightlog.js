@@ -246,8 +246,8 @@ export async function handleAutoFlightConfirm(request, env) {
     }
 
     const submitResult = await submitFlightToWispbyte(env, session, {
-      departure: flight.departure,
-      destination: flight.arrival,
+      departure: flight.departureName,
+      destination: flight.arrivalName,
       aircraft: flight.fleetAircraft,
       time: flight.timeMinutes,
       distance: flight.distanceValue,
@@ -256,7 +256,7 @@ export async function handleAutoFlightConfirm(request, env) {
 
     if (submitResult.ok) {
       await markUsageIdLogged(env, usageId, session);
-      logged.push({ usageId, aircraft: flight.fleetAircraft, departure: flight.departure, arrival: flight.arrival });
+      logged.push({ usageId, aircraft: flight.fleetAircraft, departure: flight.departureName, arrival: flight.arrivalName });
     } else {
       failed.push({ usageId, message: submitResult.message });
     }
@@ -288,6 +288,10 @@ async function detectFlights(env, session, rawEntries) {
   const fleetByLower = new Map(opsData.fleet.map(name => [name.trim().toLowerCase(), name]));
   const hubAirports = new Set(opsData.airports.filter(a => a.isHub).map(a => a.code));
   const knownAirports = new Set(opsData.airports.map(a => a.code));
+  // Column A of the operations sheet, keyed by the ICAO code in column D
+  // of that same row — lets a detected ICAO code be translated to its
+  // airport name before it's shown to the pilot or submitted.
+  const airportNameByCode = new Map(opsData.airports.map(a => [a.code, a.name || a.code]));
   const unit = settings.unit === 'km' ? 'km' : 'nm';
 
   const now = Date.now();
@@ -368,6 +372,12 @@ async function detectFlights(env, session, rawEntries) {
       fleetAircraft,
       departure: entry.departure,
       arrival: entry.arrival,
+      // Translated airport names for the same ICAO codes above — used
+      // for the pilot-facing review list and for what actually gets
+      // submitted, while `departure`/`arrival` (the codes) stay around
+      // for matching/dedup.
+      departureName: airportNameByCode.get(entry.departure) || entry.departure,
+      arrivalName: airportNameByCode.get(entry.arrival) || entry.arrival,
       distanceValue,
       unit,
       timeMinutes: entry.timeMinutes,
@@ -493,9 +503,10 @@ function parseTimestamp(raw) {
 }
 
 // ---------------------------------------------------------------------
-// Usage-id dedup and detection batches — both reuse the SETTINGS_KV
-// namespace (see wrangler.toml / settingssave.js) under separate key
-// prefixes, so no extra KV namespace needs to be provisioned.
+// Usage-id dedup and detection batches — both live in their own
+// AUTO_LOG_KV namespace (see wrangler.toml), separate from the
+// per-pilot SETTINGS_KV used by settingssave.js, under separate key
+// prefixes within that namespace.
 // ---------------------------------------------------------------------
 
 function usageKey(usageId) {
@@ -507,9 +518,9 @@ function batchKey(discordUsername, batchId) {
 }
 
 async function isUsageIdLogged(env, usageId) {
-  if (!env.SETTINGS_KV) return false;
+  if (!env.AUTO_LOG_KV) return false;
   try {
-    const existing = await env.SETTINGS_KV.get(usageKey(usageId));
+    const existing = await env.AUTO_LOG_KV.get(usageKey(usageId));
     return existing !== null;
   } catch (err) {
     console.error('Failed to read usage id from KV:', err);
@@ -520,12 +531,12 @@ async function isUsageIdLogged(env, usageId) {
 }
 
 async function markUsageIdLogged(env, usageId, session) {
-  if (!env.SETTINGS_KV) {
-    console.error('SETTINGS_KV is not bound — cannot persist usage id dedup record');
+  if (!env.AUTO_LOG_KV) {
+    console.error('AUTO_LOG_KV is not bound — cannot persist usage id dedup record');
     return;
   }
   try {
-    await env.SETTINGS_KV.put(usageKey(usageId), JSON.stringify({
+    await env.AUTO_LOG_KV.put(usageKey(usageId), JSON.stringify({
       discordUsername: session.discordUsername,
       robloxUsername: session.robloxUsername,
       loggedAt: new Date().toISOString(),
@@ -541,12 +552,12 @@ async function markUsageIdLogged(env, usageId, session) {
 // not a durable record (that's what the usage-id dedup keys above are
 // for).
 async function storeBatch(env, discordUsername, batchId, flights) {
-  if (!env.SETTINGS_KV) {
-    console.error('SETTINGS_KV is not bound — cannot persist detection batch');
+  if (!env.AUTO_LOG_KV) {
+    console.error('AUTO_LOG_KV is not bound — cannot persist detection batch');
     return;
   }
   try {
-    await env.SETTINGS_KV.put(batchKey(discordUsername, batchId), JSON.stringify(flights), {
+    await env.AUTO_LOG_KV.put(batchKey(discordUsername, batchId), JSON.stringify(flights), {
       expirationTtl: BATCH_TTL_SECONDS,
     });
   } catch (err) {
@@ -555,15 +566,16 @@ async function storeBatch(env, discordUsername, batchId, flights) {
 }
 
 async function loadBatch(env, discordUsername, batchId) {
-  if (!env.SETTINGS_KV) return null;
+  if (!env.AUTO_LOG_KV) return null;
   try {
-    const stored = await env.SETTINGS_KV.get(batchKey(discordUsername, batchId));
+    const stored = await env.AUTO_LOG_KV.get(batchKey(discordUsername, batchId));
     return stored ? JSON.parse(stored) : null;
   } catch (err) {
     console.error('Failed to read detection batch from KV:', err);
     return null;
   }
 }
+
 
 // Strips internal-only fields (nothing sensitive here, but keeps the
 // detect response limited to what the UI actually needs) before
@@ -572,8 +584,10 @@ function toClientFlight(flight) {
   return {
     usageId: flight.usageId,
     aircraft: flight.fleetAircraft,
-    departure: flight.departure,
-    arrival: flight.arrival,
+    // Airport names (translated from the read ICAO codes), not the raw
+    // codes, since this is what the pilot sees in the review list.
+    departure: flight.departureName,
+    arrival: flight.arrivalName,
     distance: flight.distanceValue,
     unit: flight.unit,
     timeMinutes: flight.timeMinutes,

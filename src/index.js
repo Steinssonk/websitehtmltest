@@ -386,7 +386,9 @@ async function lookupRosterRow(env, discordUsername) {
 // fleet list, and the site-wide paycheck status flag.
 //
 // Column layout per row:
-//   A: location/airport name (display only, not used for matching)
+//   A: location/airport name (looked up by ICAO code for display and
+//      for translating a selected/detected ICAO into its airport name
+//      before it's shown to a pilot or submitted to the roster sheet)
 //   B: "hub" marks that airport as a hub
 //   C: fleet/aircraft entry
 //   D: airport code (ICAO code used for departure/arrival matching)
@@ -418,7 +420,8 @@ export async function fetchOperationsData(env) {
     const paycheckCell = (row[4] || '').trim().toLowerCase(); // Column E
 
     if (airportCode) {
-      airports.push({ code: airportCode, isHub: hubFlag === 'hub' });
+      const airportName = (row[0] || '').trim(); // Column A — display/translated name for this ICAO code
+      airports.push({ code: airportCode, name: airportName || airportCode, isHub: hubFlag === 'hub' });
     }
 
     if (fleetEntry && !fleetSeen.has(fleetEntry)) {
