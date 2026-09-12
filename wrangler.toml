@@ -50,7 +50,6 @@ LOG_SHEET_GID = "560263512"
 #   wrangler secret put ANTHROPIC_API_KEY    # console.anthropic.com
 #   wrangler secret put ANTHROPIC_MODEL      # optional, defaults to "claude-sonnet-5"
 # Only the key(s) for whichever provider you pick are actually needed.
-GEMINI_MODEL = "gemini-3.5-flash-lite"
 
 # Per-pilot dashboard settings (units, swap-after-log, light/dark theme,
 # manual/automatic logging mode) are stored in Workers KV — see
@@ -76,7 +75,7 @@ preview_id = "REPLACE_WITH_PREVIEW_KV_NAMESPACE_ID"
 #   wrangler kv namespace create AUTO_LOG_KV --preview
 [[kv_namespaces]]
 binding = "AUTO_LOG_KV"
-id = "4f8ecd4837544c349498840cfcf10ec6"
+id = "REPLACE_WITH_AUTO_LOG_KV_NAMESPACE_ID"
 preview_id = "REPLACE_WITH_AUTO_LOG_KV_PREVIEW_NAMESPACE_ID"
 
 # OCR_RELAY (see src/ocrrelay.js) pins the outbound Gemini/OpenAI/
@@ -96,4 +95,4 @@ class_name = "OcrRelay"
 
 [[migrations]]
 tag = "v1"
-new_classes = ["OcrRelay"]
+new_sqlite_classes = ["OcrRelay"]
