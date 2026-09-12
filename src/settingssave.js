@@ -28,25 +28,34 @@ async function getSession(request, env) {
   return verifySessionCookie(env, raw);
 }
 
+// Reads one pilot's stored settings straight from KV, merged with
+// defaults. Shared by handleGetSettings below and the automatic
+// flight logger (see src/autoflightlog.js), which needs the pilot's
+// distance-unit preference without going through an HTTP request.
+// Never throws — falls back to defaults on any KV/parse error.
+export async function getStoredSettings(env, discordUsername) {
+  if (!env.SETTINGS_KV) {
+    console.error('SETTINGS_KV is not bound — see wrangler.toml');
+    return { ...DEFAULT_SETTINGS };
+  }
+
+  try {
+    const stored = await env.SETTINGS_KV.get(settingsKey(discordUsername));
+    return stored ? { ...DEFAULT_SETTINGS, ...JSON.parse(stored) } : { ...DEFAULT_SETTINGS };
+  } catch (err) {
+    console.error('Failed to read dashboard settings from KV:', err);
+    return { ...DEFAULT_SETTINGS };
+  }
+}
+
 export async function handleGetSettings(request, env) {
   const session = await getSession(request, env);
   if (!session) {
     return jsonResponse({ error: 'not_authenticated' }, 401);
   }
 
-  if (!env.SETTINGS_KV) {
-    console.error('SETTINGS_KV is not bound — see wrangler.toml');
-    return jsonResponse({ ...DEFAULT_SETTINGS }, 200);
-  }
-
-  try {
-    const stored = await env.SETTINGS_KV.get(settingsKey(session.discordUsername));
-    const settings = stored ? { ...DEFAULT_SETTINGS, ...JSON.parse(stored) } : { ...DEFAULT_SETTINGS };
-    return jsonResponse(settings, 200);
-  } catch (err) {
-    console.error('Failed to read dashboard settings from KV:', err);
-    return jsonResponse({ ...DEFAULT_SETTINGS }, 200);
-  }
+  const settings = await getStoredSettings(env, session.discordUsername);
+  return jsonResponse(settings, 200);
 }
 
 export async function handleSaveSettings(request, env) {

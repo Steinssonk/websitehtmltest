@@ -392,7 +392,7 @@ async function lookupRosterRow(env, discordUsername) {
 // Paycheck status is treated as a single site-wide switch rather than
 // a per-row value: if ANY row has "yes" in column E, payroll is
 // considered open and the Claim Reward button is enabled.
-async function fetchOperationsData(env) {
+export async function fetchOperationsData(env) {
   const sheetId = env.SHEET_ID;
   const gid = env.OPERATIONS_SHEET_GID;
   const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&gid=${gid}`;
