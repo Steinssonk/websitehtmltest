@@ -50,6 +50,7 @@ LOG_SHEET_GID = "560263512"
 #   wrangler secret put ANTHROPIC_API_KEY    # console.anthropic.com
 #   wrangler secret put ANTHROPIC_MODEL      # optional, defaults to "claude-sonnet-5"
 # Only the key(s) for whichever provider you pick are actually needed.
+GEMINI_MODEL = "gemini-3.5-flash-lite"
 
 # Per-pilot dashboard settings (units, swap-after-log, light/dark theme,
 # manual/automatic logging mode) are stored in Workers KV — see
