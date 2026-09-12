@@ -437,6 +437,82 @@ export async function fetchOperationsData(env) {
   return { airports, fleet, paycheckEnabled };
 }
 
+// Reads the manually-submitted flight log sheet — the tab every
+// completed flight lands in (both the manual Flight Logger form and
+// the automatic screenshot-based logger write here via the same
+// Wispbyte /flight-log endpoint). Used by the automatic logger to spot
+// a flight that a pilot already logged by hand before it ever gets to
+// a screenshot, so it isn't logged a second time — see
+// matchesManualLog() in src/autoflightlog.js.
+//
+// Column layout per row:
+//   A: Timestamp (when the flight was logged/submitted)
+//   B: Discord Username
+//   C: Roblox Username
+//   D: Aircraft Flown
+//   E: Time Flown
+//   F: Distance Flown
+//   G: Departure (airport name — see fetchOperationsData's column A)
+//   H: Destination (airport name)
+//   I: Unit of Measurement
+//
+// Returns null (rather than throwing) on any fetch/parse failure, so a
+// hiccup reading this sheet degrades to "skip the manual-log check"
+// instead of blocking detection entirely.
+export async function fetchLoggedFlights(env) {
+  const sheetId = env.SHEET_ID;
+  const gid = env.LOG_SHEET_GID;
+  if (!sheetId || !gid) return null;
+
+  const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&gid=${gid}`;
+
+  let res;
+  try {
+    res = await fetch(csvUrl);
+  } catch (err) {
+    console.error('Failed to fetch manual flight log sheet:', err);
+    return null;
+  }
+  if (!res.ok) return null;
+
+  const csvText = await res.text();
+  const rows = parseCsv(csvText);
+
+  const flights = [];
+  for (const row of rows) {
+    const timestampRaw = (row[0] || '').trim();      // Column A
+    const discordUsername = (row[1] || '').trim();   // Column B
+    const aircraft = (row[3] || '').trim();          // Column D
+    const timeMinutesRaw = (row[4] || '').trim();    // Column E
+    const distanceRaw = (row[5] || '').trim();       // Column F
+    const departure = (row[6] || '').trim();         // Column G
+    const destination = (row[7] || '').trim();       // Column H
+    const unit = (row[8] || '').trim().toLowerCase(); // Column I
+
+    // Rows missing the fields we actually match on (a header row,
+    // a blank trailing row, etc) are just skipped rather than pushed
+    // as a bogus "logged flight" that could never match anything real.
+    if (!discordUsername || !aircraft || !departure || !destination) continue;
+
+    const parsedTimestamp = Date.parse(timestampRaw);
+    const timeMinutes = parseFloat(timeMinutesRaw.replace(/[^0-9.-]/g, ''));
+    const distance = parseFloat(distanceRaw.replace(/[^0-9.-]/g, ''));
+
+    flights.push({
+      timestampMs: Number.isNaN(parsedTimestamp) ? null : parsedTimestamp,
+      discordUsername: discordUsername.toLowerCase(),
+      aircraft,
+      timeMinutes: Number.isNaN(timeMinutes) ? null : timeMinutes,
+      distance: Number.isNaN(distance) ? null : distance,
+      departure,
+      destination,
+      unit,
+    });
+  }
+
+  return flights;
+}
+
 function parseCsv(text) {
   const rows = [];
   let row = [];

@@ -38,7 +38,7 @@
 // re-uploads the same screenshot later.
 // ---------------------------------------------------------------------
 
-import { parseCookies, verifySessionCookie, jsonResponse, SESSION_COOKIE, fetchOperationsData } from './index.js';
+import { parseCookies, verifySessionCookie, jsonResponse, SESSION_COOKIE, fetchOperationsData, fetchLoggedFlights } from './index.js';
 import { submitFlightToWispbyte } from './flightsubmit.js';
 import { getStoredSettings } from './settingssave.js';
 import { extractFlightRowsFromImage, arrayBufferToBase64, scanForEditorSignature } from './imageocr.js';
@@ -53,6 +53,12 @@ const AUTHENTICITY_BLOCK_CONFIDENCE = new Set(['medium', 'high']);
 
 const WINDOW_MS = 24 * 60 * 60 * 1000; // "within 24 hours" window
 const NM_TO_KM = 1.852;
+// How close a manual-log entry's timestamp has to be to a detected
+// flight's flown-time to count as "the same flight already logged by
+// hand" — wide enough to cover a pilot logging a bit late (or
+// pre-logging right before taking off), narrow enough not to match an
+// unrelated same-route flight from a different day.
+const MANUAL_LOG_MATCH_WINDOW_MS = 60 * 60 * 1000;
 
 const MAX_IMAGES_PER_REQUEST = 8;
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024; // 8 MB/image — plenty for a screenshot, keeps requests fast
@@ -276,13 +282,20 @@ export async function handleAutoFlightConfirm(request, env) {
 // safe to log.
 // ---------------------------------------------------------------------
 async function detectFlights(env, session, rawEntries) {
-  const [opsData, settings] = await Promise.all([
+  const [opsData, settings, loggedFlights] = await Promise.all([
     fetchOperationsData(env),
     getStoredSettings(env, session.discordUsername),
+    fetchLoggedFlights(env),
   ]);
 
   if (!opsData) {
     return { ok: false, message: 'Fleet/airport data is unavailable right now.', httpStatus: 502 };
+  }
+
+  if (!loggedFlights) {
+    // Non-fatal — the manual-log cross-check below is just skipped for
+    // this batch rather than blocking detection over it.
+    console.error('Could not read the manual flight log sheet — skipping manual-log dedup for this batch.');
   }
 
   const fleetByLower = new Map(opsData.fleet.map(name => [name.trim().toLowerCase(), name]));
@@ -363,6 +376,28 @@ async function detectFlights(env, session, rawEntries) {
       continue;
     }
 
+    const departureName = airportNameByCode.get(entry.departure) || entry.departure;
+    const arrivalName = airportNameByCode.get(entry.arrival) || entry.arrival;
+
+    // Cross-check against the manual flight log sheet (gid 560263512):
+    // if this same pilot already logged a flight by hand with the same
+    // aircraft/departure/destination close in time to when this one was
+    // flown, treat it as already logged rather than double-counting it.
+    if (loggedFlights && matchesManualLog(loggedFlights, {
+      discordUsername: session.discordUsername,
+      aircraft: fleetAircraft,
+      departureName,
+      arrivalName,
+      flownAtMs: entry.timestampMs,
+    })) {
+      skipped.push({
+        usageId: entry.usageId,
+        reason: `Already logged manually (matches ${departureName} \u2192 ${arrivalName} in the flight log).`,
+        detail: summarizeEntry(entry),
+      });
+      continue;
+    }
+
     const distanceValue = unit === 'km'
       ? Math.round(entry.distanceNm * NM_TO_KM * 10) / 10
       : Math.round(entry.distanceNm * 10) / 10;
@@ -376,8 +411,8 @@ async function detectFlights(env, session, rawEntries) {
       // for the pilot-facing review list and for what actually gets
       // submitted, while `departure`/`arrival` (the codes) stay around
       // for matching/dedup.
-      departureName: airportNameByCode.get(entry.departure) || entry.departure,
-      arrivalName: airportNameByCode.get(entry.arrival) || entry.arrival,
+      departureName,
+      arrivalName,
       distanceValue,
       unit,
       timeMinutes: entry.timeMinutes,
@@ -386,6 +421,36 @@ async function detectFlights(env, session, rawEntries) {
   }
 
   return { ok: true, flights, skipped };
+}
+
+// Checks whether a detected flight was already logged by hand through
+// the manual Flight Logger form, by looking for a row in the manual
+// flight log sheet (gid 560263512 — see fetchLoggedFlights in
+// src/index.js) from the same pilot, with the same aircraft and the
+// same departure/destination airport names, logged within
+// MANUAL_LOG_MATCH_WINDOW_MS of when this flight was actually flown.
+// Airport names (not ICAO codes) are compared since that's what the
+// manual logger submits — see the ICAO-to-name translation in
+// dashboard.html and detectFlights() above.
+function matchesManualLog(loggedFlights, { discordUsername, aircraft, departureName, arrivalName, flownAtMs }) {
+  const targetDiscord = (discordUsername || '').toLowerCase();
+  const targetAircraft = (aircraft || '').trim().toLowerCase();
+  const targetDeparture = (departureName || '').trim().toLowerCase();
+  const targetArrival = (arrivalName || '').trim().toLowerCase();
+
+  return loggedFlights.some(logged => {
+    if (logged.discordUsername !== targetDiscord) return false;
+    if (logged.aircraft.trim().toLowerCase() !== targetAircraft) return false;
+    if (logged.departure.trim().toLowerCase() !== targetDeparture) return false;
+    if (logged.destination.trim().toLowerCase() !== targetArrival) return false;
+
+    // Everything else matches — if either timestamp is unreadable,
+    // don't let a missing/bad date sneak a duplicate through; treat it
+    // as close enough rather than as a non-match.
+    if (logged.timestampMs === null || flownAtMs === null) return true;
+
+    return Math.abs(logged.timestampMs - flownAtMs) <= MANUAL_LOG_MATCH_WINDOW_MS;
+  });
 }
 
 // Small client-safe snapshots of what was actually read off the
