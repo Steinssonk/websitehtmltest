@@ -439,6 +439,77 @@ export async function fetchOperationsData(env) {
   return { airports, fleet, paycheckEnabled };
 }
 
+// Reads the manually-submitted flight log sheet — a third tab (GID) in
+// the same spreadsheet — so the automatic screenshot-based logger can
+// check whether a flight it read off an FDR screenshot was already
+// entered by hand through the manual Flight Logger form. There's no
+// shared flight id between the two logging paths (the manual form
+// never had a "Usage" id to begin with), so this just hands back every
+// row and lets the caller (see matchesManualLog() in
+// src/autoflightlog.js) do a best-effort match on pilot, aircraft,
+// rounded distance/time, route, and roughly when it was logged.
+//
+// Column layout: A Timestamp, B Discord Username, C Roblox Username,
+// D Aircraft Flown, E Time Flown, F Distance Flown, G Departure,
+// H Destination, I Unit of Measurement.
+//
+// Returns [] (never null) on any failure — this is a best-effort dedup
+// check, not something that should block detection if the sheet is
+// temporarily unreachable or the GID isn't configured.
+export async function fetchLoggedFlights(env) {
+  const sheetId = env.SHEET_ID;
+  const gid = env.LOG_SHEET_GID;
+  if (!sheetId || !gid) return [];
+
+  const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&gid=${gid}`;
+
+  let res;
+  try {
+    res = await fetch(csvUrl);
+  } catch (err) {
+    console.error('Failed to fetch manual flight log sheet:', err);
+    return [];
+  }
+  if (!res.ok) return [];
+
+  const csvText = await res.text();
+  const rows = parseCsv(csvText);
+
+  const logs = [];
+  for (const row of rows) {
+    const timestampMs = Date.parse((row[0] || '').trim());
+    const discordUsername = (row[1] || '').trim();
+    const robloxUsername = (row[2] || '').trim();
+    const aircraft = (row[3] || '').trim();
+    const timeCell = (row[4] || '').trim();
+    const distance = Number((row[5] || '').trim());
+    const departure = (row[6] || '').trim().toUpperCase();
+    const arrival = (row[7] || '').trim().toUpperCase();
+    const unit = (row[8] || '').trim().toLowerCase();
+
+    // Skips the header row and any blank/malformed rows automatically —
+    // a real logged row always has a parseable timestamp, an aircraft,
+    // and a numeric distance.
+    if (Number.isNaN(timestampMs) || !discordUsername || !aircraft || !Number.isFinite(distance)) {
+      continue;
+    }
+
+    logs.push({
+      timestampMs,
+      discordUsername,
+      robloxUsername,
+      aircraft,
+      timeCell,
+      distance,
+      departure: departure || null,
+      arrival: arrival || null,
+      unit: unit === 'km' ? 'km' : 'nm',
+    });
+  }
+
+  return logs;
+}
+
 function parseCsv(text) {
   const rows = [];
   let row = [];

@@ -20,10 +20,14 @@
 //
 //   1. POST /api/flight/auto/detect  (multipart/form-data, one or more
 //      "images" files) — reads each image, matches rows against the
-//      fleet/hubs/24h window/already-logged filters, stashes the
-//      resulting candidate flights in KV under a short-lived batchId,
-//      and returns the client-safe flight list + a skip reason for
-//      every row that didn't qualify.
+//      fleet/hubs/24h window/already-logged filters (including a
+//      best-effort check against the manual Flight Logger's own sheet,
+//      since a pilot could have typed the same flight in by hand
+//      before ever uploading a screenshot of it — see
+//      matchesManualLog() below), stashes the resulting candidate
+//      flights in KV under a short-lived batchId, and returns the
+//      client-safe flight list + a skip reason for every row that
+//      didn't qualify.
 //
 //   2. POST /api/flight/auto/confirm  { batchId, usageIds: [...] } —
 //      re-reads the candidate flights from that same KV batch (never
@@ -38,13 +42,24 @@
 // re-uploads the same screenshot later.
 // ---------------------------------------------------------------------
 
-import { parseCookies, verifySessionCookie, jsonResponse, SESSION_COOKIE, fetchOperationsData } from './index.js';
+import { parseCookies, verifySessionCookie, jsonResponse, SESSION_COOKIE, fetchOperationsData, fetchLoggedFlights } from './index.js';
 import { submitFlightToWispbyte } from './flightsubmit.js';
 import { getStoredSettings } from './settingssave.js';
 import { extractFlightRowsFromImage, arrayBufferToBase64 } from './imageocr.js';
 
 const WINDOW_MS = 24 * 60 * 60 * 1000; // "within 24 hours" window
 const NM_TO_KM = 1.852;
+
+// How loosely a manually-logged row is allowed to match a screenshot-
+// detected flight before it's treated as "the same flight, logged
+// twice". The manual form only accepts whole numbers, so a flight's
+// true distance/time always gets rounded when it's typed in by hand —
+// these tolerances just need to absorb that rounding (plus a little
+// slack for unit-conversion rounding), not open the door to matching
+// genuinely different flights.
+const MANUAL_LOG_DISTANCE_TOLERANCE = 2;   // in whatever unit the manual row used
+const MANUAL_LOG_TIME_TOLERANCE_MIN = 3;   // minutes
+const MANUAL_LOG_TIME_WINDOW_MS = WINDOW_MS; // how close the manual entry's timestamp has to be
 
 const MAX_IMAGES_PER_REQUEST = 8;
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024; // 8 MB/image — plenty for a screenshot, keeps requests fast
@@ -237,9 +252,10 @@ export async function handleAutoFlightConfirm(request, env) {
 // safe to log.
 // ---------------------------------------------------------------------
 async function detectFlights(env, session, rawEntries) {
-  const [opsData, settings] = await Promise.all([
+  const [opsData, settings, manualLogs] = await Promise.all([
     fetchOperationsData(env),
     getStoredSettings(env, session.discordUsername),
+    fetchLoggedFlights(env),
   ]);
 
   if (!opsData) {
@@ -249,20 +265,41 @@ async function detectFlights(env, session, rawEntries) {
   // Match by both the sheet's regular airport code (column A) and its
   // ICAO code (column D) — the in-game FDR log doesn't always use the
   // same code format the sheet does, so a row is treated as known/hub
-  // if either code matches what was read off the screenshot.
+  // if either code matches what was read off the screenshot. The same
+  // "airportGroups" map also lets us tell whether a departure/arrival
+  // read off a screenshot is the *same airport* as one logged manually
+  // under a different code format (see matchesManualLog() below).
   const hubAirports = new Set();
   const knownAirports = new Set();
-  for (const airport of opsData.airports) {
+  const airportGroups = new Map(); // any known code (either format) -> shared group id
+  opsData.airports.forEach((airport, i) => {
     const code = (airport.code || '').trim().toUpperCase();
     const icao = (airport.icaoCode || '').trim().toUpperCase();
-    if (code) knownAirports.add(code);
-    if (icao) knownAirports.add(icao);
+    if (code) { knownAirports.add(code); airportGroups.set(code, i); }
+    if (icao) { knownAirports.add(icao); airportGroups.set(icao, i); }
     if (airport.isHub) {
       if (code) hubAirports.add(code);
       if (icao) hubAirports.add(icao);
     }
-  }
+  });
+  const sameAirport = (a, b) => {
+    if (!a || !b) return false;
+    if (a === b) return true;
+    const groupA = airportGroups.get(a);
+    return groupA !== undefined && groupA === airportGroups.get(b);
+  };
+
   const unit = settings.unit === 'km' ? 'km' : 'nm';
+
+  // Only this pilot's manually-logged rows are relevant — matched
+  // against either username, since the manual form's own two username
+  // columns don't always both get filled in reliably.
+  const discordLower = (session.discordUsername || '').toLowerCase();
+  const robloxLower = (session.robloxUsername || '').toLowerCase();
+  const pilotManualLogs = manualLogs.filter(log =>
+    (log.discordUsername && log.discordUsername.toLowerCase() === discordLower) ||
+    (log.robloxUsername && robloxLower && log.robloxUsername.toLowerCase() === robloxLower)
+  );
 
   const now = Date.now();
   const cutoff = now - WINDOW_MS;
@@ -324,6 +361,18 @@ async function detectFlights(env, session, rawEntries) {
       continue;
     }
 
+    if (matchesManualLog(entry, pilotManualLogs, sameAirport)) {
+      // The website has no way to tell a manually-typed entry apart
+      // from one the pilot later re-discovers in an FDR screenshot —
+      // there's no shared flight id between the two logging paths. So
+      // once we find a manual row that looks like the same flight,
+      // treat it the same as an already-logged usage id (including
+      // caching that verdict) rather than letting it get logged twice.
+      await markUsageIdLogged(env, entry.usageId, session);
+      skipped.push({ usageId: entry.usageId, reason: 'Already logged manually.' });
+      continue;
+    }
+
     const distanceValue = unit === 'km'
       ? Math.round(entry.distanceNm * NM_TO_KM * 10) / 10
       : Math.round(entry.distanceNm * 10) / 10;
@@ -380,6 +429,43 @@ function normalizeAircraftName(name) {
   }
 
   return s.replace(/[^a-z0-9]/g, '');
+}
+
+// ---------------------------------------------------------------------
+// Manual-log dedup — the manual Flight Logger form and the automatic
+// screenshot logger both end up writing to the same roster sheet, but
+// nothing ties a manually-typed entry to a "Usage" id, so a pilot could
+// otherwise get paid twice for one flight: once by typing it in by
+// hand, and again later after uploading an FDR screenshot that covers
+// the same flight. This does a best-effort match against that pilot's
+// own manually-logged rows (see fetchLoggedFlights() in src/index.js)
+// on aircraft, route, rounded distance/time, and roughly when it was
+// logged — good enough to catch the common case without needing an
+// exact match the manual form was never designed to support.
+function matchesManualLog(entry, pilotLogs, sameAirport) {
+  for (const log of pilotLogs) {
+    if (Math.abs(log.timestampMs - entry.timestampMs) > MANUAL_LOG_TIME_WINDOW_MS) continue;
+    if (!sameAirport(entry.departure, log.departure) || !sameAirport(entry.arrival, log.arrival)) continue;
+
+    const normEntryAircraft = normalizeAircraftName(entry.aircraft);
+    const normLogAircraft = normalizeAircraftName(log.aircraft);
+    const aircraftMatches = normEntryAircraft && normLogAircraft && (
+      normEntryAircraft === normLogAircraft ||
+      normEntryAircraft.includes(normLogAircraft) ||
+      normLogAircraft.includes(normEntryAircraft)
+    );
+    if (!aircraftMatches) continue;
+
+    const entryDistanceInLogUnit = log.unit === 'km' ? entry.distanceNm * NM_TO_KM : entry.distanceNm;
+    if (Math.abs(entryDistanceInLogUnit - log.distance) > MANUAL_LOG_DISTANCE_TOLERANCE) continue;
+
+    const logTimeMinutes = parseDurationToMinutes(log.timeCell);
+    if (logTimeMinutes === null || Math.abs(logTimeMinutes - entry.timeMinutes) > MANUAL_LOG_TIME_TOLERANCE_MIN) continue;
+
+    return true;
+  }
+
+  return false;
 }
 
 // Finds the fleet entry that best matches a raw in-game aircraft name.
