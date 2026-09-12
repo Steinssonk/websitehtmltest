@@ -51,27 +51,10 @@ export async function handleFlightSubmit(request, env) {
     return jsonResponse({ status: 'error', message: "Departure and destination can't be the same airport." }, 400);
   }
 
-  const result = await submitFlightToWispbyte(env, session, payload);
-
-  if (result.ok) {
-    return jsonResponse({ status: 'completed' }, 200);
-  }
-
-  return jsonResponse({ status: 'error', message: result.message }, result.httpStatus || 502);
-}
-
-// Shared with the automatic (FDR-based) flight logger in
-// src/autoflightlog.js, so both the manual form and the auto-detected
-// confirm flow forward flights to the exact same Wispbyte endpoint the
-// exact same way, instead of keeping two copies of this logic in sync.
-//
-// Returns { ok: true } on success, or { ok: false, message, httpStatus }
-// on failure — never throws.
-export async function submitFlightToWispbyte(env, session, payload) {
   const baseUrl = (env.WISPBYTE_BASE_URL || '').replace(/\/+$/, '');
   if (!baseUrl) {
     console.error('WISPBYTE_BASE_URL is not configured — see flightsubmit.js');
-    return { ok: false, message: "Flight submission isn't configured yet.", httpStatus: 501 };
+    return jsonResponse({ status: 'error', message: 'Flight submission isn\'t configured yet.' }, 501);
   }
 
   const targetUrl = `${baseUrl}/flight-log`;
@@ -97,7 +80,7 @@ export async function submitFlightToWispbyte(env, session, payload) {
       // URL 404'd/500'd via `wrangler tail` without exposing internal
       // infrastructure details to pilots submitting flights.
       console.error('Flight log request failed:', forwardRes.status, targetUrl);
-      return { ok: false, message: `Flight log request failed: HTTP ${forwardRes.status}`, httpStatus: 502 };
+      return jsonResponse({ status: 'error', message: `Flight log request failed: HTTP ${forwardRes.status}` }, 502);
     }
 
     let result;
@@ -105,17 +88,17 @@ export async function submitFlightToWispbyte(env, session, payload) {
       result = await forwardRes.json();
     } catch {
       console.error('Flight log response was not valid JSON');
-      return { ok: false, message: 'Flight submission service returned an unexpected response.', httpStatus: 502 };
+      return jsonResponse({ status: 'error', message: 'Flight submission service returned an unexpected response.' }, 502);
     }
 
     // flightLog.js on Wispbyte returns { success: true/false, status: <Google's HTTP status> }
     if (result.success && result.status === 200) {
-      return { ok: true };
+      return jsonResponse({ status: 'completed' }, 200);
     }
 
-    return { ok: false, message: result.error || 'Flight submission failed', httpStatus: 502 };
+    return jsonResponse({ status: 'error', message: result.error || 'Flight submission failed' }, 502);
   } catch (err) {
     console.error('Flight submit webhook error:', err);
-    return { ok: false, message: 'Could not reach the flight submission service.', httpStatus: 502 };
+    return jsonResponse({ status: 'error', message: 'Could not reach the flight submission service.' }, 502);
   }
 }
