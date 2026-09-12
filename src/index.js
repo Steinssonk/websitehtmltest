@@ -2,6 +2,7 @@ import { handleFlightSubmit } from './flightsubmit.js';
 import { handleClaimSubmit } from './claimsubmit.js';
 import { handleGetSettings, handleSaveSettings } from './settingssave.js';
 import { handleAutoFlightDetect, handleAutoFlightConfirm } from './autoflightlog.js';
+export { OcrRelay } from './ocrrelay.js';
 import headerHtml from './header.html';
 import footerHtml from './footer.html';
 import metaTags from './meta.html';

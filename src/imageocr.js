@@ -98,7 +98,43 @@ export async function extractFlightRowsFromImage(env, base64Data, mediaType) {
 // ---------------------------------------------------------------------
 const GEMINI_DEFAULT_MODEL = 'gemini-3.5-flash';
 
-async function extractWithGemini(env, base64Data, mediaType) {
+// ---------------------------------------------------------------------
+// Region-pinned relay (see src/ocrrelay.js)
+//
+// A plain fetch() here would run from whatever Cloudflare edge colo is
+// handling the pilot's request — which, for pilots near Southeast Asia,
+// is often Hong Kong (HKG). Gemini (and other providers) reject API
+// calls that appear to originate from unsupported locations, HKG among
+// them, with a 400 "User location is not supported for the API use."
+// Routing through the OCR_RELAY Durable Object instead pins the actual
+// outbound call to a fixed, supported region (Western North America)
+// regardless of where the incoming request landed.
+//
+// Falls back to a direct fetch() if OCR_RELAY isn't bound (e.g. local
+// dev without the Durable Object migration applied) — better to try
+// the request as-is than to hard-fail before even attempting it.
+// ---------------------------------------------------------------------
+const RELAY_LOCATION_HINT = 'wnam'; // Western North America — solidly inside every provider's supported list
+
+async function relayFetch(env, targetUrl, init = {}) {
+  if (!env.OCR_RELAY) {
+    return fetch(targetUrl, init);
+  }
+
+  const id = env.OCR_RELAY.idFromName('ocr-relay-v1');
+  const stub = env.OCR_RELAY.get(id, { locationHint: RELAY_LOCATION_HINT });
+
+  const headers = new Headers(init.headers || {});
+  headers.set('X-Relay-Target-Url', targetUrl);
+
+  return stub.fetch('https://ocr-relay.internal/relay', {
+    method: init.method || 'GET',
+    headers,
+    body: init.body,
+  });
+}
+
+
   const apiKey = env.GEMINI_API_KEY;
   if (!apiKey) {
     const err = new Error("Automatic flight logging isn't configured yet (missing GEMINI_API_KEY).");
@@ -136,7 +172,7 @@ async function extractWithGemini(env, base64Data, mediaType) {
 
   let res;
   try {
-    res = await fetch(apiUrl, {
+    res = await relayFetch(env, apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -255,7 +291,7 @@ async function extractWithOpenAI(env, base64Data, mediaType) {
 
   let res;
   try {
-    res = await fetch(OPENAI_API_URL, {
+    res = await relayFetch(env, OPENAI_API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -373,7 +409,7 @@ async function extractWithAnthropic(env, base64Data, mediaType) {
 
   let res;
   try {
-    res = await fetch(ANTHROPIC_API_URL, {
+    res = await relayFetch(env, ANTHROPIC_API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
