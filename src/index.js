@@ -1,6 +1,7 @@
 import { handleFlightSubmit } from './flightsubmit.js';
 import { handleClaimSubmit } from './claimsubmit.js';
 import { handleGetSettings, handleSaveSettings } from './settingssave.js';
+import { handleAutoFlightDetect, handleAutoFlightConfirm } from './autoflightlog.js';
 import headerHtml from './header.html';
 import footerHtml from './footer.html';
 import metaTags from './meta.html';
@@ -102,6 +103,19 @@ export default {
       // file for what it actually does.
       if (pathname === '/api/claim/submit') {
         return handleClaimSubmit(request, env);
+      }
+
+      // Automatic flight logging (reads FDR data from uploaded
+      // screenshots, matches it against the fleet, and lets the pilot
+      // confirm/log everything in one go) gets its own file — see
+      // src/autoflightlog.js. Both routes are POST: /detect takes
+      // multipart/form-data image uploads, /confirm takes JSON.
+      if (pathname === '/api/flight/auto/detect') {
+        return handleAutoFlightDetect(request, env);
+      }
+
+      if (pathname === '/api/flight/auto/confirm') {
+        return handleAutoFlightConfirm(request, env);
       }
 
       // Dashboard settings (unit, swap-after-log, theme) get their own
@@ -378,7 +392,7 @@ async function lookupRosterRow(env, discordUsername) {
 // Paycheck status is treated as a single site-wide switch rather than
 // a per-row value: if ANY row has "yes" in column E, payroll is
 // considered open and the Claim Reward button is enabled.
-async function fetchOperationsData(env) {
+export async function fetchOperationsData(env) {
   const sheetId = env.SHEET_ID;
   const gid = env.OPERATIONS_SHEET_GID;
   const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&gid=${gid}`;
