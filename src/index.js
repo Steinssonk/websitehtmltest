@@ -386,8 +386,11 @@ async function lookupRosterRow(env, discordUsername) {
 // fleet list, and the site-wide paycheck status flag.
 //
 // Column layout per row:
-//   A: airport code            B: "hub" marks that airport as a hub
-//   C: fleet/aircraft entry    E: paycheck status ("yes" = enabled)
+//   A: location/airport name (display only, not used for matching)
+//   B: "hub" marks that airport as a hub
+//   C: fleet/aircraft entry
+//   D: airport code (ICAO code used for departure/arrival matching)
+//   E: paycheck status ("yes" = enabled)
 //
 // Paycheck status is treated as a single site-wide switch rather than
 // a per-row value: if ANY row has "yes" in column E, payroll is
@@ -409,9 +412,9 @@ export async function fetchOperationsData(env) {
   let paycheckEnabled = false;
 
   for (const row of rows) {
-    const airportCode = (row[0] || '').trim().toUpperCase();  // Column A
     const hubFlag = (row[1] || '').trim().toLowerCase();      // Column B
     const fleetEntry = (row[2] || '').trim();                 // Column C
+    const airportCode = (row[3] || '').trim().toUpperCase();  // Column D
     const paycheckCell = (row[4] || '').trim().toLowerCase(); // Column E
 
     if (airportCode) {
