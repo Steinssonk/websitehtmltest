@@ -269,14 +269,21 @@ async function detectFlights(env, session, rawEntries) {
   // "airportGroups" map also lets us tell whether a departure/arrival
   // read off a screenshot is the *same airport* as one logged manually
   // under a different code format (see matchesManualLog() below).
+  // "canonicalCode" goes the other way — whichever code the screenshot
+  // actually used, it maps back to the sheet's own column A code, so
+  // that's what ends up in the reviewed flight list and the submitted
+  // flight, instead of a raw ICAO code the rest of the site doesn't
+  // otherwise use.
   const hubAirports = new Set();
   const knownAirports = new Set();
-  const airportGroups = new Map(); // any known code (either format) -> shared group id
+  const airportGroups = new Map(); // any known code (either format, uppercased) -> shared group id
+  const canonicalCode = new Map(); // any known code (either format, uppercased) -> column A code, in its original casing
   opsData.airports.forEach((airport, i) => {
-    const code = (airport.code || '').trim().toUpperCase();
+    const originalCode = (airport.code || '').trim(); // keep the sheet's own casing for display/submission
+    const code = originalCode.toUpperCase();
     const icao = (airport.icaoCode || '').trim().toUpperCase();
-    if (code) { knownAirports.add(code); airportGroups.set(code, i); }
-    if (icao) { knownAirports.add(icao); airportGroups.set(icao, i); }
+    if (code) { knownAirports.add(code); airportGroups.set(code, i); canonicalCode.set(code, originalCode); }
+    if (icao) { knownAirports.add(icao); airportGroups.set(icao, i); if (code) canonicalCode.set(icao, originalCode); }
     if (airport.isHub) {
       if (code) hubAirports.add(code);
       if (icao) hubAirports.add(icao);
@@ -377,11 +384,24 @@ async function detectFlights(env, session, rawEntries) {
       ? Math.round(entry.distanceNm * NM_TO_KM * 10) / 10
       : Math.round(entry.distanceNm * 10) / 10;
 
+    // Canonicalize whichever code format the screenshot actually used
+    // (the sheet's own code, or its ICAO code from column D) back to
+    // the sheet's own column A code/name, in its original casing —
+    // that's the form pilots/staff recognize and the one used
+    // everywhere else on the site, so it's what shows up in the review
+    // list and what actually gets submitted, rather than a raw ICAO
+    // code straight from the game. Done last (after every check that
+    // needs the uppercase code form to match against the ops sheet's
+    // and manual log's own uppercased sets) so it can't interfere with
+    // any of the matching above.
+    const displayDeparture = canonicalCode.get(entry.departure) || entry.departure;
+    const displayArrival = canonicalCode.get(entry.arrival) || entry.arrival;
+
     flights.push({
       usageId: entry.usageId,
       fleetAircraft,
-      departure: entry.departure,
-      arrival: entry.arrival,
+      departure: displayDeparture,
+      arrival: displayArrival,
       distanceValue,
       unit,
       timeMinutes: entry.timeMinutes,
@@ -431,6 +451,16 @@ function normalizeAircraftName(name) {
   return s.replace(/[^a-z0-9]/g, '');
 }
 
+// The manual form's "Time Flown" column is always a plain whole number
+// of minutes (e.g. "16") — no HH:MM:SS, no decimals. That's a different
+// format from the FDR screenshot's own duration field (parsed by
+// parseDurationToMinutes below, which expects hours or HH:MM:SS), so
+// it gets its own tiny parser rather than overloading that one.
+function parseManualLogTimeMinutes(timeCell) {
+  const minutes = Number(String(timeCell ?? '').trim());
+  return Number.isFinite(minutes) ? Math.round(minutes) : null;
+}
+
 // ---------------------------------------------------------------------
 // Manual-log dedup — the manual Flight Logger form and the automatic
 // screenshot logger both end up writing to the same roster sheet, but
@@ -459,7 +489,7 @@ function matchesManualLog(entry, pilotLogs, sameAirport) {
     const entryDistanceInLogUnit = log.unit === 'km' ? entry.distanceNm * NM_TO_KM : entry.distanceNm;
     if (Math.abs(entryDistanceInLogUnit - log.distance) > MANUAL_LOG_DISTANCE_TOLERANCE) continue;
 
-    const logTimeMinutes = parseDurationToMinutes(log.timeCell);
+    const logTimeMinutes = parseManualLogTimeMinutes(log.timeCell);
     if (logTimeMinutes === null || Math.abs(logTimeMinutes - entry.timeMinutes) > MANUAL_LOG_TIME_TOLERANCE_MIN) continue;
 
     return true;
