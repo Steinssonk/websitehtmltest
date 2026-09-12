@@ -387,14 +387,7 @@ async function lookupRosterRow(env, discordUsername) {
 //
 // Column layout per row:
 //   A: airport code            B: "hub" marks that airport as a hub
-//   C: fleet/aircraft entry    D: ICAO code for the airport in column A
-//   E: paycheck status ("yes" = enabled)
-//
-// Column D holds the ICAO code for the same row's airport (column A) —
-// the in-game FDR log sometimes reports ICAO codes instead of whatever
-// code is used in column A, so this lets the auto flight logger match
-// a departure/arrival it read off a screenshot against an airport even
-// when the two use different code formats.
+//   C: fleet/aircraft entry    E: paycheck status ("yes" = enabled)
 //
 // Paycheck status is treated as a single site-wide switch rather than
 // a per-row value: if ANY row has "yes" in column E, payroll is
@@ -419,11 +412,10 @@ export async function fetchOperationsData(env) {
     const airportCode = (row[0] || '').trim();               // Column A
     const hubFlag = (row[1] || '').trim().toLowerCase();      // Column B
     const fleetEntry = (row[2] || '').trim();                 // Column C
-    const icaoCode = (row[3] || '').trim();                   // Column D
     const paycheckCell = (row[4] || '').trim().toLowerCase(); // Column E
 
     if (airportCode) {
-      airports.push({ code: airportCode, isHub: hubFlag === 'hub', icaoCode: icaoCode || null });
+      airports.push({ code: airportCode, isHub: hubFlag === 'hub' });
     }
 
     if (fleetEntry && !fleetSeen.has(fleetEntry)) {
@@ -437,77 +429,6 @@ export async function fetchOperationsData(env) {
   }
 
   return { airports, fleet, paycheckEnabled };
-}
-
-// Reads the manually-submitted flight log sheet — a third tab (GID) in
-// the same spreadsheet — so the automatic screenshot-based logger can
-// check whether a flight it read off an FDR screenshot was already
-// entered by hand through the manual Flight Logger form. There's no
-// shared flight id between the two logging paths (the manual form
-// never had a "Usage" id to begin with), so this just hands back every
-// row and lets the caller (see matchesManualLog() in
-// src/autoflightlog.js) do a best-effort match on pilot, aircraft,
-// rounded distance/time, route, and roughly when it was logged.
-//
-// Column layout: A Timestamp, B Discord Username, C Roblox Username,
-// D Aircraft Flown, E Time Flown, F Distance Flown, G Departure,
-// H Destination, I Unit of Measurement.
-//
-// Returns [] (never null) on any failure — this is a best-effort dedup
-// check, not something that should block detection if the sheet is
-// temporarily unreachable or the GID isn't configured.
-export async function fetchLoggedFlights(env) {
-  const sheetId = env.SHEET_ID;
-  const gid = env.LOG_SHEET_GID;
-  if (!sheetId || !gid) return [];
-
-  const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&gid=${gid}`;
-
-  let res;
-  try {
-    res = await fetch(csvUrl);
-  } catch (err) {
-    console.error('Failed to fetch manual flight log sheet:', err);
-    return [];
-  }
-  if (!res.ok) return [];
-
-  const csvText = await res.text();
-  const rows = parseCsv(csvText);
-
-  const logs = [];
-  for (const row of rows) {
-    const timestampMs = Date.parse((row[0] || '').trim());
-    const discordUsername = (row[1] || '').trim();
-    const robloxUsername = (row[2] || '').trim();
-    const aircraft = (row[3] || '').trim();
-    const timeCell = (row[4] || '').trim();
-    const distance = Number((row[5] || '').trim());
-    const departure = (row[6] || '').trim().toUpperCase();
-    const arrival = (row[7] || '').trim().toUpperCase();
-    const unit = (row[8] || '').trim().toLowerCase();
-
-    // Skips the header row and any blank/malformed rows automatically —
-    // a real logged row always has a parseable timestamp, an aircraft,
-    // and a numeric distance.
-    if (Number.isNaN(timestampMs) || !discordUsername || !aircraft || !Number.isFinite(distance)) {
-      continue;
-    }
-
-    logs.push({
-      timestampMs,
-      discordUsername,
-      robloxUsername,
-      aircraft,
-      timeCell,
-      distance,
-      departure: departure || null,
-      arrival: arrival || null,
-      unit: unit === 'km' ? 'km' : 'nm',
-    });
-  }
-
-  return logs;
 }
 
 function parseCsv(text) {

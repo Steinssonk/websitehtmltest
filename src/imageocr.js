@@ -38,7 +38,9 @@
 
 const EXTRACTION_PROMPT = `This is a screenshot of an in-game "Server Info" FDR (Flight Data Recorder) log — a scrollable list of flights. Each row shows, top to bottom: the aircraft/vehicle type; a line with the date, a UTC time, and a "Usage: <id>" number; then three columns — a departure airport code next to a takeoff icon, a distance in nautical miles with a duration underneath it, and an arrival airport code next to a landing icon. A crashed flight shows the word "CRASH" (often in red) in place of either the duration or the arrival code.
 
-Call record_flight_rows with one entry per visible flight row, reading every field exactly as printed. Do not include rows from any other part of the screenshot (menus, chat log, server stats, etc). If a row is partially cut off at the top/bottom edge such that you can't read all of its fields, leave it out rather than guessing.`;
+Call record_flight_rows with one entry per visible flight row, reading every field exactly as printed. Do not include rows from any other part of the screenshot (menus, chat log, server stats, etc). If a row is partially cut off at the top/bottom edge such that you can't read all of its fields, leave it out rather than guessing.
+
+Separately, fill in "authenticity": judge only whether the FDR panel itself is a genuine, unedited render of this in-game UI, or whether some of its content looks digitally altered. Base this purely on internal consistency of the panel — NOT on where it sits on the screen, how it's cropped, its resolution, or its aspect ratio, since the panel's position and the amount of surrounding screen visible legitimately varies by device and by how the player cropped the screenshot. Set "looksAltered": true only if you see concrete evidence such as: text whose sharpness, blur, or anti-aliasing doesn't match the rest of the panel; a font, weight, size, or kerning that differs between rows or within a row; a visible edge/halo/box around a piece of text or a number suggesting something was pasted on top of the panel; a row whose alignment or spacing breaks the otherwise-consistent grid of the other rows; compression noise or color banding around one row/field that doesn't match its neighbors; or a value that has clearly been drawn over rather than rendered by the game (e.g. mismatched pixel grid or color depth). List each concrete piece of evidence as its own short string in "evidence" (empty array if "looksAltered" is false). Set "confidence" to how sure you are in that verdict — "low" if the evidence is faint or you're mostly guessing, "high" only if it's unambiguous. When in doubt, prefer "looksAltered": false with "low" confidence rather than over-flagging normal compression/cropping artifacts.`;
 
 const ROW_PROPERTIES = {
   aircraft: { type: 'string', description: 'The aircraft/vehicle type text, e.g. "Boeing 747-8I".' },
@@ -52,9 +54,27 @@ const ROW_PROPERTIES = {
 };
 const ROW_REQUIRED = ['aircraft', 'date', 'time', 'usageId', 'departure', 'distanceNm', 'duration', 'arrival'];
 
-// Returns an array of raw row objects (possibly empty), or throws on a
-// hard failure (bad API key, network error, etc) so the caller can
-// surface a clear error instead of silently returning zero flights.
+// Per-IMAGE (not per-row) authenticity verdict — see the second half of
+// EXTRACTION_PROMPT. Deliberately scoped to "does the panel's own
+// rendering look internally consistent", never to screen position or
+// crop, so it behaves the same across phones/desktop/cropped uploads.
+const AUTHENTICITY_PROPERTIES = {
+  looksAltered: { type: 'boolean', description: 'True if the FDR panel shows concrete signs of digital editing (see evidence). False for a normal, unedited screenshot — including partial/cropped ones.' },
+  confidence: { type: 'string', enum: ['low', 'medium', 'high'], description: 'Confidence in the looksAltered verdict.' },
+  evidence: {
+    type: 'array',
+    items: { type: 'string' },
+    description: 'Short, concrete reasons supporting looksAltered=true (e.g. "row 3 duration text is noticeably blurrier than the rest of the panel"). Empty if looksAltered is false.',
+  },
+};
+const AUTHENTICITY_REQUIRED = ['looksAltered', 'confidence', 'evidence'];
+
+// Returns { rows, authenticity } — rows is an array of raw row objects
+// (possibly empty), authenticity is the per-image tampering verdict
+// described above (or null if the provider didn't return one, e.g. an
+// older cached response shape). Throws on a hard failure (bad API key,
+// network error, etc) so the caller can surface a clear error instead
+// of silently returning zero flights.
 export async function extractFlightRowsFromImage(env, base64Data, mediaType) {
   const provider = (env.IMAGE_OCR_PROVIDER || 'gemini').toLowerCase();
 
@@ -91,7 +111,7 @@ async function extractWithGemini(env, base64Data, mediaType) {
 
   const functionDeclaration = {
     name: 'record_flight_rows',
-    description: 'Records every flight row visible in the FDR (Flight Data Recorder) panel screenshot, top to bottom.',
+    description: 'Records every flight row visible in the FDR (Flight Data Recorder) panel screenshot, top to bottom, plus an authenticity assessment of the panel itself.',
     parameters: {
       type: 'object',
       properties: {
@@ -104,8 +124,13 @@ async function extractWithGemini(env, base64Data, mediaType) {
             required: ROW_REQUIRED,
           },
         },
+        authenticity: {
+          type: 'object',
+          properties: AUTHENTICITY_PROPERTIES,
+          required: AUTHENTICITY_REQUIRED,
+        },
       },
-      required: ['rows'],
+      required: ['rows', 'authenticity'],
     },
   };
 
@@ -172,10 +197,10 @@ async function extractWithGemini(env, base64Data, mediaType) {
 
   if (!functionCall || !functionCall.args || !Array.isArray(functionCall.args.rows)) {
     console.error('Gemini API response did not include the expected function call:', JSON.stringify(data).slice(0, 500));
-    return [];
+    return { rows: [], authenticity: null };
   }
 
-  return functionCall.args.rows;
+  return { rows: functionCall.args.rows, authenticity: normalizeAuthenticity(functionCall.args.authenticity) };
 }
 
 // ---------------------------------------------------------------------
@@ -200,7 +225,7 @@ async function extractWithOpenAI(env, base64Data, mediaType) {
     type: 'function',
     function: {
       name: 'record_flight_rows',
-      description: 'Records every flight row visible in the FDR (Flight Data Recorder) panel screenshot, top to bottom.',
+      description: 'Records every flight row visible in the FDR (Flight Data Recorder) panel screenshot, top to bottom, plus an authenticity assessment of the panel itself.',
       strict: true,
       parameters: {
         type: 'object',
@@ -215,8 +240,14 @@ async function extractWithOpenAI(env, base64Data, mediaType) {
               additionalProperties: false,
             },
           },
+          authenticity: {
+            type: 'object',
+            properties: AUTHENTICITY_PROPERTIES,
+            required: AUTHENTICITY_REQUIRED,
+            additionalProperties: false,
+          },
         },
-        required: ['rows'],
+        required: ['rows', 'authenticity'],
         additionalProperties: false,
       },
     },
@@ -281,7 +312,7 @@ async function extractWithOpenAI(env, base64Data, mediaType) {
 
   if (!toolCall) {
     console.error('OpenAI API response did not include the expected tool call:', JSON.stringify(data).slice(0, 500));
-    return [];
+    return { rows: [], authenticity: null };
   }
 
   let parsedArgs;
@@ -289,10 +320,13 @@ async function extractWithOpenAI(env, base64Data, mediaType) {
     parsedArgs = JSON.parse(toolCall.function.arguments);
   } catch (err) {
     console.error('OpenAI tool call arguments were not valid JSON:', toolCall.function.arguments);
-    return [];
+    return { rows: [], authenticity: null };
   }
 
-  return Array.isArray(parsedArgs.rows) ? parsedArgs.rows : [];
+  return {
+    rows: Array.isArray(parsedArgs.rows) ? parsedArgs.rows : [],
+    authenticity: normalizeAuthenticity(parsedArgs.authenticity),
+  };
 }
 
 // ---------------------------------------------------------------------
@@ -314,7 +348,7 @@ async function extractWithAnthropic(env, base64Data, mediaType) {
 
   const tool = {
     name: 'record_flight_rows',
-    description: 'Records every flight row visible in the FDR (Flight Data Recorder) panel screenshot, top to bottom.',
+    description: 'Records every flight row visible in the FDR (Flight Data Recorder) panel screenshot, top to bottom, plus an authenticity assessment of the panel itself.',
     input_schema: {
       type: 'object',
       properties: {
@@ -327,8 +361,13 @@ async function extractWithAnthropic(env, base64Data, mediaType) {
             required: ROW_REQUIRED,
           },
         },
+        authenticity: {
+          type: 'object',
+          properties: AUTHENTICITY_PROPERTIES,
+          required: AUTHENTICITY_REQUIRED,
+        },
       },
-      required: ['rows'],
+      required: ['rows', 'authenticity'],
     },
   };
 
@@ -392,10 +431,80 @@ async function extractWithAnthropic(env, base64Data, mediaType) {
 
   if (!toolUse || !toolUse.input || !Array.isArray(toolUse.input.rows)) {
     console.error('Anthropic API response did not include the expected tool call:', JSON.stringify(data).slice(0, 500));
-    return [];
+    return { rows: [], authenticity: null };
   }
 
-  return toolUse.input.rows;
+  return { rows: toolUse.input.rows, authenticity: normalizeAuthenticity(toolUse.input.authenticity) };
+}
+
+// Defends against a provider returning a malformed/partial authenticity
+// object (wrong types, missing fields, an unrecognized confidence
+// string) by coercing it into a safe shape rather than trusting it
+// blindly. A missing/unusable object comes back as "unknown" — treated
+// as NOT flagged by the caller, since we never want a parsing hiccup to
+// block a legitimate flight; the metadata scan in
+// scanForEditorSignature() below is the check that isn't allowed to be
+// silently skipped.
+function normalizeAuthenticity(raw) {
+  if (!raw || typeof raw !== 'object') return null;
+  const confidence = ['low', 'medium', 'high'].includes(raw.confidence) ? raw.confidence : 'low';
+  const evidence = Array.isArray(raw.evidence) ? raw.evidence.filter(e => typeof e === 'string').slice(0, 10) : [];
+  return {
+    looksAltered: raw.looksAltered === true,
+    confidence,
+    evidence,
+  };
+}
+
+// ---------------------------------------------------------------------
+// Server-side forensic pre-check — independent of the vision model.
+//
+// This scans the raw uploaded bytes for the metadata an image/graphics
+// editor stamps into a file when it re-saves it (EXIF "Software"/
+// "ProcessingSoftware" tags in a JPEG, or tEXt/iTXt/XMP chunks in a
+// PNG). It's deliberately NOT layout- or crop-dependent — it doesn't
+// look at pixels or panel position at all, just the file's own
+// provenance metadata — so it behaves identically regardless of device,
+// aspect ratio, or how tightly the screenshot was cropped.
+//
+// This is a one-sided signal: presence of an editor tag is a strong,
+// hard-to-fake indicator the file passed through a graphics program
+// (screen-capture tools don't write these); ABSENCE of a tag is not
+// proof of anything, since metadata is trivially stripped. Treat a hit
+// here as a hard stop, and treat a miss as "no information either way"
+// — it's the vision model's authenticity field, not this scan, that's
+// responsible for catching a careful forger who stripped metadata.
+const EDITOR_SIGNATURES = [
+  'Adobe Photoshop', 'Adobe ImageReady', 'Affinity Photo', 'Affinity Designer',
+  'GIMP', 'Pixelmator', 'Paint.NET', 'Photopea', 'Canva', 'Pixlr', 'Fotor',
+];
+
+export function scanForEditorSignature(buffer) {
+  // Editor-written metadata sits in a handful of well-known spots near
+  // the start of the file (JPEG APP1/EXIF, PNG chunks right after the
+  // header) — occasionally also appended near the end by some PNG
+  // encoders — so scanning the first/last 64KB catches it on even a
+  // multi-megabyte screenshot without decoding the image at all.
+  const size = buffer.byteLength;
+  const headLen = Math.min(size, 65536);
+  const tailLen = Math.min(size - headLen, 65536);
+  const head = bytesToLatin1(new Uint8Array(buffer, 0, headLen));
+  const tail = tailLen > 0 ? bytesToLatin1(new Uint8Array(buffer, size - tailLen, tailLen)) : '';
+  const haystack = head + tail;
+
+  for (const signature of EDITOR_SIGNATURES) {
+    if (haystack.includes(signature)) return signature;
+  }
+  return null;
+}
+
+function bytesToLatin1(bytes) {
+  const chunkSize = 0x8000;
+  let out = '';
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    out += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
+  }
+  return out;
 }
 
 // Converts an ArrayBuffer to a base64 string in fixed-size chunks so it

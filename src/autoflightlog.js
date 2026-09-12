@@ -20,14 +20,10 @@
 //
 //   1. POST /api/flight/auto/detect  (multipart/form-data, one or more
 //      "images" files) — reads each image, matches rows against the
-//      fleet/hubs/24h window/already-logged filters (including a
-//      best-effort check against the manual Flight Logger's own sheet,
-//      since a pilot could have typed the same flight in by hand
-//      before ever uploading a screenshot of it — see
-//      matchesManualLog() below), stashes the resulting candidate
-//      flights in KV under a short-lived batchId, and returns the
-//      client-safe flight list + a skip reason for every row that
-//      didn't qualify.
+//      fleet/hubs/24h window/already-logged filters, stashes the
+//      resulting candidate flights in KV under a short-lived batchId,
+//      and returns the client-safe flight list + a skip reason for
+//      every row that didn't qualify.
 //
 //   2. POST /api/flight/auto/confirm  { batchId, usageIds: [...] } —
 //      re-reads the candidate flights from that same KV batch (never
@@ -42,24 +38,21 @@
 // re-uploads the same screenshot later.
 // ---------------------------------------------------------------------
 
-import { parseCookies, verifySessionCookie, jsonResponse, SESSION_COOKIE, fetchOperationsData, fetchLoggedFlights } from './index.js';
+import { parseCookies, verifySessionCookie, jsonResponse, SESSION_COOKIE, fetchOperationsData } from './index.js';
 import { submitFlightToWispbyte } from './flightsubmit.js';
 import { getStoredSettings } from './settingssave.js';
-import { extractFlightRowsFromImage, arrayBufferToBase64 } from './imageocr.js';
+import { extractFlightRowsFromImage, arrayBufferToBase64, scanForEditorSignature } from './imageocr.js';
+
+// An authenticity verdict only blocks the image when the vision model
+// is at least "medium" confident — "low" confidence is the model
+// hedging on a normal screenshot (compression noise, a cropped edge,
+// an unusual device font-rendering pass) and shouldn't cost a pilot a
+// legitimate flight. Tighten this to only 'high' if false positives
+// turn out to be more disruptive than missed fakes in practice.
+const AUTHENTICITY_BLOCK_CONFIDENCE = new Set(['medium', 'high']);
 
 const WINDOW_MS = 24 * 60 * 60 * 1000; // "within 24 hours" window
 const NM_TO_KM = 1.852;
-
-// How loosely a manually-logged row is allowed to match a screenshot-
-// detected flight before it's treated as "the same flight, logged
-// twice". The manual form only accepts whole numbers, so a flight's
-// true distance/time always gets rounded when it's typed in by hand —
-// these tolerances just need to absorb that rounding (plus a little
-// slack for unit-conversion rounding), not open the door to matching
-// genuinely different flights.
-const MANUAL_LOG_DISTANCE_TOLERANCE = 2;   // in whatever unit the manual row used
-const MANUAL_LOG_TIME_TOLERANCE_MIN = 3;   // minutes
-const MANUAL_LOG_TIME_WINDOW_MS = WINDOW_MS; // how close the manual entry's timestamp has to be
 
 const MAX_IMAGES_PER_REQUEST = 8;
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024; // 8 MB/image — plenty for a screenshot, keeps requests fast
@@ -112,16 +105,47 @@ export async function handleAutoFlightDetect(request, env) {
   }
 
   // Read every screenshot with the vision model. Each image is
-  // independent, so one bad/unreadable screenshot doesn't fail the
-  // whole batch — its rows are just skipped with a clear reason.
+  // independent, so one bad/unreadable/fake screenshot doesn't fail the
+  // whole batch — it's just skipped with a clear reason and the rest
+  // still get processed.
   const rawEntries = [];
   const imageErrors = [];
 
   for (const file of files) {
     try {
       const buffer = await file.arrayBuffer();
+
+      // Cheap forensic pre-check, run before we spend an API call on
+      // this image: does the file's own metadata show it was saved by
+      // a graphics editor rather than a screen-capture tool? This is
+      // independent of the vision model and independent of layout/crop
+      // (see scanForEditorSignature in imageocr.js).
+      const editorSignature = scanForEditorSignature(buffer);
+      if (editorSignature) {
+        imageErrors.push({
+          file: file.name || 'image',
+          message: `This image's metadata shows it was saved from "${editorSignature}" — edited screenshots aren't accepted for automatic logging. Upload the original, unedited screenshot (or use the manual logger).`,
+        });
+        continue;
+      }
+
       const base64 = arrayBufferToBase64(buffer);
-      const rows = await extractFlightRowsFromImage(env, base64, file.type);
+      const { rows, authenticity } = await extractFlightRowsFromImage(env, base64, file.type);
+
+      // Second check: ask the same vision pass that read the rows
+      // whether the FDR panel itself looks internally consistent. This
+      // one's scoped to the panel's own rendering, never to where it
+      // sits on screen, so it holds up across devices/crops.
+      if (authenticity?.looksAltered && AUTHENTICITY_BLOCK_CONFIDENCE.has(authenticity.confidence)) {
+        const reason = authenticity.evidence?.[0] || 'the panel looks digitally altered';
+        console.warn('Flagged possibly-altered FDR screenshot from', session.discordUsername, '-', authenticity);
+        imageErrors.push({
+          file: file.name || 'image',
+          message: `This screenshot wasn't processed because ${reason}. If this is a mistake, contact an admin to log it manually.`,
+        });
+        continue;
+      }
+
       for (const row of rows) rawEntries.push(row);
     } catch (err) {
       console.error('Image read failed for', file.name, err);
@@ -252,61 +276,19 @@ export async function handleAutoFlightConfirm(request, env) {
 // safe to log.
 // ---------------------------------------------------------------------
 async function detectFlights(env, session, rawEntries) {
-  const [opsData, settings, manualLogs] = await Promise.all([
+  const [opsData, settings] = await Promise.all([
     fetchOperationsData(env),
     getStoredSettings(env, session.discordUsername),
-    fetchLoggedFlights(env),
   ]);
 
   if (!opsData) {
     return { ok: false, message: 'Fleet/airport data is unavailable right now.', httpStatus: 502 };
   }
 
-  // Match by both the sheet's regular airport code (column A) and its
-  // ICAO code (column D) — the in-game FDR log doesn't always use the
-  // same code format the sheet does, so a row is treated as known/hub
-  // if either code matches what was read off the screenshot. The same
-  // "airportGroups" map also lets us tell whether a departure/arrival
-  // read off a screenshot is the *same airport* as one logged manually
-  // under a different code format (see matchesManualLog() below).
-  // "canonicalCode" goes the other way — whichever code the screenshot
-  // actually used, it maps back to the sheet's own column A code, so
-  // that's what ends up in the reviewed flight list and the submitted
-  // flight, instead of a raw ICAO code the rest of the site doesn't
-  // otherwise use.
-  const hubAirports = new Set();
-  const knownAirports = new Set();
-  const airportGroups = new Map(); // any known code (either format, uppercased) -> shared group id
-  const canonicalCode = new Map(); // any known code (either format, uppercased) -> column A code, in its original casing
-  opsData.airports.forEach((airport, i) => {
-    const originalCode = (airport.code || '').trim(); // keep the sheet's own casing for display/submission
-    const code = originalCode.toUpperCase();
-    const icao = (airport.icaoCode || '').trim().toUpperCase();
-    if (code) { knownAirports.add(code); airportGroups.set(code, i); canonicalCode.set(code, originalCode); }
-    if (icao) { knownAirports.add(icao); airportGroups.set(icao, i); if (code) canonicalCode.set(icao, originalCode); }
-    if (airport.isHub) {
-      if (code) hubAirports.add(code);
-      if (icao) hubAirports.add(icao);
-    }
-  });
-  const sameAirport = (a, b) => {
-    if (!a || !b) return false;
-    if (a === b) return true;
-    const groupA = airportGroups.get(a);
-    return groupA !== undefined && groupA === airportGroups.get(b);
-  };
-
+  const fleetByLower = new Map(opsData.fleet.map(name => [name.trim().toLowerCase(), name]));
+  const hubAirports = new Set(opsData.airports.filter(a => a.isHub).map(a => a.code));
+  const knownAirports = new Set(opsData.airports.map(a => a.code));
   const unit = settings.unit === 'km' ? 'km' : 'nm';
-
-  // Only this pilot's manually-logged rows are relevant — matched
-  // against either username, since the manual form's own two username
-  // columns don't always both get filled in reliably.
-  const discordLower = (session.discordUsername || '').toLowerCase();
-  const robloxLower = (session.robloxUsername || '').toLowerCase();
-  const pilotManualLogs = manualLogs.filter(log =>
-    (log.discordUsername && log.discordUsername.toLowerCase() === discordLower) ||
-    (log.robloxUsername && robloxLower && log.robloxUsername.toLowerCase() === robloxLower)
-  );
 
   const now = Date.now();
   const cutoff = now - WINDOW_MS;
@@ -342,7 +324,7 @@ async function detectFlights(env, session, rawEntries) {
       continue;
     }
 
-    const fleetAircraft = matchFleetAircraft(entry.aircraft, opsData.fleet);
+    const fleetAircraft = fleetByLower.get(entry.aircraft.trim().toLowerCase());
     if (!fleetAircraft) {
       skipped.push({ usageId: entry.usageId, reason: `"${entry.aircraft}" isn't in the registered fleet.` });
       continue;
@@ -368,40 +350,15 @@ async function detectFlights(env, session, rawEntries) {
       continue;
     }
 
-    if (matchesManualLog(entry, pilotManualLogs, sameAirport)) {
-      // The website has no way to tell a manually-typed entry apart
-      // from one the pilot later re-discovers in an FDR screenshot —
-      // there's no shared flight id between the two logging paths. So
-      // once we find a manual row that looks like the same flight,
-      // treat it the same as an already-logged usage id (including
-      // caching that verdict) rather than letting it get logged twice.
-      await markUsageIdLogged(env, entry.usageId, session);
-      skipped.push({ usageId: entry.usageId, reason: 'Already logged manually.' });
-      continue;
-    }
-
     const distanceValue = unit === 'km'
       ? Math.round(entry.distanceNm * NM_TO_KM * 10) / 10
       : Math.round(entry.distanceNm * 10) / 10;
 
-    // Canonicalize whichever code format the screenshot actually used
-    // (the sheet's own code, or its ICAO code from column D) back to
-    // the sheet's own column A code/name, in its original casing —
-    // that's the form pilots/staff recognize and the one used
-    // everywhere else on the site, so it's what shows up in the review
-    // list and what actually gets submitted, rather than a raw ICAO
-    // code straight from the game. Done last (after every check that
-    // needs the uppercase code form to match against the ops sheet's
-    // and manual log's own uppercased sets) so it can't interfere with
-    // any of the matching above.
-    const displayDeparture = canonicalCode.get(entry.departure) || entry.departure;
-    const displayArrival = canonicalCode.get(entry.arrival) || entry.arrival;
-
     flights.push({
       usageId: entry.usageId,
       fleetAircraft,
-      departure: displayDeparture,
-      arrival: displayArrival,
+      departure: entry.departure,
+      arrival: entry.arrival,
       distanceValue,
       unit,
       timeMinutes: entry.timeMinutes,
@@ -410,118 +367,6 @@ async function detectFlights(env, session, rawEntries) {
   }
 
   return { ok: true, flights, skipped };
-}
-
-// ---------------------------------------------------------------------
-// Fleet aircraft matching — deliberately lenient, since the in-game
-// name for an aircraft frequently doesn't match the fleet sheet
-// exactly: the game may prefix it with the manufacturer ("Airbus
-// A350-900"), differ in capitalization ("747-8I" vs "747-8i"), or
-// append a modification suffix the fleet sheet doesn't track ("A350-
-// 900ULR" for a plane the sheet just lists as "A350-900"). Rather than
-// requiring an exact (case-insensitive) string match, we strip all of
-// that noise out and match on whichever side is "contained" in the
-// other.
-// ---------------------------------------------------------------------
-
-// Common manufacturer names that show up as a prefix in-game but are
-// never part of the fleet sheet's own naming — stripped before matching.
-const MANUFACTURER_PREFIXES = [
-  'mcdonnell douglas', 'mcdonnell-douglas', 'de havilland', 'de-havilland',
-  'dehavilland', 'airbus', 'boeing', 'embraer', 'bombardier', 'canadair',
-  'gulfstream', 'dassault', 'lockheed', 'douglas', 'convair', 'antonov',
-  'ilyushin', 'tupolev', 'sukhoi', 'comac', 'fokker', 'saab', 'atr', 'bae',
-];
-
-// Lowercases, drops a leading manufacturer name if present, and strips
-// every character that isn't a letter or digit — so spacing, hyphens,
-// periods, and capitalization differences ("A350-900" vs "a350 900")
-// never affect the comparison.
-function normalizeAircraftName(name) {
-  let s = String(name || '').trim().toLowerCase();
-
-  for (const prefix of MANUFACTURER_PREFIXES) {
-    if (s === prefix) continue;
-    if (s.startsWith(prefix + ' ') || s.startsWith(prefix + '-')) {
-      s = s.slice(prefix.length).trim();
-      break;
-    }
-  }
-
-  return s.replace(/[^a-z0-9]/g, '');
-}
-
-// The manual form's "Time Flown" column is always a plain whole number
-// of minutes (e.g. "16") — no HH:MM:SS, no decimals. That's a different
-// format from the FDR screenshot's own duration field (parsed by
-// parseDurationToMinutes below, which expects hours or HH:MM:SS), so
-// it gets its own tiny parser rather than overloading that one.
-function parseManualLogTimeMinutes(timeCell) {
-  const minutes = Number(String(timeCell ?? '').trim());
-  return Number.isFinite(minutes) ? Math.round(minutes) : null;
-}
-
-// ---------------------------------------------------------------------
-// Manual-log dedup — the manual Flight Logger form and the automatic
-// screenshot logger both end up writing to the same roster sheet, but
-// nothing ties a manually-typed entry to a "Usage" id, so a pilot could
-// otherwise get paid twice for one flight: once by typing it in by
-// hand, and again later after uploading an FDR screenshot that covers
-// the same flight. This does a best-effort match against that pilot's
-// own manually-logged rows (see fetchLoggedFlights() in src/index.js)
-// on aircraft, route, rounded distance/time, and roughly when it was
-// logged — good enough to catch the common case without needing an
-// exact match the manual form was never designed to support.
-function matchesManualLog(entry, pilotLogs, sameAirport) {
-  for (const log of pilotLogs) {
-    if (Math.abs(log.timestampMs - entry.timestampMs) > MANUAL_LOG_TIME_WINDOW_MS) continue;
-    if (!sameAirport(entry.departure, log.departure) || !sameAirport(entry.arrival, log.arrival)) continue;
-
-    const normEntryAircraft = normalizeAircraftName(entry.aircraft);
-    const normLogAircraft = normalizeAircraftName(log.aircraft);
-    const aircraftMatches = normEntryAircraft && normLogAircraft && (
-      normEntryAircraft === normLogAircraft ||
-      normEntryAircraft.includes(normLogAircraft) ||
-      normLogAircraft.includes(normEntryAircraft)
-    );
-    if (!aircraftMatches) continue;
-
-    const entryDistanceInLogUnit = log.unit === 'km' ? entry.distanceNm * NM_TO_KM : entry.distanceNm;
-    if (Math.abs(entryDistanceInLogUnit - log.distance) > MANUAL_LOG_DISTANCE_TOLERANCE) continue;
-
-    const logTimeMinutes = parseManualLogTimeMinutes(log.timeCell);
-    if (logTimeMinutes === null || Math.abs(logTimeMinutes - entry.timeMinutes) > MANUAL_LOG_TIME_TOLERANCE_MIN) continue;
-
-    return true;
-  }
-
-  return false;
-}
-
-// Finds the fleet entry that best matches a raw in-game aircraft name.
-// Tries an exact normalized match first; failing that, falls back to a
-// "contains" match in either direction (covers modification suffixes
-// like "ULR"/"ER"/"NEO" the fleet sheet doesn't list separately). When
-// several fleet entries could contain-match, the longest/most specific
-// one wins, to cut down on accidental cross-matches between similarly
-// named aircraft.
-function matchFleetAircraft(rawName, fleet) {
-  const normEntry = normalizeAircraftName(rawName);
-  if (!normEntry || !Array.isArray(fleet)) return null;
-
-  const candidates = [];
-  for (const fleetName of fleet) {
-    const normFleet = normalizeAircraftName(fleetName);
-    if (!normFleet) continue;
-    if (normFleet === normEntry) return fleetName; // exact match wins immediately
-    if (normEntry.includes(normFleet) || normFleet.includes(normEntry)) {
-      candidates.push({ fleetName, length: normFleet.length });
-    }
-  }
-
-  if (candidates.length === 0) return null;
-  candidates.sort((a, b) => b.length - a.length);
-  return candidates[0].fleetName;
 }
 
 // Normalizes one raw FDR row (as read off a screenshot — see

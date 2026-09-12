@@ -12,12 +12,10 @@ const DEFAULT_SETTINGS = {
   unit: 'nm',            // 'nm' | 'km' — flight logger distance unit
   swapAfterLog: false,   // swap departure/destination into the form after a successful log
   theme: 'light',        // 'light' | 'dark' — dashboard-only appearance
-  loggingMode: 'manual', // 'manual' | 'automatic' — which Flight Logger UI is shown
 };
 
 const ALLOWED_UNITS = ['nm', 'km'];
 const ALLOWED_THEMES = ['light', 'dark'];
-const ALLOWED_LOGGING_MODES = ['manual', 'automatic'];
 
 function settingsKey(discordUsername) {
   return `settings:${discordUsername.toLowerCase()}`;
@@ -112,13 +110,6 @@ export async function handleSaveSettings(request, env) {
       return jsonResponse({ status: 'error', message: 'Invalid theme' }, 400);
     }
     next.theme = payload.theme;
-  }
-
-  if (payload.loggingMode !== undefined) {
-    if (!ALLOWED_LOGGING_MODES.includes(payload.loggingMode)) {
-      return jsonResponse({ status: 'error', message: 'Invalid logging mode' }, 400);
-    }
-    next.loggingMode = payload.loggingMode;
   }
 
   try {
