@@ -246,9 +246,22 @@ async function detectFlights(env, session, rawEntries) {
     return { ok: false, message: 'Fleet/airport data is unavailable right now.', httpStatus: 502 };
   }
 
-  const fleetByLower = new Map(opsData.fleet.map(name => [name.trim().toLowerCase(), name]));
-  const hubAirports = new Set(opsData.airports.filter(a => a.isHub).map(a => a.code));
-  const knownAirports = new Set(opsData.airports.map(a => a.code));
+  // Match by both the sheet's regular airport code (column A) and its
+  // ICAO code (column D) — the in-game FDR log doesn't always use the
+  // same code format the sheet does, so a row is treated as known/hub
+  // if either code matches what was read off the screenshot.
+  const hubAirports = new Set();
+  const knownAirports = new Set();
+  for (const airport of opsData.airports) {
+    const code = (airport.code || '').trim().toUpperCase();
+    const icao = (airport.icaoCode || '').trim().toUpperCase();
+    if (code) knownAirports.add(code);
+    if (icao) knownAirports.add(icao);
+    if (airport.isHub) {
+      if (code) hubAirports.add(code);
+      if (icao) hubAirports.add(icao);
+    }
+  }
   const unit = settings.unit === 'km' ? 'km' : 'nm';
 
   const now = Date.now();
@@ -285,7 +298,7 @@ async function detectFlights(env, session, rawEntries) {
       continue;
     }
 
-    const fleetAircraft = fleetByLower.get(entry.aircraft.trim().toLowerCase());
+    const fleetAircraft = matchFleetAircraft(entry.aircraft, opsData.fleet);
     if (!fleetAircraft) {
       skipped.push({ usageId: entry.usageId, reason: `"${entry.aircraft}" isn't in the registered fleet.` });
       continue;
@@ -328,6 +341,71 @@ async function detectFlights(env, session, rawEntries) {
   }
 
   return { ok: true, flights, skipped };
+}
+
+// ---------------------------------------------------------------------
+// Fleet aircraft matching — deliberately lenient, since the in-game
+// name for an aircraft frequently doesn't match the fleet sheet
+// exactly: the game may prefix it with the manufacturer ("Airbus
+// A350-900"), differ in capitalization ("747-8I" vs "747-8i"), or
+// append a modification suffix the fleet sheet doesn't track ("A350-
+// 900ULR" for a plane the sheet just lists as "A350-900"). Rather than
+// requiring an exact (case-insensitive) string match, we strip all of
+// that noise out and match on whichever side is "contained" in the
+// other.
+// ---------------------------------------------------------------------
+
+// Common manufacturer names that show up as a prefix in-game but are
+// never part of the fleet sheet's own naming — stripped before matching.
+const MANUFACTURER_PREFIXES = [
+  'mcdonnell douglas', 'mcdonnell-douglas', 'de havilland', 'de-havilland',
+  'dehavilland', 'airbus', 'boeing', 'embraer', 'bombardier', 'canadair',
+  'gulfstream', 'dassault', 'lockheed', 'douglas', 'convair', 'antonov',
+  'ilyushin', 'tupolev', 'sukhoi', 'comac', 'fokker', 'saab', 'atr', 'bae',
+];
+
+// Lowercases, drops a leading manufacturer name if present, and strips
+// every character that isn't a letter or digit — so spacing, hyphens,
+// periods, and capitalization differences ("A350-900" vs "a350 900")
+// never affect the comparison.
+function normalizeAircraftName(name) {
+  let s = String(name || '').trim().toLowerCase();
+
+  for (const prefix of MANUFACTURER_PREFIXES) {
+    if (s === prefix) continue;
+    if (s.startsWith(prefix + ' ') || s.startsWith(prefix + '-')) {
+      s = s.slice(prefix.length).trim();
+      break;
+    }
+  }
+
+  return s.replace(/[^a-z0-9]/g, '');
+}
+
+// Finds the fleet entry that best matches a raw in-game aircraft name.
+// Tries an exact normalized match first; failing that, falls back to a
+// "contains" match in either direction (covers modification suffixes
+// like "ULR"/"ER"/"NEO" the fleet sheet doesn't list separately). When
+// several fleet entries could contain-match, the longest/most specific
+// one wins, to cut down on accidental cross-matches between similarly
+// named aircraft.
+function matchFleetAircraft(rawName, fleet) {
+  const normEntry = normalizeAircraftName(rawName);
+  if (!normEntry || !Array.isArray(fleet)) return null;
+
+  const candidates = [];
+  for (const fleetName of fleet) {
+    const normFleet = normalizeAircraftName(fleetName);
+    if (!normFleet) continue;
+    if (normFleet === normEntry) return fleetName; // exact match wins immediately
+    if (normEntry.includes(normFleet) || normFleet.includes(normEntry)) {
+      candidates.push({ fleetName, length: normFleet.length });
+    }
+  }
+
+  if (candidates.length === 0) return null;
+  candidates.sort((a, b) => b.length - a.length);
+  return candidates[0].fleetName;
 }
 
 // Normalizes one raw FDR row (as read off a screenshot — see

@@ -387,7 +387,14 @@ async function lookupRosterRow(env, discordUsername) {
 //
 // Column layout per row:
 //   A: airport code            B: "hub" marks that airport as a hub
-//   C: fleet/aircraft entry    E: paycheck status ("yes" = enabled)
+//   C: fleet/aircraft entry    D: ICAO code for the airport in column A
+//   E: paycheck status ("yes" = enabled)
+//
+// Column D holds the ICAO code for the same row's airport (column A) —
+// the in-game FDR log sometimes reports ICAO codes instead of whatever
+// code is used in column A, so this lets the auto flight logger match
+// a departure/arrival it read off a screenshot against an airport even
+// when the two use different code formats.
 //
 // Paycheck status is treated as a single site-wide switch rather than
 // a per-row value: if ANY row has "yes" in column E, payroll is
@@ -412,10 +419,11 @@ export async function fetchOperationsData(env) {
     const airportCode = (row[0] || '').trim();               // Column A
     const hubFlag = (row[1] || '').trim().toLowerCase();      // Column B
     const fleetEntry = (row[2] || '').trim();                 // Column C
+    const icaoCode = (row[3] || '').trim();                   // Column D
     const paycheckCell = (row[4] || '').trim().toLowerCase(); // Column E
 
     if (airportCode) {
-      airports.push({ code: airportCode, isHub: hubFlag === 'hub' });
+      airports.push({ code: airportCode, isHub: hubFlag === 'hub', icaoCode: icaoCode || null });
     }
 
     if (fleetEntry && !fleetSeen.has(fleetEntry)) {
