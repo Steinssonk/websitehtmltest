@@ -14,6 +14,14 @@ SHEET_GID = "0"
 # Replace with the actual GID from that tab's URL — the number after
 # "gid=" when you have that sheet open in your browser.
 OPERATIONS_SHEET_GID = "337983586"
+# GID of the manually-submitted flight log sheet tab (Timestamp, Discord
+# Username, Roblox Username, Aircraft Flown, Time Flown, Distance Flown,
+# Departure, Destination, Unit of Measurement). Used by the automatic
+# screenshot-based logger to avoid double-logging a flight that was
+# already entered by hand through the manual Flight Logger form — see
+# fetchLoggedFlights() in src/index.js and matchesManualLog() in
+# src/autoflightlog.js.
+LOG_SHEET_GID = "560263512"
 
 # Set these with the wrangler CLI (never commit real secrets to git):
 #   wrangler secret put DISCORD_CLIENT_SECRET
