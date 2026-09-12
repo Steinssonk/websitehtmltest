@@ -75,5 +75,5 @@ preview_id = "REPLACE_WITH_PREVIEW_KV_NAMESPACE_ID"
 #   wrangler kv namespace create AUTO_LOG_KV --preview
 [[kv_namespaces]]
 binding = "AUTO_LOG_KV"
-id = "REPLACE_WITH_AUTO_LOG_KV_NAMESPACE_ID"
+id = "4f8ecd4837544c349498840cfcf10ec6"
 preview_id = "REPLACE_WITH_AUTO_LOG_KV_PREVIEW_NAMESPACE_ID"
