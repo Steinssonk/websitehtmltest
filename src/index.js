@@ -461,6 +461,7 @@ export async function fetchOperationsData(env) {
 // hiccup reading this sheet degrades to "skip the manual-log check"
 // instead of blocking detection entirely.
 export async function fetchLoggedFlights(env) {
+  const GMT_PLUS_8_OFFSET_MS = 8 * 60 * 60 * 1000;
   const sheetId = env.SHEET_ID;
   const gid = env.LOG_SHEET_GID;
   if (!sheetId || !gid) return null;
@@ -495,12 +496,20 @@ export async function fetchLoggedFlights(env) {
     // as a bogus "logged flight" that could never match anything real.
     if (!discordUsername || !aircraft || !departure || !destination) continue;
 
+    // Google Sheets writes this Timestamp cell in the sheet's own time
+    // zone (GMT+8), with no offset in the string — so Date.parse() reads
+    // the printed digits as if they were UTC, landing 8 hours off from
+    // the actual instant. The FDR timestamps this gets compared against
+    // (see entry.timestampMs in src/autoflightlog.js) are true UTC, so
+    // that offset has to be corrected here or every manual-log match
+    // would be silently 8 hours wrong.
     const parsedTimestamp = Date.parse(timestampRaw);
+    const timestampMs = Number.isNaN(parsedTimestamp) ? null : parsedTimestamp - GMT_PLUS_8_OFFSET_MS;
     const timeMinutes = parseFloat(timeMinutesRaw.replace(/[^0-9.-]/g, ''));
     const distance = parseFloat(distanceRaw.replace(/[^0-9.-]/g, ''));
 
     flights.push({
-      timestampMs: Number.isNaN(parsedTimestamp) ? null : parsedTimestamp,
+      timestampMs,
       discordUsername: discordUsername.toLowerCase(),
       aircraft,
       timeMinutes: Number.isNaN(timeMinutes) ? null : timeMinutes,
