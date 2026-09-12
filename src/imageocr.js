@@ -134,7 +134,7 @@ async function relayFetch(env, targetUrl, init = {}) {
   });
 }
 
-
+async function extractWithGemini(env, base64Data, mediaType) {
   const apiKey = env.GEMINI_API_KEY;
   if (!apiKey) {
     const err = new Error("Automatic flight logging isn't configured yet (missing GEMINI_API_KEY).");
