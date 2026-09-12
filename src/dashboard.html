@@ -390,7 +390,9 @@
 
             <!-- FLIGHT LOGGER TAB -->
             <div id="tab-logger" class="space-y-6" hidden>
-                <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+
+                <!-- MANUAL LOGGING -->
+                <div id="logger-mode-manual" class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
                     <h2 class="font-serif text-xl font-bold text-slate-900 mb-1">Flight Logger System</h2>
                     <p class="text-xs text-slate-500 mb-6">Select your parameters using the search filters below to log a new flight.</p>
 
@@ -454,6 +456,57 @@
                             </button>
                         </div>
                     </form>
+                </div>
+
+                <!-- AUTOMATIC LOGGING -->
+                <div id="logger-mode-auto" class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm" hidden>
+                    <div class="mb-1">
+                        <h2 class="font-serif text-xl font-bold text-slate-900 mb-1">Automatic Flight Logger</h2>
+                        <p class="text-xs text-slate-500">Upload a screenshot of your FDR data (the in-game "Server Info" panel). We'll read it, match flights against the registered fleet, and let you review before logging.</p>
+                    </div>
+
+                    <div id="auto-logger-error" class="hidden bg-red-50 border border-red-200 text-red-700 text-xs rounded-2xl p-3 mt-4"></div>
+
+                    <!-- Drop zone / picker -->
+                    <label id="auto-dropzone" for="auto-image-input"
+                        ondragover="event.preventDefault(); this.classList.add('border-navy/40')"
+                        ondragleave="this.classList.remove('border-navy/40')"
+                        ondrop="event.preventDefault(); this.classList.remove('border-navy/40'); handleImageFilesSelected(event.dataTransfer.files)"
+                        class="mt-4 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 hover:border-navy/40 rounded-2xl p-6 text-center cursor-pointer transition-colors">
+                        <i data-lucide="image-plus" class="w-6 h-6 mb-2 text-slate-300"></i>
+                        <span class="text-sm font-medium text-slate-700">Click to upload, or drag screenshots here</span>
+                        <span class="text-xs text-slate-400 mt-1">PNG, JPEG, or WEBP &middot; up to 8 at once</span>
+                        <input type="file" id="auto-image-input" accept="image/png,image/jpeg,image/webp" multiple class="hidden" onchange="handleImageFilesSelected(this.files); this.value = ''">
+                    </label>
+
+                    <!-- Selected image previews -->
+                    <div id="auto-image-previews" class="mt-4 grid grid-cols-3 sm:grid-cols-4 gap-2" hidden></div>
+
+                    <div class="pt-4">
+                        <button onclick="detectFlightsFromImages()" id="auto-scan-btn" disabled class="w-full bg-navy hover:bg-navy-deep text-white font-medium py-3 rounded-xl shadow-sm transition-colors flex items-center justify-center space-x-2 text-sm disabled:opacity-60 disabled:cursor-not-allowed">
+                            <i data-lucide="scan-line" class="w-4 h-4"></i>
+                            <span id="auto-scan-label">Detect Flights</span>
+                        </button>
+                    </div>
+
+                    <div id="auto-no-results" class="hidden mt-6 border border-dashed border-slate-200 rounded-2xl p-6 text-center text-xs text-slate-400">
+                        <i data-lucide="scan-search" class="w-6 h-6 mx-auto mb-2 text-slate-300"></i>
+                        No new matching flights found in those screenshots. Fly a fleet aircraft to/from a hub, then try again.
+                    </div>
+
+                    <div id="auto-logger-results" class="mt-6 space-y-4" hidden>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Flights Detected (<span id="auto-detected-count">0</span>)</span>
+                            <button onclick="toggleAllDetectedFlights()" id="auto-toggle-all-btn" class="text-xs text-navy hover:text-navy-deep font-medium">Deselect all</button>
+                        </div>
+                        <div id="auto-detected-list" class="space-y-2"></div>
+                        <div class="pt-2">
+                            <button onclick="confirmDetectedFlights()" id="auto-confirm-btn" class="w-full bg-navy hover:bg-navy-deep text-white font-medium py-3 rounded-xl shadow-sm transition-colors flex items-center justify-center space-x-2 text-sm disabled:opacity-60 disabled:cursor-not-allowed">
+                                <i data-lucide="check-check" class="w-4 h-4"></i>
+                                <span id="auto-confirm-label">Confirm & Log Selected Flights</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -557,6 +610,21 @@
                                 </button>
                             </div>
                         </div>
+
+                        <div class="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                            <div>
+                                <div class="font-semibold text-sm text-slate-900">Flight Logging Mode</div>
+                                <div class="text-xs text-slate-500 mt-0.5">Log flights by filling out the form yourself, or let the Flight Logger tab scan your recent FDR data and log matching flights for you.</div>
+                            </div>
+                            <div class="flex items-center space-x-1 bg-slate-200/70 p-1 rounded-xl">
+                                <button onclick="setLoggingMode('manual')" id="logging-mode-btn-manual" class="seg-btn seg-btn-active flex items-center space-x-1.5">
+                                    <i data-lucide="pencil" class="w-3.5 h-3.5"></i><span>Manual</span>
+                                </button>
+                                <button onclick="setLoggingMode('automatic')" id="logging-mode-btn-automatic" class="seg-btn seg-btn-inactive flex items-center space-x-1.5">
+                                    <i data-lucide="scan-line" class="w-3.5 h-3.5"></i><span>Automatic</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -603,8 +671,15 @@
         unit: 'nm',
         swapAfterLog: false, // swap departure/destination into the form after a successful log
         theme: 'light',      // 'light' | 'dark' — dashboard-only appearance
+        loggingMode: 'manual', // 'manual' | 'automatic' — which Flight Logger UI is shown
         claimedRewards: [] // Replaced by the real values from /api/me once it loads
     };
+
+    // Automatic (screenshot-based) flight logger state
+    let selectedImages = [];        // File objects queued up for the next detect() call
+    let currentBatchId = null;      // batchId returned by the last successful detect() call
+    let detectedFlights = [];       // flights returned by the last /api/flight/auto/detect call
+    let selectedUsageIds = new Set(); // usage ids currently checked in the results list
 
     lucide.createIcons();
 
@@ -1148,6 +1223,220 @@
         document.getElementById('flight-submit-label').textContent = label;
     }
 
+    // --- Automatic (FDR-based) Flight Logger ---
+
+    function showAutoLoggerError(message, duration = 6000) {
+        const el = document.getElementById('auto-logger-error');
+        if (!el) return;
+        el.textContent = message;
+        el.classList.remove('hidden');
+        clearTimeout(showAutoLoggerError._t);
+        showAutoLoggerError._t = setTimeout(() => el.classList.add('hidden'), duration);
+    }
+
+    function formatUtcTimestamp(iso) {
+        try {
+            const d = new Date(iso);
+            return d.toLocaleString(undefined, { timeZone: 'UTC', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' UTC';
+        } catch {
+            return iso;
+        }
+    }
+
+    const MAX_AUTO_IMAGES = 8;
+
+    function handleImageFilesSelected(fileList) {
+        const incoming = Array.from(fileList || []).filter(f => f.type.startsWith('image/'));
+        if (incoming.length === 0) return;
+
+        const room = MAX_AUTO_IMAGES - selectedImages.length;
+        if (room <= 0) {
+            showAutoLoggerError(`You can upload at most ${MAX_AUTO_IMAGES} screenshots at a time.`);
+            return;
+        }
+        if (incoming.length > room) {
+            showAutoLoggerError(`Only added ${room} of those — ${MAX_AUTO_IMAGES} screenshots max per batch.`);
+        }
+
+        selectedImages = selectedImages.concat(incoming.slice(0, room));
+        renderImagePreviews();
+    }
+
+    function removeSelectedImage(index) {
+        selectedImages.splice(index, 1);
+        renderImagePreviews();
+    }
+
+    function renderImagePreviews() {
+        const wrap = document.getElementById('auto-image-previews');
+        const scanBtn = document.getElementById('auto-scan-btn');
+
+        if (selectedImages.length === 0) {
+            wrap.hidden = true;
+            wrap.innerHTML = '';
+            scanBtn.disabled = true;
+            return;
+        }
+
+        wrap.hidden = false;
+        wrap.innerHTML = selectedImages.map((file, i) => {
+            const url = URL.createObjectURL(file);
+            return `
+                <div class="relative group rounded-xl overflow-hidden border border-slate-200 aspect-video bg-slate-50">
+                    <img src="${url}" class="w-full h-full object-cover" onload="URL.revokeObjectURL('${url}')">
+                    <button type="button" onclick="removeSelectedImage(${i})" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-slate-900/70 hover:bg-slate-900 text-white flex items-center justify-center">
+                        <i data-lucide="x" class="w-3 h-3"></i>
+                    </button>
+                </div>`;
+        }).join('');
+        lucide.createIcons();
+
+        scanBtn.disabled = false;
+    }
+
+    async function detectFlightsFromImages() {
+        if (selectedImages.length === 0) return;
+
+        const btn = document.getElementById('auto-scan-btn');
+        const label = document.getElementById('auto-scan-label');
+        btn.disabled = true;
+        label.textContent = 'Reading screenshots...';
+
+        try {
+            const formData = new FormData();
+            selectedImages.forEach(file => formData.append('images', file));
+
+            const res = await fetch('/api/flight/auto/detect', {
+                method: 'POST',
+                credentials: 'same-origin',
+                body: formData,
+            });
+            const result = await res.json().catch(() => ({}));
+
+            if (!res.ok || result.status !== 'ok') {
+                throw new Error(result.message || 'Could not read those screenshots.');
+            }
+
+            currentBatchId = result.batchId;
+            detectedFlights = Array.isArray(result.flights) ? result.flights : [];
+            selectedUsageIds = new Set(detectedFlights.map(f => f.usageId));
+            renderDetectedFlights();
+
+            // Clear the picker once a batch has been read — the pilot
+            // reviews/confirms below, and can upload a fresh batch after.
+            selectedImages = [];
+            renderImagePreviews();
+        } catch (err) {
+            showAutoLoggerError('Detection failed: ' + err.message);
+        } finally {
+            btn.disabled = selectedImages.length === 0;
+            label.textContent = 'Detect Flights';
+        }
+    }
+
+    function renderDetectedFlights() {
+        const noResults = document.getElementById('auto-no-results');
+        const results = document.getElementById('auto-logger-results');
+        const list = document.getElementById('auto-detected-list');
+        const countEl = document.getElementById('auto-detected-count');
+        const confirmBtn = document.getElementById('auto-confirm-btn');
+
+        if (detectedFlights.length === 0) {
+            results.hidden = true;
+            noResults.hidden = false;
+            lucide.createIcons();
+            return;
+        }
+
+        noResults.hidden = true;
+        results.hidden = false;
+        countEl.textContent = detectedFlights.length;
+
+        list.innerHTML = detectedFlights.map(f => {
+            const checked = selectedUsageIds.has(f.usageId) ? 'checked' : '';
+            return `
+                <label class="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-200 cursor-pointer">
+                    <div class="flex items-center space-x-3 min-w-0">
+                        <input type="checkbox" ${checked} onchange="toggleDetectedFlight('${f.usageId}')" class="w-4 h-4 accent-navy flex-shrink-0">
+                        <div class="min-w-0">
+                            <div class="font-semibold text-sm text-slate-900 truncate">${f.aircraft} &middot; ${f.departure} &rarr; ${f.arrival}</div>
+                            <div class="text-xs text-slate-500">${f.distance} ${f.unit} &middot; ${f.timeMinutes} min &middot; ${formatUtcTimestamp(f.timestampUtc)} &middot; Usage #${f.usageId}</div>
+                        </div>
+                    </div>
+                </label>`;
+        }).join('');
+
+        confirmBtn.disabled = selectedUsageIds.size === 0;
+        document.getElementById('auto-confirm-label').textContent =
+            selectedUsageIds.size > 0 ? `Confirm & Log ${selectedUsageIds.size} Flight${selectedUsageIds.size === 1 ? '' : 's'}` : 'Confirm & Log Selected Flights';
+    }
+
+    function toggleDetectedFlight(usageId) {
+        if (selectedUsageIds.has(usageId)) selectedUsageIds.delete(usageId);
+        else selectedUsageIds.add(usageId);
+        renderDetectedFlights();
+    }
+
+    function toggleAllDetectedFlights() {
+        if (selectedUsageIds.size === detectedFlights.length) {
+            selectedUsageIds.clear();
+        } else {
+            selectedUsageIds = new Set(detectedFlights.map(f => f.usageId));
+        }
+        renderDetectedFlights();
+        const toggleBtn = document.getElementById('auto-toggle-all-btn');
+        if (toggleBtn) toggleBtn.textContent = selectedUsageIds.size === detectedFlights.length ? 'Deselect all' : 'Select all';
+    }
+
+    async function confirmDetectedFlights() {
+        if (selectedUsageIds.size === 0) return;
+        if (!currentBatchId) {
+            showAutoLoggerError('That batch has expired — upload the screenshots again.');
+            return;
+        }
+
+        const btn = document.getElementById('auto-confirm-btn');
+        const label = document.getElementById('auto-confirm-label');
+        btn.disabled = true;
+        label.textContent = 'Logging...';
+
+        try {
+            const res = await fetch('/api/flight/auto/confirm', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ batchId: currentBatchId, usageIds: Array.from(selectedUsageIds) }),
+            });
+            const result = await res.json().catch(() => ({}));
+
+            const loggedCount = Array.isArray(result.logged) ? result.logged.length : 0;
+            const failed = Array.isArray(result.failed) ? result.failed : [];
+
+            if (loggedCount > 0) {
+                const loggedIds = new Set(result.logged.map(f => f.usageId));
+                detectedFlights = detectedFlights.filter(f => !loggedIds.has(f.usageId));
+                selectedUsageIds = new Set(detectedFlights.map(f => f.usageId));
+                if (detectedFlights.length === 0) currentBatchId = null;
+                renderDetectedFlights();
+                showToast(`Logged ${loggedCount} flight${loggedCount === 1 ? '' : 's'}!`);
+                fetchPilotStats().then(applyPilotStats);
+            }
+
+            if (failed.length > 0) {
+                showAutoLoggerError(`${failed.length} flight${failed.length === 1 ? '' : 's'} couldn't be logged: ${failed[0].message}`);
+            }
+
+            if (loggedCount === 0 && failed.length === 0) {
+                throw new Error(result.message || 'Nothing was logged.');
+            }
+        } catch (err) {
+            showAutoLoggerError('Confirm failed: ' + err.message);
+        } finally {
+            btn.disabled = selectedUsageIds.size === 0;
+            label.textContent = selectedUsageIds.size > 0 ? `Confirm & Log ${selectedUsageIds.size} Flight${selectedUsageIds.size === 1 ? '' : 's'}` : 'Confirm & Log Selected Flights';
+        }
+    }
+
     async function submitFlight(e) {
         e.preventDefault();
 
@@ -1287,11 +1576,42 @@
         if (!opts.skipSave) saveSettings();
     }
 
-    // Persists unit / swap-after-log / theme to the signed-in pilot's
-    // account via /api/settings (backed by Workers KV — see
-    // src/settingssave.js), so preferences follow them across devices.
-    // Best-effort: a failed save just means the in-memory state (and this
-    // browser's view of it) still reflects the choice the pilot made.
+    // Switches between the manual flight-entry form and the automatic
+    // FDR-based logger in the Flight Logger tab. Persisted the same way
+    // as unit/swap/theme, so it follows the pilot across devices.
+    function setLoggingMode(mode, opts = {}) {
+        state.loggingMode = mode;
+        const manualBtn = document.getElementById('logging-mode-btn-manual');
+        const autoBtn = document.getElementById('logging-mode-btn-automatic');
+
+        if (mode === 'automatic') {
+            autoBtn.className = "seg-btn seg-btn-active flex items-center space-x-1.5";
+            manualBtn.className = "seg-btn seg-btn-inactive flex items-center space-x-1.5";
+        } else {
+            manualBtn.className = "seg-btn seg-btn-active flex items-center space-x-1.5";
+            autoBtn.className = "seg-btn seg-btn-inactive flex items-center space-x-1.5";
+        }
+
+        applyLoggerModeUI();
+        if (!opts.skipSave) saveSettings();
+    }
+
+    // Shows whichever Flight Logger UI matches the current logging mode.
+    function applyLoggerModeUI() {
+        const manualPanel = document.getElementById('logger-mode-manual');
+        const autoPanel = document.getElementById('logger-mode-auto');
+        if (!manualPanel || !autoPanel) return;
+        const isAuto = state.loggingMode === 'automatic';
+        manualPanel.hidden = isAuto;
+        autoPanel.hidden = !isAuto;
+    }
+
+    // Persists unit / swap-after-log / theme / logging mode to the
+    // signed-in pilot's account via /api/settings (backed by Workers KV
+    // — see src/settingssave.js), so preferences follow them across
+    // devices. Best-effort: a failed save just means the in-memory
+    // state (and this browser's view of it) still reflects the choice
+    // the pilot made.
     function saveSettings() {
         fetch('/api/settings', {
             method: 'POST',
@@ -1301,6 +1621,7 @@
                 unit: state.unit,
                 swapAfterLog: state.swapAfterLog,
                 theme: state.theme,
+                loggingMode: state.loggingMode,
             }),
         }).catch(err => console.error('Failed to save dashboard settings:', err));
     }
@@ -1317,6 +1638,7 @@
                 setUnit(settings.unit === 'km' ? 'km' : 'nm', { skipSave: true });
                 setSwapAfterLog(!!settings.swapAfterLog, { skipSave: true });
                 setTheme(settings.theme === 'dark' ? 'dark' : 'light', { skipSave: true });
+                setLoggingMode(settings.loggingMode === 'automatic' ? 'automatic' : 'manual', { skipSave: true });
             })
             .catch(err => console.error('Failed to load dashboard settings:', err));
     }
@@ -1434,6 +1756,7 @@
     renderUI();
     renderTimelineUI();
     renderRewardsUI();
+    applyLoggerModeUI();
     switchTab(tabFromPath(window.location.pathname), false);
 
 </script>
