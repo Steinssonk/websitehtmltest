@@ -31,9 +31,12 @@ OPERATIONS_SHEET_GID = "337983586"
 # Wispbyte for it.
 #
 # src/imageocr.js reads those screenshots via an outside vision API —
-# pick a provider with (defaults to "openai" if unset):
-#   wrangler secret put IMAGE_OCR_PROVIDER   # "openai" or "anthropic"
+# pick a provider with (defaults to "gemini" if unset, since it's the
+# only one of the three with a genuinely free tier):
+#   wrangler secret put IMAGE_OCR_PROVIDER   # "gemini", "openai", or "anthropic"
 # then set that provider's key:
+#   wrangler secret put GEMINI_API_KEY       # aistudio.google.com/apikey (free)
+#   wrangler secret put GEMINI_MODEL         # optional, defaults to "gemini-3.5-flash"
 #   wrangler secret put OPENAI_API_KEY       # console.openai.com
 #   wrangler secret put OPENAI_MODEL         # optional, defaults to "gpt-5.5"
 #   wrangler secret put ANTHROPIC_API_KEY    # console.anthropic.com
