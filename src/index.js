@@ -409,7 +409,7 @@ export async function fetchOperationsData(env) {
   let paycheckEnabled = false;
 
   for (const row of rows) {
-    const airportCode = (row[0] || '').trim();               // Column A
+    const airportCode = (row[0] || '').trim().toUpperCase();  // Column A
     const hubFlag = (row[1] || '').trim().toLowerCase();      // Column B
     const fleetEntry = (row[2] || '').trim();                 // Column C
     const paycheckCell = (row[4] || '').trim().toLowerCase(); // Column E

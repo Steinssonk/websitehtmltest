@@ -300,7 +300,7 @@ async function detectFlights(env, session, rawEntries) {
   for (const raw of rawEntries) {
     const entry = normalizeEntry(raw);
     if (!entry) {
-      skipped.push({ usageId: raw?.usageId ?? null, reason: 'Could not read that row clearly.' });
+      skipped.push({ usageId: raw?.usageId ?? null, reason: 'Could not read that row clearly.', detail: summarizeRaw(raw) });
       continue;
     }
 
@@ -310,43 +310,52 @@ async function detectFlights(env, session, rawEntries) {
     seenUsageIds.add(entry.usageId);
 
     if (entry.crashed) {
-      skipped.push({ usageId: entry.usageId, reason: 'Flight crashed.' });
+      skipped.push({ usageId: entry.usageId, reason: 'Flight crashed.', detail: summarizeEntry(entry) });
       continue;
     }
 
     if (entry.timeMinutes === null) {
-      skipped.push({ usageId: entry.usageId, reason: 'Could not read the flight duration.' });
+      skipped.push({ usageId: entry.usageId, reason: 'Could not read the flight duration.', detail: summarizeEntry(entry) });
       continue;
     }
 
     if (entry.timestampMs === null || entry.timestampMs < cutoff || entry.timestampMs > now) {
-      skipped.push({ usageId: entry.usageId, reason: 'Outside the 24-hour detection window.' });
+      skipped.push({ usageId: entry.usageId, reason: 'Outside the 24-hour detection window.', detail: summarizeEntry(entry) });
       continue;
     }
 
     const fleetAircraft = fleetByLower.get(entry.aircraft.trim().toLowerCase());
     if (!fleetAircraft) {
-      skipped.push({ usageId: entry.usageId, reason: `"${entry.aircraft}" isn't in the registered fleet.` });
+      skipped.push({ usageId: entry.usageId, reason: `"${entry.aircraft}" isn't in the registered fleet.`, detail: summarizeEntry(entry) });
       continue;
     }
 
     if (!entry.departure || !entry.arrival || entry.departure === entry.arrival) {
-      skipped.push({ usageId: entry.usageId, reason: 'Missing or identical departure/arrival.' });
+      skipped.push({ usageId: entry.usageId, reason: 'Missing or identical departure/arrival.', detail: summarizeEntry(entry) });
       continue;
     }
 
     if (knownAirports.size > 0 && (!knownAirports.has(entry.departure) || !knownAirports.has(entry.arrival))) {
-      skipped.push({ usageId: entry.usageId, reason: 'Departure/arrival airport not recognized.' });
+      const unrecognized = [entry.departure, entry.arrival].filter(code => !knownAirports.has(code));
+      skipped.push({
+        usageId: entry.usageId,
+        reason: `Departure/arrival airport not recognized: ${unrecognized.join(', ')} (read as ${entry.departure} \u2192 ${entry.arrival}) not in the registered airport list.`,
+        detail: summarizeEntry(entry),
+      });
       continue;
     }
 
     if (hubAirports.size > 0 && !hubAirports.has(entry.departure) && !hubAirports.has(entry.arrival)) {
-      skipped.push({ usageId: entry.usageId, reason: 'Neither airport is a hub.' });
+      skipped.push({
+        usageId: entry.usageId,
+        reason: `Neither airport is a hub (read as ${entry.departure} \u2192 ${entry.arrival}).`,
+        detail: summarizeEntry(entry),
+      });
       continue;
     }
 
     if (await isUsageIdLogged(env, entry.usageId)) {
-      skipped.push({ usageId: entry.usageId, reason: 'Already logged.' });
+      skipped.push({ usageId: entry.usageId, reason: 'Already logged.', detail: summarizeEntry(entry) });
       continue;
     }
 
@@ -367,6 +376,37 @@ async function detectFlights(env, session, rawEntries) {
   }
 
   return { ok: true, flights, skipped };
+}
+
+// Small client-safe snapshots of what was actually read off the
+// screenshot for a skipped row, so the UI/pilot can see the raw OCR
+// output behind a skip reason instead of just the reason label. Used
+// for both a fully-normalized entry and a raw row that failed to
+// normalize at all (so even "Could not read that row clearly." carries
+// whatever fields the vision model *did* return).
+function summarizeEntry(entry) {
+  return {
+    aircraft: entry.aircraft,
+    departure: entry.departure,
+    arrival: entry.arrival,
+    crashed: entry.crashed,
+    distanceNm: entry.distanceNm,
+    timeMinutes: entry.timeMinutes,
+    timestampUtc: entry.timestampMs !== null ? new Date(entry.timestampMs).toISOString() : null,
+  };
+}
+
+function summarizeRaw(raw) {
+  if (!raw || typeof raw !== 'object') return null;
+  return {
+    aircraft: raw.aircraft ?? raw.plane ?? raw.aircraftType ?? null,
+    departure: raw.departure ?? raw.dep ?? raw.origin ?? null,
+    arrival: raw.arrival ?? raw.dest ?? raw.destination ?? null,
+    distanceNm: raw.distance ?? raw.distanceNm ?? raw.distance_nm ?? null,
+    duration: raw.duration ?? raw.time ?? raw.flightTime ?? null,
+    date: raw.date ?? null,
+    time: raw.time ?? null,
+  };
 }
 
 // Normalizes one raw FDR row (as read off a screenshot — see

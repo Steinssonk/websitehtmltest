@@ -681,7 +681,7 @@
     let currentBatchId = null;      // batchId returned by the last successful detect() call
     let detectedFlights = [];       // flights returned by the last /api/flight/auto/detect call
     let selectedUsageIds = new Set(); // usage ids currently checked in the results list
-    let lastSkipped = [];           // { usageId, reason } for rows the last detect() call read but didn't log
+    let lastSkipped = [];           // { usageId, reason, detail } for rows the last detect() call read but didn't log
     let lastImageErrors = [];       // { file, message } for screenshots that failed to read entirely
 
     lucide.createIcons();
@@ -1339,6 +1339,24 @@
         }
     }
 
+    // Renders the raw OCR fields behind a skip reason (see `detail` on
+    // each entry in the /api/flight/auto/detect response's `skipped`
+    // array) as a short trailing note, so a pilot/admin can see exactly
+    // what the API read off the screenshot instead of just the reason
+    // label.
+    function formatSkipDetail(detail) {
+        if (!detail) return '';
+        const parts = [];
+        if (detail.aircraft) parts.push(detail.aircraft);
+        if (detail.departure || detail.arrival) parts.push(`${detail.departure ?? '?'} \u2192 ${detail.arrival ?? '?'}`);
+        if (detail.distanceNm !== undefined && detail.distanceNm !== null) parts.push(`${detail.distanceNm} nm`);
+        if (detail.duration) parts.push(detail.duration);
+        if (detail.timeMinutes !== undefined && detail.timeMinutes !== null) parts.push(`${detail.timeMinutes} min`);
+        if (detail.timestampUtc) parts.push(detail.timestampUtc);
+        else if (detail.date) parts.push(`${detail.date} ${detail.time ?? ''}`.trim());
+        return parts.length > 0 ? ` (read: ${parts.join(', ')})` : '';
+    }
+
     function renderDetectedFlights() {
         const noResults = document.getElementById('auto-no-results');
         const results = document.getElementById('auto-logger-results');
@@ -1352,7 +1370,7 @@
             const reasonsEl = document.getElementById('auto-skip-reasons');
             const rows = [
                 ...lastImageErrors.map(e => `${e.file}: ${e.message}`),
-                ...lastSkipped.map(s => `Usage #${s.usageId ?? '?'}: ${s.reason}`),
+                ...lastSkipped.map(s => `Usage #${s.usageId ?? '?'}: ${s.reason}${formatSkipDetail(s.detail)}`),
             ];
             reasonsEl.innerHTML = rows.length > 0
                 ? rows.map(r => `<div class="text-slate-500">&bull; ${r}</div>`).join('')
