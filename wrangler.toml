@@ -53,12 +53,7 @@ LOG_SHEET_GID = "560263512"
 
 # Per-pilot dashboard settings (units, swap-after-log, light/dark theme,
 # manual/automatic logging mode) are stored in Workers KV — see
-# src/settingssave.js. The same namespace also stores which FDR "Usage"
-# ids have already been auto-logged (key prefix "usageid:"), and
-# short-lived "detect -> confirm" batches of screenshot-derived flights
-# (key prefix "autobatch:", ~15 min TTL) — see src/autoflightlog.js — so
-# a flight can never get logged twice and a confirm step never has to
-# trust flight details sent back by the browser.
+# src/settingssave.js.
 # Create the namespace once with the wrangler CLI, then paste the id(s)
 # below:
 #   wrangler kv namespace create SETTINGS_KV
@@ -67,3 +62,18 @@ LOG_SHEET_GID = "560263512"
 binding = "SETTINGS_KV"
 id = "e128530e6ef947bbb09fc18f768e0d88"
 preview_id = "REPLACE_WITH_PREVIEW_KV_NAMESPACE_ID"
+
+# Which FDR "Usage" ids have already been auto-logged (key prefix
+# "usageid:"), and short-lived "detect -> confirm" batches of
+# screenshot-derived flights (key prefix "autobatch:", ~15 min TTL) —
+# see src/autoflightlog.js — live in their own namespace, separate from
+# SETTINGS_KV, so a flight can never get logged twice and a confirm
+# step never has to trust flight details sent back by the browser.
+# Create the namespace once with the wrangler CLI, then paste the id(s)
+# below:
+#   wrangler kv namespace create AUTO_LOG_KV
+#   wrangler kv namespace create AUTO_LOG_KV --preview
+[[kv_namespaces]]
+binding = "AUTO_LOG_KV"
+id = "REPLACE_WITH_AUTO_LOG_KV_NAMESPACE_ID"
+preview_id = "REPLACE_WITH_AUTO_LOG_KV_PREVIEW_NAMESPACE_ID"
