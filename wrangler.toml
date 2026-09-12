@@ -19,12 +19,37 @@ OPERATIONS_SHEET_GID = "337983586"
 #   wrangler secret put DISCORD_CLIENT_SECRET
 #   wrangler secret put SESSION_SECRET
 #   wrangler secret put FLIGHT_SUBMIT_WEBHOOK_URL
+#   wrangler secret put WISPBYTE_BASE_URL
 # FLIGHT_SUBMIT_WEBHOOK_URL is where submitted flights get forwarded to
 # (see src/flightSubmit.js) — point it at whatever actually records them.
+#
+# WISPBYTE_BASE_URL only needs to serve POST {base}/flight-log (used by
+# both the manual logger and the automatic logger's confirm step) — it
+# no longer needs an /fdr-data endpoint. The automatic logger now reads
+# FDR data straight from screenshots the pilot uploads (see
+# src/imageocr.js / src/autoflightlog.js) instead of calling out to
+# Wispbyte for it.
+#
+# src/imageocr.js reads those screenshots via an outside vision API —
+# pick a provider with (defaults to "openai" if unset):
+#   wrangler secret put IMAGE_OCR_PROVIDER   # "openai" or "anthropic"
+# then set that provider's key:
+#   wrangler secret put OPENAI_API_KEY       # console.openai.com
+#   wrangler secret put OPENAI_MODEL         # optional, defaults to "gpt-5.5"
+#   wrangler secret put ANTHROPIC_API_KEY    # console.anthropic.com
+#   wrangler secret put ANTHROPIC_MODEL      # optional, defaults to "claude-sonnet-5"
+# Only the key(s) for whichever provider you pick are actually needed.
 
-# Per-pilot dashboard settings (units, swap-after-log, light/dark theme)
-# are stored in Workers KV — see src/settingssave.js. Create the
-# namespace once with the wrangler CLI, then paste the id(s) below:
+# Per-pilot dashboard settings (units, swap-after-log, light/dark theme,
+# manual/automatic logging mode) are stored in Workers KV — see
+# src/settingssave.js. The same namespace also stores which FDR "Usage"
+# ids have already been auto-logged (key prefix "usageid:"), and
+# short-lived "detect -> confirm" batches of screenshot-derived flights
+# (key prefix "autobatch:", ~15 min TTL) — see src/autoflightlog.js — so
+# a flight can never get logged twice and a confirm step never has to
+# trust flight details sent back by the browser.
+# Create the namespace once with the wrangler CLI, then paste the id(s)
+# below:
 #   wrangler kv namespace create SETTINGS_KV
 #   wrangler kv namespace create SETTINGS_KV --preview
 [[kv_namespaces]]
