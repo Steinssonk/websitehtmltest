@@ -5,18 +5,24 @@
 //
 // This is the ONLY file that talks to an outside AI provider — kept
 // isolated so the extraction step can be swapped out without touching
-// the detection/matching/logging pipeline at all. Two providers are
+// the detection/matching/logging pipeline at all. Three providers are
 // wired up below; pick one with:
 //
-//   wrangler secret put IMAGE_OCR_PROVIDER   # "openai" or "anthropic"
+//   wrangler secret put IMAGE_OCR_PROVIDER   # "gemini", "openai", or "anthropic"
 //
-// Defaults to "openai" if unset. Both providers are asked to reply via
-// a FORCED tool/function call against a strict schema, rather than
-// free-form text we then hope parses cleanly — that matters here
-// because a misread "Usage" id could let a flight get logged twice,
-// and a misread distance/duration directly affects payout.
+// Defaults to "gemini" if unset, since it's the only one of the three
+// with a genuinely free tier (no card on file needed). Providers are
+// asked to reply via a FORCED function/tool call against a strict
+// schema, rather than free-form text we then hope parses cleanly —
+// that matters here because a misread "Usage" id could let a flight
+// get logged twice, and a misread distance/duration directly affects
+// payout.
 //
-// --- OpenAI (default) ---------------------------------------------
+// --- Gemini (default, free) -----------------------------------------
+//   wrangler secret put GEMINI_API_KEY
+//   wrangler secret put GEMINI_MODEL   # optional, defaults to "gemini-3.5-flash"
+//
+// --- OpenAI (alternative) --------------------------------------------
 //   wrangler secret put OPENAI_API_KEY
 //   wrangler secret put OPENAI_MODEL   # optional, defaults to "gpt-5.5"
 //
@@ -24,11 +30,11 @@
 //   wrangler secret put ANTHROPIC_API_KEY
 //   wrangler secret put ANTHROPIC_MODEL   # optional, defaults to "claude-sonnet-5"
 //
-// Anthropic's API tends to read dense, small UI text a little more
-// reliably in practice, but OpenAI's API doesn't carry the lower
-// usage-tier daily spend cap Anthropic applies to brand-new accounts —
-// pick whichever fits your account/budget. Swapping is just changing
-// IMAGE_OCR_PROVIDER; nothing else in the codebase needs to change.
+// Google's free tier is quota-limited (requests/day and requests/min
+// caps that vary by model and can change), so if you ever outgrow it
+// or Google tightens the free-tier model list, switching to OpenAI or
+// Anthropic is just changing IMAGE_OCR_PROVIDER; nothing else in the
+// codebase needs to change.
 
 const EXTRACTION_PROMPT = `This is a screenshot of an in-game "Server Info" FDR (Flight Data Recorder) log — a scrollable list of flights. Each row shows, top to bottom: the aircraft/vehicle type; a line with the date, a UTC time, and a "Usage: <id>" number; then three columns — a departure airport code next to a takeoff icon, a distance in nautical miles with a duration underneath it, and an arrival airport code next to a landing icon. A crashed flight shows the word "CRASH" (often in red) in place of either the duration or the arrival code.
 
@@ -50,8 +56,11 @@ const ROW_REQUIRED = ['aircraft', 'date', 'time', 'usageId', 'departure', 'dista
 // hard failure (bad API key, network error, etc) so the caller can
 // surface a clear error instead of silently returning zero flights.
 export async function extractFlightRowsFromImage(env, base64Data, mediaType) {
-  const provider = (env.IMAGE_OCR_PROVIDER || 'openai').toLowerCase();
+  const provider = (env.IMAGE_OCR_PROVIDER || 'gemini').toLowerCase();
 
+  if (provider === 'gemini') {
+    return extractWithGemini(env, base64Data, mediaType);
+  }
   if (provider === 'anthropic') {
     return extractWithAnthropic(env, base64Data, mediaType);
   }
@@ -59,9 +68,114 @@ export async function extractFlightRowsFromImage(env, base64Data, mediaType) {
     return extractWithOpenAI(env, base64Data, mediaType);
   }
 
-  const err = new Error(`Unknown IMAGE_OCR_PROVIDER "${provider}" — use "openai" or "anthropic".`);
+  const err = new Error(`Unknown IMAGE_OCR_PROVIDER "${provider}" — use "gemini", "openai", or "anthropic".`);
   err.httpStatus = 501;
   throw err;
+}
+
+// ---------------------------------------------------------------------
+// Gemini (generateContent API, forced function call)
+// ---------------------------------------------------------------------
+const GEMINI_DEFAULT_MODEL = 'gemini-3.5-flash';
+
+async function extractWithGemini(env, base64Data, mediaType) {
+  const apiKey = env.GEMINI_API_KEY;
+  if (!apiKey) {
+    const err = new Error("Automatic flight logging isn't configured yet (missing GEMINI_API_KEY).");
+    err.httpStatus = 501;
+    throw err;
+  }
+
+  const model = env.GEMINI_MODEL || GEMINI_DEFAULT_MODEL;
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+
+  const functionDeclaration = {
+    name: 'record_flight_rows',
+    description: 'Records every flight row visible in the FDR (Flight Data Recorder) panel screenshot, top to bottom.',
+    parameters: {
+      type: 'object',
+      properties: {
+        rows: {
+          type: 'array',
+          description: 'One entry per visible row. Omit rows that are cut off or unreadable rather than guessing.',
+          items: {
+            type: 'object',
+            properties: ROW_PROPERTIES,
+            required: ROW_REQUIRED,
+          },
+        },
+      },
+      required: ['rows'],
+    },
+  };
+
+  let res;
+  try {
+    res = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-goog-api-key': apiKey,
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            role: 'user',
+            parts: [
+              { text: EXTRACTION_PROMPT },
+              { inline_data: { mime_type: mediaType, data: base64Data } },
+            ],
+          },
+        ],
+        tools: [{ functionDeclarations: [functionDeclaration] }],
+        toolConfig: {
+          functionCallingConfig: { mode: 'ANY', allowedFunctionNames: ['record_flight_rows'] },
+        },
+        generationConfig: { maxOutputTokens: 4096 },
+      }),
+    });
+  } catch (err) {
+    console.error('Gemini API request failed:', err);
+    const wrapped = new Error('Could not reach the image-reading service.');
+    wrapped.httpStatus = 502;
+    throw wrapped;
+  }
+
+  if (!res.ok) {
+    const bodyText = await res.text().catch(() => '');
+    console.error('Gemini API returned an error:', res.status, bodyText);
+    const err = new Error(
+      res.status === 401 || res.status === 403
+        ? 'The image-reading service rejected our credentials.'
+        : res.status === 429
+        ? 'The image-reading service is rate-limited right now (free-tier quota). Try again shortly.'
+        : 'The image-reading service could not process that screenshot.'
+    );
+    err.httpStatus = 502;
+    throw err;
+  }
+
+  let data;
+  try {
+    data = await res.json();
+  } catch (err) {
+    console.error('Gemini API response was not valid JSON:', err);
+    const wrapped = new Error('The image-reading service returned an unexpected response.');
+    wrapped.httpStatus = 502;
+    throw wrapped;
+  }
+
+  const parts = data.candidates?.[0]?.content?.parts;
+  const functionCall = Array.isArray(parts)
+    ? parts.find(part => part.functionCall && part.functionCall.name === 'record_flight_rows')?.functionCall
+    : null;
+
+  if (!functionCall || !functionCall.args || !Array.isArray(functionCall.args.rows)) {
+    console.error('Gemini API response did not include the expected function call:', JSON.stringify(data).slice(0, 500));
+    return [];
+  }
+
+  return functionCall.args.rows;
 }
 
 // ---------------------------------------------------------------------
