@@ -492,6 +492,7 @@
                     <div id="auto-no-results" class="hidden mt-6 border border-dashed border-slate-200 rounded-2xl p-6 text-center text-xs text-slate-400">
                         <i data-lucide="scan-search" class="w-6 h-6 mx-auto mb-2 text-slate-300"></i>
                         No new matching flights found in those screenshots. Fly a fleet aircraft to/from a hub, then try again.
+                        <div id="auto-skip-reasons" class="mt-4 text-left space-y-1"></div>
                     </div>
 
                     <div id="auto-logger-results" class="mt-6 space-y-4" hidden>
@@ -680,6 +681,8 @@
     let currentBatchId = null;      // batchId returned by the last successful detect() call
     let detectedFlights = [];       // flights returned by the last /api/flight/auto/detect call
     let selectedUsageIds = new Set(); // usage ids currently checked in the results list
+    let lastSkipped = [];           // { usageId, reason } for rows the last detect() call read but didn't log
+    let lastImageErrors = [];       // { file, message } for screenshots that failed to read entirely
 
     lucide.createIcons();
 
@@ -1319,6 +1322,8 @@
 
             currentBatchId = result.batchId;
             detectedFlights = Array.isArray(result.flights) ? result.flights : [];
+            lastSkipped = Array.isArray(result.skipped) ? result.skipped : [];
+            lastImageErrors = Array.isArray(result.imageErrors) ? result.imageErrors : [];
             selectedUsageIds = new Set(detectedFlights.map(f => f.usageId));
             renderDetectedFlights();
 
@@ -1344,6 +1349,14 @@
         if (detectedFlights.length === 0) {
             results.hidden = true;
             noResults.hidden = false;
+            const reasonsEl = document.getElementById('auto-skip-reasons');
+            const rows = [
+                ...lastImageErrors.map(e => `${e.file}: ${e.message}`),
+                ...lastSkipped.map(s => `Usage #${s.usageId ?? '?'}: ${s.reason}`),
+            ];
+            reasonsEl.innerHTML = rows.length > 0
+                ? rows.map(r => `<div class="text-slate-500">&bull; ${r}</div>`).join('')
+                : '';
             lucide.createIcons();
             return;
         }
