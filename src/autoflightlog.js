@@ -52,7 +52,6 @@ import { extractFlightRowsFromImage, arrayBufferToBase64, scanForEditorSignature
 const AUTHENTICITY_BLOCK_CONFIDENCE = new Set(['medium', 'high']);
 
 const WINDOW_MS = 24 * 60 * 60 * 1000; // "within 24 hours" window
-const NM_TO_KM = 1.852;
 // How close a manual-log entry's timestamp has to be to a detected
 // flight's flown-time to count as "the same flight already logged by
 // hand" — wide enough to cover a pilot logging a bit late (or
@@ -305,7 +304,6 @@ async function detectFlights(env, session, rawEntries) {
   // of that same row — lets a detected ICAO code be translated to its
   // airport name before it's shown to the pilot or submitted.
   const airportNameByCode = new Map(opsData.airports.map(a => [a.code, a.name || a.code]));
-  const unit = settings.unit === 'km' ? 'km' : 'nm';
 
   const now = Date.now();
   const cutoff = now - WINDOW_MS;
@@ -398,9 +396,13 @@ async function detectFlights(env, session, rawEntries) {
       continue;
     }
 
-    const distanceValue = unit === 'km'
-      ? Math.round(entry.distanceNm * NM_TO_KM * 10) / 10
-      : Math.round(entry.distanceNm * 10) / 10;
+    // No unit conversion here — show/submit the distance exactly as the
+    // screenshot printed it (see entry.unit, read straight off the FDR
+    // panel in imageocr.js). The payroll Apps Script reads the "Unit of
+    // Measurement" column and does the actual nm/km/mi conversion at
+    // payout time, so translating it here too would just be redundant
+    // (and would show the pilot a unit that doesn't match their screen).
+    const distanceValue = Math.round(entry.distanceNm * 10) / 10;
 
     flights.push({
       usageId: entry.usageId,
@@ -414,7 +416,7 @@ async function detectFlights(env, session, rawEntries) {
       departureName,
       arrivalName,
       distanceValue,
-      unit,
+      unit: entry.unit,
       timeMinutes: entry.timeMinutes,
       timestampUtc: new Date(entry.timestampMs).toISOString(),
     });
@@ -508,6 +510,12 @@ function normalizeEntry(raw) {
   const distanceNm = Number(raw.distance ?? raw.distanceNm ?? raw.distance_nm);
   if (!Number.isFinite(distanceNm)) return null;
 
+  // Whatever unit was actually printed next to the distance on the
+  // screenshot (see distanceUnit in imageocr.js) — kept as-is and never
+  // converted here. Falls back to "nm" only for older cached batches
+  // that predate this field.
+  const unit = normalizeDistanceUnit(raw.distanceUnit ?? raw.unit ?? raw.distance_unit);
+
   const timeMinutes = crashed ? null : parseDurationToMinutes(raw.duration ?? raw.time ?? raw.flightTime);
   const timestampMs = parseTimestamp(raw);
 
@@ -518,9 +526,21 @@ function normalizeEntry(raw) {
     arrival,
     crashed,
     distanceNm,
+    unit,
     timeMinutes,
     timestampMs,
   };
+}
+
+// Canonicalizes whatever unit text was read off the screenshot into
+// exactly "nm", "km", or "m" (statute miles) — matching what the
+// payroll Apps Script's "Unit of Measurement" column expects. Defaults
+// to "nm" for anything missing/unrecognized rather than guessing.
+function normalizeDistanceUnit(raw) {
+  const str = String(raw ?? '').trim().toLowerCase();
+  if (str === 'km') return 'km';
+  if (str === 'mi' || str === 'm' || str === 'mile' || str === 'miles') return 'm';
+  return 'nm';
 }
 
 // Accepts "HH:MM:SS", "H:MM", or a plain number of hours (e.g. 0.27),
