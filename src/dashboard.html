@@ -440,12 +440,12 @@
 
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Flight Time (Minutes)</label>
-                                <input type="number" step="1" id="input-time" required placeholder="e.g., 390" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
+                                <input type="number" step="any" id="input-time" required placeholder="e.g., 390.5" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
                             </div>
 
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Distance Value (<span id="distance-unit-label">nm</span>)</label>
-                                <input type="number" step="1" id="input-distance" required placeholder="e.g., 3450" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
+                                <input type="number" step="any" id="input-distance" required placeholder="e.g., 3450.5" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
                             </div>
                         </div>
 
@@ -578,11 +578,12 @@
                         <div class="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-200">
                             <div>
                                 <div class="font-semibold text-sm text-slate-900">Unit of Measurement</div>
-                                <div class="text-xs text-slate-500 mt-0.5">Switch tracking parameters between Nautical Miles or Kilometers.</div>
+                                <div class="text-xs text-slate-500 mt-0.5">Switch tracking parameters between Nautical Miles, Kilometers, or Miles.</div>
                             </div>
                             <div class="flex items-center space-x-1 bg-slate-200/70 p-1 rounded-xl">
                                 <button onclick="setUnit('nm')" id="unit-btn-nm" class="seg-btn seg-btn-active">nm</button>
                                 <button onclick="setUnit('km')" id="unit-btn-km" class="seg-btn seg-btn-inactive">km</button>
+                                <button onclick="setUnit('m')" id="unit-btn-m" class="seg-btn seg-btn-inactive">m</button>
                             </div>
                         </div>
 
@@ -1586,15 +1587,13 @@
         state.unit = unit;
         const nmBtn = document.getElementById('unit-btn-nm');
         const kmBtn = document.getElementById('unit-btn-km');
+        const mBtn = document.getElementById('unit-btn-m');
         document.getElementById('distance-unit-label').innerText = unit;
 
-        if (unit === 'nm') {
-            nmBtn.className = "seg-btn seg-btn-active";
-            kmBtn.className = "seg-btn seg-btn-inactive";
-        } else {
-            kmBtn.className = "seg-btn seg-btn-active";
-            nmBtn.className = "seg-btn seg-btn-inactive";
-        }
+        const buttons = { nm: nmBtn, km: kmBtn, m: mBtn };
+        Object.keys(buttons).forEach(key => {
+            buttons[key].className = key === unit ? "seg-btn seg-btn-active" : "seg-btn seg-btn-inactive";
+        });
         if (!opts.skipSave) saveSettings();
     }
 
@@ -1689,7 +1688,7 @@
             .then(res => res.ok ? res.json() : null)
             .then(settings => {
                 if (!settings) return;
-                setUnit(settings.unit === 'km' ? 'km' : 'nm', { skipSave: true });
+                setUnit(settings.unit === 'km' ? 'km' : settings.unit === 'm' ? 'm' : 'nm', { skipSave: true });
                 setSwapAfterLog(!!settings.swapAfterLog, { skipSave: true });
                 setTheme(settings.theme === 'dark' ? 'dark' : 'light', { skipSave: true });
                 setLoggingMode(settings.loggingMode === 'automatic' ? 'automatic' : 'manual', { skipSave: true });
