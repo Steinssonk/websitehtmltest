@@ -36,7 +36,9 @@
 // Anthropic is just changing IMAGE_OCR_PROVIDER; nothing else in the
 // codebase needs to change.
 
-const EXTRACTION_PROMPT = `This is a screenshot of an in-game "Server Info" FDR (Flight Data Recorder) log — a scrollable list of flights. Each row shows, top to bottom: the aircraft/vehicle type; a line with the date, a UTC time, and a "Usage: <id>" number; then three columns — a departure airport code next to a takeoff icon, a distance in nautical miles with a duration underneath it, and an arrival airport code next to a landing icon. A crashed flight shows the word "CRASH" (often in red) in place of either the duration or the arrival code.
+const EXTRACTION_PROMPT = `This is a screenshot of an in-game "Server Info" FDR (Flight Data Recorder) log — a scrollable list of flights. Each row shows, top to bottom: the aircraft/vehicle type; a line with the date, a UTC time, and a "Usage: <id>" number; then three columns — a departure airport code next to a takeoff icon, a distance with a duration underneath it, and an arrival airport code next to a landing icon. A crashed flight shows the word "CRASH" (often in red) in place of either the duration or the arrival code.
+
+The distance is followed by a unit abbreviation printed right next to the number — "nm" (nautical miles), "km" (kilometers), or "mi"/"m" (statute miles). This unit can differ from row to row and from screenshot to screenshot; read whichever unit is actually printed on that row rather than assuming it's always the same one.
 
 Call record_flight_rows with one entry per visible flight row, reading every field exactly as printed. Do not include rows from any other part of the screenshot (menus, chat log, server stats, etc). If a row is partially cut off at the top/bottom edge such that you can't read all of its fields, leave it out rather than guessing.
 
@@ -48,11 +50,12 @@ const ROW_PROPERTIES = {
   time: { type: 'string', description: 'The UTC time shown next to the date, e.g. "09:56" (24-hour, no seconds).' },
   usageId: { type: 'string', description: 'The number after "Usage:", exactly as printed.' },
   departure: { type: 'string', description: 'The ICAO/airport code next to the takeoff icon.' },
-  distanceNm: { type: 'number', description: 'The distance number, in nautical miles (the "nm" figure).' },
+  distanceNm: { type: 'number', description: 'The distance number exactly as printed, in whatever unit is printed next to it (see distanceUnit) — do not convert it.' },
+  distanceUnit: { type: 'string', enum: ['nm', 'km', 'mi'], description: 'The unit abbreviation printed immediately next to the distance number: "nm" for nautical miles, "km" for kilometers, or "mi" for statute miles (sometimes shown as just "m").' },
   duration: { type: 'string', description: 'The HH:MM:SS duration text under the distance, OR the literal word "CRASH" if that is what is printed there.' },
   arrival: { type: 'string', description: 'The ICAO/airport code next to the landing icon, OR the literal word "CRASH" if that is what is printed there instead of a code.' },
 };
-const ROW_REQUIRED = ['aircraft', 'date', 'time', 'usageId', 'departure', 'distanceNm', 'duration', 'arrival'];
+const ROW_REQUIRED = ['aircraft', 'date', 'time', 'usageId', 'departure', 'distanceNm', 'distanceUnit', 'duration', 'arrival'];
 
 // Per-IMAGE (not per-row) authenticity verdict — see the second half of
 // EXTRACTION_PROMPT. Deliberately scoped to "does the panel's own
