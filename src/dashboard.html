@@ -8,29 +8,29 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Google Fonts: Inter & Playfair Display -->
+    <!-- Google Fonts: Inter -->
     <link rel="icon" type="image/png" href="https://i.imgur.com/98OXG6K.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif'],
+                        serif: ['Inter', 'sans-serif'],
                     },
                     colors: {
-                        navy: '#002A5C',
-                        'navy-deep': '#001B3D',
-                        gold: '#ffbd59',
-                        'gold-deep': '#f1ad42',
+                        navy: '#0B2A4A',
+                        'navy-deep': '#071C33',
+                        gold: '#E8A23D',
+                        'gold-deep': '#C6842A',
                     }
                 }
             }
         }
     </script>
     <style>
-        body { background-color: #f4f6f9; color: #1e293b; }
+        body { background-color: #F4F2EB; color: #16181B; }
         .dropdown-results::-webkit-scrollbar { width: 4px; }
         .dropdown-results::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
         #app-shell { transition: filter 0.3s ease; }
@@ -41,19 +41,48 @@
            the "selected" pill stays legible in dark mode instead of
            inheriting the same override used for card backgrounds. */
         .seg-btn { padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; transition: all 0.15s ease; }
-        .seg-btn-active { background-color: #ffffff; color: #002A5C; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        .seg-btn-inactive { color: #475569; }
-        .seg-btn-inactive:hover { color: #0f172a; }
+        .seg-btn-active { background-color: #ffffff; color: #0B2A4A; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .seg-btn-inactive { color: #97958D; }
+        .seg-btn-inactive:hover { color: #16181B; }
         html.dashboard-dark .seg-btn-active { background-color: #2a3a5c; color: #eaf1ff; }
         html.dashboard-dark .seg-btn-inactive { color: #8ea0bd; }
         html.dashboard-dark .seg-btn-inactive:hover { color: #eaf1ff; }
 
         /* --- Page loading overlay --- */
-        #page-loading { transition: opacity 0.2s ease; background-color: #f4f6f9; }
+        #page-loading { transition: opacity 0.2s ease; background-color: #F4F2EB; }
         html.dashboard-dark #page-loading { background-color: #0b1220; }
-        .spinner { border: 3px solid rgba(0, 42, 92, 0.15); border-top-color: #002A5C; border-radius: 9999px; width: 2.25rem; height: 2.25rem; animation: spin 0.8s linear infinite; }
+        .spinner { border: 3px solid rgba(11, 42, 74, 0.15); border-top-color: #0B2A4A; border-radius: 9999px; width: 2.25rem; height: 2.25rem; animation: spin 0.8s linear infinite; }
         html.dashboard-dark .spinner { border-color: rgba(255, 255, 255, 0.12); border-top-color: #6f9bff; }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* --- Light-mode retheme: cream/navy/amber ---
+           This page is built with Tailwind's default slate palette
+           throughout. Rather than touching every class attribute (risky
+           across ~1400 lines wired up to JS by id), remap the specific
+           slate/neutral utility classes actually in use to this site's
+           cream tokens, the same technique already used below for dark
+           mode. Semantic colors (emerald = success, red = error) are left
+           alone on purpose. */
+        .bg-slate-50 { background-color: #F4F2EB !important; }
+        .bg-slate-100 { background-color: #EDEAE0 !important; }
+        .bg-slate-200,
+        .bg-slate-200\/70 { background-color: #E4E1D6 !important; }
+        .bg-slate-700 { background-color: #071C33 !important; }
+        .bg-slate-900\/70 { background-color: rgba(7, 28, 51, 0.7) !important; }
+        .hover\:bg-slate-900:hover { background-color: #071C33 !important; }
+        .border-slate-100 { border-color: #E4E1D6 !important; }
+        .border-slate-200 { border-color: #E4E1D6 !important; }
+        .text-slate-300 { color: #9aa5b4 !important; }
+        .text-slate-400 { color: #97958D !important; }
+        .text-slate-500 { color: #97958D !important; }
+        .text-slate-600 { color: #7d7b73 !important; }
+        .text-slate-700 { color: #16181B !important; }
+        .text-slate-900 { color: #16181B !important; }
+        .hover\:bg-slate-50:hover { background-color: #F4F2EB !important; }
+        .hover\:text-slate-600:hover { color: #7d7b73 !important; }
+        .hover\:text-slate-900:hover { color: #16181B !important; }
+        .bg-amber-600 { background-color: #E8A23D !important; }
+        .hover\:bg-amber-700:hover { background-color: #C6842A !important; }
 
         /* --- Dark mode, dashboard only ---
            Toggled by adding/removing "dashboard-dark" on <html>. This is a
@@ -116,57 +145,133 @@
             --header-h: 76px; /* fallback until JS measures the real nav height below */
         }
         #header-placeholder nav {
+            box-sizing: border-box;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 5%;
-            background-color: #ffffff;
+            padding: 1.4rem 6%;
+            background-color: #F4F2EB;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             z-index: 100;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid #E4E1D6;
         }
         #header-placeholder .logo {
-            font-size: 1.8rem;
-            color: #002A5C;
-            letter-spacing: 0.5px;
-            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+            color: #16181B;
+            letter-spacing: -0.01em;
+            font-family: 'Inter', sans-serif;
             font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            text-decoration: none;
+        }
+        #header-placeholder .brand-logo {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            display: block;
         }
         #header-placeholder .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: 2.1rem;
             list-style: none;
         }
         #header-placeholder .nav-links a {
             text-decoration: none;
-            color: #555;
+            color: #16181B;
+            opacity: 0.72;
             font-weight: 500;
-            font-size: 0.95rem;
-            transition: color 0.2s ease;
+            font-size: 0.92rem;
+            transition: opacity 0.15s ease;
         }
         #header-placeholder .nav-links a:hover {
-            color: #002A5C;
+            opacity: 1;
+            color: #16181B;
         }
         #header-placeholder .btn {
-            background-color: #002A5C;
+            background-color: #16181B;
             color: white;
             border: none;
-            padding: 0.6rem 1.5rem;
-            border-radius: 6px;
+            padding: 0.65rem 1.35rem;
+            border-radius: 999px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
+            font-size: 0.92rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.15s ease, background 0.15s ease;
             font-family: 'Inter', sans-serif;
         }
         #header-placeholder .btn:hover {
-            background-color: #001b3d;
+            background-color: #071C33;
+            transform: translateY(-1px);
         }
-        @media (max-width: 768px) {
+
+        /* --- Mobile nav toggle + menu (shared look across the site) --- */
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 5px;
+            width: 32px;
+            height: 32px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 210;
+        }
+        .nav-toggle span {
+            display: block;
+            height: 2px;
+            border-radius: 2px;
+            background: #16181B;
+            transition: transform 0.25s ease, opacity 0.2s ease, width 0.2s ease;
+        }
+        .nav-toggle span:nth-child(1) { width: 22px; }
+        .nav-toggle span:nth-child(2) { width: 16px; }
+        .nav-toggle span:nth-child(3) { width: 22px; }
+        .nav-toggle.is-active span { width: 22px; }
+        .nav-toggle.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .nav-toggle.is-active span:nth-child(2) { opacity: 0; }
+        .nav-toggle.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        .mobile-menu {
+            position: fixed;
+            inset: 0;
+            background: #F4F2EB;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2.2rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-12px);
+            transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+        }
+        .mobile-menu.is-open { opacity: 1; visibility: visible; transform: translateY(0); }
+        .mobile-menu ul { list-style: none; display: flex; flex-direction: column; align-items: center; gap: 1.7rem; }
+        .mobile-menu ul a { text-decoration: none; color: #16181B; font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em; font-family: 'Inter', sans-serif; }
+        .mobile-menu .btn { font-size: 0.95rem; }
+        body.menu-open { overflow: hidden; }
+
+        html.dashboard-dark .mobile-menu { background: #0b1220; }
+        html.dashboard-dark .mobile-menu ul a { color: #eaf1ff; }
+        html.dashboard-dark .nav-toggle span { background: #eaf1ff; }
+
+        @media (max-width: 980px) {
             #header-placeholder .nav-links { display: none; }
+            .nav-toggle { display: flex; }
+        }
+        @media (min-width: 981px) {
+            .mobile-menu { display: none; }
         }
 
         /* --- Textured navy pattern for Banners/Timelines --- */
@@ -174,19 +279,14 @@
             padding-top: var(--header-h);
         }
         .textured-banner {
-            background-color: #000a19;
-            background-image: linear-gradient(rgba(0, 10, 25, 0.82), rgba(0, 10, 25, 0.82)),
-                url('https://imgur.com/m2bcxBM.png');
-            background-repeat: repeat;
-            background-size: 450px;
-            background-position: center;
+            background-color: #071C33;
         }
 
         /* --- Shared site footer, matching every other page --- */
         footer {
-            background-color: #002A5C;
+            background-color: #071C33;
             color: #ffffff;
-            padding: 3rem 5% 1.5rem;
+            padding: 3.2rem 6% 1.6rem;
             margin-top: 5rem;
         }
         .footer-content {
@@ -227,11 +327,11 @@
         }
         .footer-bottom p {
             font-size: 0.8rem;
-            color: #94a3b8;
+            color: #7f8fa1;
         }
     </style>
 </head>
-<body class="font-sans antialiased min-h-screen flex flex-col selection:bg-blue-900 selection:text-white">
+<body class="font-sans antialiased min-h-screen flex flex-col selection:bg-navy selection:text-white">
 
 <!-- Loading overlay — shown until the initial header/footer, operations
      data, and sign-in check have all resolved, so pilots never see a
@@ -1740,6 +1840,38 @@
                 };
                 offsetForHeader();
                 window.addEventListener('resize', offsetForHeader);
+            }
+
+            // Mobile nav toggle — the button and menu only exist once the
+            // fetched header markup above has been injected, so this has
+            // to be wired up here rather than at top-level script scope.
+            const toggle = document.getElementById('navToggle');
+            const menu = document.getElementById('mobileMenu');
+            if (toggle && menu) {
+                const closeMenu = () => {
+                    toggle.classList.remove('is-active');
+                    menu.classList.remove('is-open');
+                    document.body.classList.remove('menu-open');
+                    toggle.setAttribute('aria-expanded', 'false');
+                };
+                toggle.addEventListener('click', () => {
+                    const isOpen = menu.classList.toggle('is-open');
+                    toggle.classList.toggle('is-active', isOpen);
+                    document.body.classList.toggle('menu-open', isOpen);
+                    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                    // Keep the mobile CTA in sync with the real auth button
+                    // (label/href flip between "Get Started" and "Log out"
+                    // once AirlineAuth.init() resolves sign-in state).
+                    if (isOpen) {
+                        const realBtn = document.getElementById('auth-btn');
+                        const mobileBtn = document.getElementById('mobile-auth-btn');
+                        if (realBtn && mobileBtn) {
+                            mobileBtn.textContent = realBtn.textContent;
+                            mobileBtn.href = realBtn.href;
+                        }
+                    }
+                });
+                menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', closeMenu));
             }
         })
         .catch(err => console.error('Failed to load header:', err));

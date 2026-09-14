@@ -8,262 +8,266 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="icon" type="image/png" href="https://i.imgur.com/98OXG6K.png">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@600;700;800&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    /* --- Base & Reset --- */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    /* ============ Tokens ============ */
+    :root {
+      --bg: #F4F2EB;
+      --bg-raised: #FFFFFF;
+      --ink: #16181B;
+      --ink-soft: #97958D;
+      --line: #E4E1D6;
+      --navy: #0B2A4A;
+      --navy-dark: #071C33;
+      --amber: #E8A23D;
+      --radius: 18px;
     }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      background-color: #ffffff;
-      color: #333;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
       line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* --- Global Typography Theme --- */
-    h1, h2, h3 {
-      font-family: 'Playfair Display', serif;
-      font-weight: 700;
-    }
+    a { color: inherit; }
+    img { max-width: 100%; display: block; }
+    button { font-family: inherit; }
 
-    .logo {
-      font-family: 'Raleway', sans-serif;
-      font-weight: 700;
-    }
-
-    /* --- Top Navigation --- */
-    nav {
+    /* ============ Nav ============ */
+    nav.top {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 1rem 5%;
-      background-color: #ffffff;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 100;
-      border-bottom: 1px solid #f0f0f0;
+      justify-content: space-between;
+      padding: 1.4rem 6%;
     }
 
-    .logo {
-      font-size: 1.8rem;
-      color: #002A5C;
-      letter-spacing: 0.5px;
-    }
-
-    .nav-links {
+    .brand {
       display: flex;
-      gap: 2rem;
-      list-style: none;
+      align-items: center;
+      gap: 0.55rem;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: -0.01em;
+      text-decoration: none;
     }
+
+    .brand-mark {
+      width: 26px; height: 26px;
+      border-radius: 7px;
+      background: linear-gradient(155deg, var(--navy), var(--navy-dark));
+      display: flex; align-items: center; justify-content: center;
+      color: var(--amber);
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+
+    .nav-links { display: flex; gap: 2.1rem; list-style: none; }
 
     .nav-links a {
       text-decoration: none;
-      color: #555;
+      color: var(--ink);
       font-weight: 500;
-      font-size: 0.95rem;
-      transition: color 0.2s ease;
+      font-size: 0.92rem;
+      opacity: 0.72;
+      transition: opacity 0.15s ease;
     }
-
-    .nav-links a:hover {
-      color: #002A5C;
-    }
+    .nav-links a:hover { opacity: 1; }
+    .nav-links a.current { opacity: 1; }
 
     .btn {
-      background-color: #002A5C;
-      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
       border: none;
-      padding: 0.6rem 1.5rem;
-      border-radius: 6px;
       cursor: pointer;
       font-weight: 600;
-      font-size: 0.95rem;
-      transition: all 0.2s ease;
-      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 0.65rem 1.35rem;
+      transition: transform 0.15s ease, background 0.15s ease, opacity 0.15s ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-dark { background: var(--ink); color: #fff; }
+    .btn-dark:hover { background: var(--navy-dark); }
+    .btn-outline { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+    .btn-outline:hover { border-color: var(--ink); }
+    .btn-sm { padding: 0.5rem 1.1rem; font-size: 0.85rem; }
+
+    /* ============ Hero ============ */
+    .hero { text-align: center; padding: 2.5rem 6% 4rem; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-raised);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0.4rem 0.9rem 0.4rem 0.55rem;
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+      font-weight: 500;
+      margin-bottom: 2.2rem;
     }
 
-    .btn:hover {
-      background-color: #001b3d;
+    .badge-dot {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #4a7a5a, #101c16);
     }
 
-    /* --- Page Header ---
-       No photo, no hero box — just the page title sitting directly on the
-       page, same treatment as the Hubs page, flowing straight into the
-       fleet content below. */
-    .page-header {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 6.5rem 5% 1.5rem;
-    }
-
-    .page-header-kicker {
-      font-size: 0.8rem;
-      color: #b8860b;
+    .hero h1 {
+      font-size: clamp(2.4rem, 5.6vw, 4.2rem);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      margin-bottom: 0.75rem;
-      font-family: 'Inter', sans-serif;
+      max-width: 820px;
+      margin: 0 auto;
     }
+    .hero h1 .soft { color: var(--ink-soft); font-weight: 600; }
 
-    .page-header-title {
-      font-size: 3.5rem;
-      line-height: 1.2;
-      margin-bottom: 1rem;
-      color: #111;
-    }
-
-    .page-header-subtitle {
-      font-size: 1rem;
-      color: #555;
+    .hero p.sub {
+      max-width: 560px;
+      margin: 1.4rem auto 0;
+      color: var(--ink-soft);
+      font-size: 1.05rem;
       line-height: 1.6;
-      max-width: 600px;
-      font-weight: 300;
     }
 
-    /* --- Fleet Sections --- */
-    .fleet-sections {
-      padding-top: 0;
+    /* ============ Section shells ============ */
+    section.block { max-width: 1240px; margin: 0 auto 6.5rem; padding: 0 6%; }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+      font-weight: 600;
+      margin-bottom: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .eyebrow .sq { width: 7px; height: 7px; background: var(--navy); display: inline-block; }
+
+    .block h2 {
+      font-size: clamp(1.9rem, 3.6vw, 2.6rem);
+      letter-spacing: -0.02em;
+      font-weight: 700;
+      line-height: 1.14;
+    }
+    .block h2 .soft { color: var(--ink-soft); font-weight: 600; }
+
+    .block p.lead {
+      max-width: 560px;
+      color: var(--ink-soft);
+      font-size: 1rem;
+      margin-top: 1rem;
+      line-height: 1.6;
     }
 
-    .page-section {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 5%;
-    }
-
-    .fleet-category-section {
-      padding: 2.5rem 0;
-    }
-
-    .fleet-category {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 5%;
-    }
-
-    .fleet-category-header {
-      margin-bottom: 1.5rem;
-      border-bottom: 1px solid #eef0f3;
-      padding-bottom: 0.75rem;
-    }
-
-    .fleet-category-header h2 {
-      font-size: 1.7rem;
-      color: #002A5C;
-      margin-bottom: 0.25rem;
-    }
-
-    .fleet-category-header p {
-      color: #555;
-      font-size: 0.95rem;
-      font-weight: 300;
-    }
-
-    /* Fleet Grid Boxes (Compact & Fancy) */
-    .fleet-grid-boxes {
+    /* ============ Fleet cards ============ */
+    .fleet-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 1.25rem;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+      margin-top: 2.6rem;
+      align-items: start;
     }
 
-    .fleet-box {
-      position: relative;
-      overflow: hidden;
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 1.5rem;
+    .fleet-card {
+      background: var(--bg-raised);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.6rem 1.6rem 1.8rem;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 8px 24px rgba(0, 42, 92, 0.05);
-      border: 1px solid rgba(0, 42, 92, 0.08);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-
-    .fleet-box:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 28px rgba(0, 42, 92, 0.1);
+    .fleet-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 34px rgba(11, 42, 74, 0.08);
     }
 
-    .fleet-box-mark {
-      position: absolute;
-      top: 1.25rem;
-      right: 1.25rem;
-      width: 22px;
-      height: 22px;
-      color: rgba(0, 42, 92, 0.12);
+    .fleet-card-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--navy-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--amber);
+      margin-bottom: 1.1rem;
     }
 
-    .fleet-box-tag {
-      font-size: 0.7rem;
-      color: #002A5C;
-      font-weight: 700;
+    .fleet-card-tag {
+      font-size: 0.72rem;
+      color: var(--ink-soft);
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 1.2px;
+      letter-spacing: 0.03em;
       margin-bottom: 0.4rem;
     }
 
-    .fleet-box-title {
-      font-size: 1.6rem;
-      line-height: 1.1;
-      color: #111;
-      margin-bottom: 0.5rem;
+    .fleet-card-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.6rem;
     }
 
-    .fleet-box-desc {
-      font-size: 0.85rem;
-      color: #64748b;
-      line-height: 1.4;
-      margin-bottom: 1rem;
+    .fleet-card-desc {
+      font-size: 0.88rem;
+      color: var(--ink-soft);
+      line-height: 1.55;
+      margin-bottom: 1.2rem;
     }
 
-    .fleet-box-divider {
+    .fleet-card-divider {
       border: none;
-      border-top: 1px solid #f1f5f9;
-      margin-bottom: 1rem;
+      border-top: 1px solid var(--line);
+      margin-bottom: 1.2rem;
     }
 
-    /* Modern Compact Chips for Aircraft */
-    .fleet-box-list {
+    .fleet-chip-list {
       list-style: none;
       display: flex;
       flex-wrap: wrap;
-      gap: 0.45rem;
+      gap: 0.5rem;
       margin-top: auto;
     }
 
-    .fleet-box-list li {
-      font-size: 0.8rem;
-      background: #f8fafc;
-      color: #1e293b;
+    .fleet-chip-list li {
+      font-size: 0.78rem;
+      background: var(--bg);
+      color: var(--ink);
       font-weight: 600;
-      padding: 0.3rem 0.65rem;
-      border-radius: 6px;
-      border: 1px solid #e2e8f0;
+      padding: 0.32rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--line);
       transition: background 0.15s ease, border-color 0.15s ease;
     }
 
-    .fleet-box-list li:hover {
-      background: #f1f5f9;
-      border-color: #cbd5e1;
+    .fleet-chip-list li:hover {
+      background: var(--bg-raised);
+      border-color: var(--navy);
     }
 
-    /* --- Footer Section --- */
+    /* ============ Footer ============ */
     footer {
-      background-color: #002A5C;
-      color: #ffffff;
-      padding: 3rem 5% 1.5rem;
-      margin-top: 4rem;
+      background: var(--navy-dark);
+      color: #fff;
+      padding: 3.2rem 6% 1.6rem;
     }
-
     .footer-content {
-      max-width: 1400px;
+      max-width: 1240px;
       margin: 0 auto;
       display: flex;
       flex-wrap: wrap;
@@ -271,195 +275,375 @@
       gap: 2.5rem;
       margin-bottom: 2.5rem;
     }
-
-    .footer-col {
-      flex: 1;
-      min-width: 220px;
-    }
-
-    .footer-col h3, .footer-col h4 {
-      color: #ffffff;
-      margin-bottom: 0.75rem;
-      font-size: 1.1rem;
-    }
-
-    .footer-col p, .footer-col a {
-      color: #cbd5e1;
-      font-size: 0.9rem;
-      text-decoration: none;
-    }
-
-    .footer-col ul {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
+    .footer-col { flex: 1; min-width: 220px; }
+    .footer-col h3, .footer-col h4 { margin-bottom: 0.75rem; font-size: 1.05rem; font-weight: 700; }
+    .footer-col p, .footer-col a { color: #9aa5b4; font-size: 0.88rem; text-decoration: none; line-height: 1.6; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
 
     .footer-bottom {
-      max-width: 1400px;
+      max-width: 1240px;
       margin: 0 auto;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      border-top: 1px solid rgba(255,255,255,0.1);
       padding-top: 1.25rem;
       text-align: center;
     }
+    .footer-bottom p { font-size: 0.78rem; color: #7f8fa1; }
 
-    .footer-bottom p {
-      font-size: 0.8rem;
-      color: #94a3b8;
-    }
-
-    /* Responsive tweaks */
+    /* ============ Responsive ============ */
     @media (max-width: 1024px) {
+      .fleet-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 980px) {
       .nav-links { display: none; }
-      .page-header-title { font-size: 2.5rem; }
+    }
+  
+    /* ============ Logo image ============ */
+    .nav-right { display: flex; align-items: center; gap: 0.9rem; }
+    .brand-logo {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      display: block;
     }
 
-    @media (max-width: 560px) {
-      .fleet-grid-boxes { grid-template-columns: 1fr; }
-      .fleet-box-title { font-size: 1.8rem; }
-      .fleet-category-section { padding: 2rem 0; }
+    /* ============ Mobile nav toggle ============ */
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 5px;
+      width: 32px;
+      height: 32px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      z-index: 210;
     }
+    .nav-toggle span {
+      display: block;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--ink);
+      transition: transform 0.25s ease, opacity 0.2s ease, width 0.2s ease;
+    }
+    .nav-toggle span:nth-child(1) { width: 22px; }
+    .nav-toggle span:nth-child(2) { width: 16px; }
+    .nav-toggle span:nth-child(3) { width: 22px; }
+    .nav-toggle.is-active span { width: 22px; }
+    .nav-toggle.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle.is-active span:nth-child(2) { opacity: 0; }
+    .nav-toggle.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2.2rem;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-12px);
+      transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+    }
+    .mobile-menu.is-open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .mobile-menu ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.7rem;
+    }
+    .mobile-menu ul a {
+      text-decoration: none;
+      color: var(--ink);
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .mobile-menu ul a.current { color: var(--navy); }
+    .mobile-menu .btn { font-size: 0.95rem; }
+    body.menu-open { overflow: hidden; }
+
+    @media (max-width: 980px) {
+      .nav-toggle { display: flex; }
+    }
+    @media (min-width: 981px) {
+      .mobile-menu { display: none; }
+    }
+
+    /* ============ Scroll reveal ============ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+    .reveal-stagger > *:nth-child(1) { transition-delay: 0s; }
+    .reveal-stagger > *:nth-child(2) { transition-delay: 0.08s; }
+    .reveal-stagger > *:nth-child(3) { transition-delay: 0.16s; }
+    .reveal-stagger > *:nth-child(4) { transition-delay: 0.24s; }
+    .reveal-stagger > *:nth-child(5) { transition-delay: 0.32s; }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal, .reveal-stagger > * { opacity: 1; transform: none; transition: none; }
+    }
+
+    /* ============ Bento box card ============ */
+    .box {
+      position: relative;
+      background: #F0EEE5;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 1.7rem 1.8rem;
+      overflow: hidden;
+    }
+    .box--featured { border-color: var(--amber); box-shadow: 0 0 0 1px var(--amber); }
+    .box-expand {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink-soft);
+      opacity: 0.6;
+    }
+    .box-dots {
+      background-image: radial-gradient(circle, rgba(11,42,74,0.14) 1px, transparent 1.4px);
+      background-size: 16px 16px;
+    }
+
   </style>
 </head>
 <body>
 
-  <svg width="0" height="0" style="position: absolute;">
-    <symbol id="fleet-mark" viewBox="0 0 24 24">
-      <path d="M21 3L3 10.5l7.5 3L13.5 21 21 3z" fill="currentColor"/>
-    </symbol>
-  </svg>
+  <nav class="top">
+    <a href="/" class="brand">
+      <img class="brand-logo" src="data:image/png;base64,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" alt="Udyanapura">
+      Udyanapura
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/programs">Programs</a></li>
+      <li><a href="/hubs">Hubs</a></li>
+      <li><a href="/fleet" class="current">Fleet</a></li>
+      <li><a href="/dashboard">Dashboard</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="/auth/discord" class="btn btn-dark btn-sm">Get Started</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
 
-  <div id="header-placeholder"></div>
-
-  <div class="page-header">
-    <div class="page-header-kicker">Aircraft & Operations</div>
-    <h1 class="page-header-title">Our Fleet</h1>
-    <p class="page-header-subtitle">From the entry-level workhorses to the flagships of the skies, explore the aircraft our pilots fly across every stage of their career.</p>
+  <div class="mobile-menu" id="mobileMenu">
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/programs">Programs</a></li>
+      <li><a href="/hubs">Hubs</a></li>
+      <li><a href="/fleet" class="current">Fleet</a></li>
+      <li><a href="/dashboard">Dashboard</a></li>
+    </ul>
+    <a href="/auth/discord" class="btn btn-dark">Get Started</a>
   </div>
 
-  <section class="fleet-sections">
+  <section class="hero">
+    <span class="badge">
+      <span class="badge-dot"></span>
+      Aircraft &amp; operations
+    </span>
 
-    <div class="fleet-category-section">
-      <div class="fleet-category">
-        <div class="fleet-category-header">
-          <h2>The Fleet</h2>
-          <p>Every aircraft we fly, grouped by manufacturer.</p>
-        </div>
+    <h1>Every aircraft.<br><span class="soft">Every career stage.</span></h1>
 
-        <div class="fleet-grid-boxes">
-
-          <div class="fleet-box">
-            <svg class="fleet-box-mark"><use href="#fleet-mark"></use></svg>
-            <div class="fleet-box-tag">Our Airbus Fleet</div>
-            <h3 class="fleet-box-title">Airbus</h3>
-            <p class="fleet-box-desc">Every Airbus type we fly, from current widebodies to retired and reimagined variants.</p>
-            <hr class="fleet-box-divider">
-            <ul class="fleet-box-list">
-              <li>A350-900</li>
-              <li>A380-800</li>
-              <li>A300-600R</li>
-              <li>A310-300</li>
-              <li>A330-300</li>
-              <li>A340-300</li>
-              <li>A340-500</li>
-              <li>A330-900neo</li>
-              <li>A350-800</li>
-              <li>A321neo</li>
-              <li>A350F</li>
-            </ul>
-          </div>
-
-          <div class="fleet-box">
-            <svg class="fleet-box-mark"><use href="#fleet-mark"></use></svg>
-            <div class="fleet-box-tag">Our Boeing Fleet</div>
-            <h3 class="fleet-box-title">Boeing</h3>
-            <p class="fleet-box-desc">Every Boeing type we fly, from current workhorses to retired classics and reimagined variants.</p>
-            <hr class="fleet-box-divider">
-            <ul class="fleet-box-list">
-              <li>737-800</li>
-              <li>737-8 MAX</li>
-              <li>777-300ER</li>
-              <li>777-9X</li>
-              <li>787-10</li>
-              <li>747-400F</li>
-              <li>777-F</li>
-              <li>737-200</li>
-              <li>747-200</li>
-              <li>747-300</li>
-              <li>747-400</li>
-              <li>757-200</li>
-              <li>777-200</li>
-              <li>747-200F</li>
-              <li>707-320B</li>
-              <li>Boeing 2707</li>
-              <li>747-8i</li>
-              <li>787-9</li>
-              <li>757-200</li>
-            </ul>
-          </div>
-
-          <div class="fleet-box">
-            <svg class="fleet-box-mark"><use href="#fleet-mark"></use></svg>
-            <div class="fleet-box-tag">Other Aircraft</div>
-            <h3 class="fleet-box-title">Other</h3>
-            <p class="fleet-box-desc">Vintage classics, supersonic icons, and hypothetical variants outside the Airbus and Boeing lineups.</p>
-            <hr class="fleet-box-divider">
-            <ul class="fleet-box-list">
-              <li>F27-100 Friendship</li>
-              <li>DC-3 Dakota</li>
-              <li>DC-4</li>
-              <li>L-1049G</li>
-              <li>Comet 4B</li>
-              <li>BN-2A Islander</li>
-              <li>BAC 1-11-200</li>
-              <li>Concorde</li>
-              <li>Boom Overture '22</li>
-              <li>Boom Overture '16</li>
-              <li>Lockheed L-2000</li>
-              <li>K600</li>
-              <li>K500</li>
-              <li>DC-10</li>
-              <li>MD-12</li>
-              <li>K700</li>
-              <li>ATR 72-600</li>
-            </ul>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
+    <p class="sub">From the entry-level workhorses to the flagships of the
+    skies — explore the aircraft our pilots fly across every stage of their
+    career.</p>
   </section>
 
-  <div id="footer-placeholder"></div>
+  <section class="block reveal">
+    <div class="eyebrow"><span class="sq"></span> The fleet</div>
+    <h2>Grouped by<br><span class="soft">manufacturer.</span></h2>
+    <p class="lead">Every aircraft we fly, from current workhorses to retired
+    classics and a few things that never quite made it to production.</p>
+
+    <div class="fleet-grid">
+
+      <div class="fleet-card box reveal">
+        <svg class="box-expand" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+        <div class="fleet-card-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-3 2v1.5l4.5-1.5 4.5 1.5V21l-3-2v-5.5z"/></svg>
+        </div>
+        <div class="fleet-card-tag">Our Airbus Fleet</div>
+        <div class="fleet-card-title">Airbus</div>
+        <p class="fleet-card-desc">Every Airbus type we fly, from current
+        widebodies to retired and reimagined variants.</p>
+        <hr class="fleet-card-divider">
+        <ul class="fleet-chip-list">
+          <li>A350-900</li>
+          <li>A380-800</li>
+          <li>A300-600R</li>
+          <li>A310-300</li>
+          <li>A330-300</li>
+          <li>A340-300</li>
+          <li>A340-500</li>
+          <li>A330-900neo</li>
+          <li>A350-800</li>
+          <li>A321neo</li>
+          <li>A350F</li>
+        </ul>
+      </div>
+
+      <div class="fleet-card box reveal">
+        <svg class="box-expand" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+        <div class="fleet-card-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-3 2v1.5l4.5-1.5 4.5 1.5V21l-3-2v-5.5z"/></svg>
+        </div>
+        <div class="fleet-card-tag">Our Boeing Fleet</div>
+        <div class="fleet-card-title">Boeing</div>
+        <p class="fleet-card-desc">Every Boeing type we fly, from current
+        workhorses to retired classics and reimagined variants.</p>
+        <hr class="fleet-card-divider">
+        <ul class="fleet-chip-list">
+          <li>737-800</li>
+          <li>737-8 MAX</li>
+          <li>777-300ER</li>
+          <li>777-9X</li>
+          <li>787-10</li>
+          <li>747-400F</li>
+          <li>777-F</li>
+          <li>737-200</li>
+          <li>747-200</li>
+          <li>747-300</li>
+          <li>747-400</li>
+          <li>757-200</li>
+          <li>777-200</li>
+          <li>747-200F</li>
+          <li>707-320B</li>
+          <li>Boeing 2707</li>
+          <li>747-8i</li>
+          <li>787-9</li>
+        </ul>
+      </div>
+
+      <div class="fleet-card box reveal">
+        <svg class="box-expand" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+        <div class="fleet-card-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-3 2v1.5l4.5-1.5 4.5 1.5V21l-3-2v-5.5z"/></svg>
+        </div>
+        <div class="fleet-card-tag">Other Aircraft</div>
+        <div class="fleet-card-title">Other</div>
+        <p class="fleet-card-desc">Vintage classics, supersonic icons, and
+        hypothetical variants outside the Airbus and Boeing lineups.</p>
+        <hr class="fleet-card-divider">
+        <ul class="fleet-chip-list">
+          <li>F27-100 Friendship</li>
+          <li>DC-3 Dakota</li>
+          <li>DC-4</li>
+          <li>L-1049G</li>
+          <li>Comet 4B</li>
+          <li>BN-2A Islander</li>
+          <li>BAC 1-11-200</li>
+          <li>Concorde</li>
+          <li>Boom Overture '22</li>
+          <li>Boom Overture '16</li>
+          <li>Lockheed L-2000</li>
+          <li>K600</li>
+          <li>K500</li>
+          <li>DC-10</li>
+          <li>MD-12</li>
+          <li>K700</li>
+          <li>ATR 72-600</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-col">
+        <h3>The Airline of Udyanapura</h3>
+        <p>Excellence in aviation, connecting pilots to advanced career pathways across Aeronautica.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="home.html">Home</a></li>
+          <li><a href="programs.html">Programs</a></li>
+          <li><a href="fleet.html">Fleet</a></li>
+          <li><a href="hubs.html">Hubs</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <p>Support &amp; Inquiries<br>Udyanapura Aviation Hub</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 The Airline of Udyanapura. All rights reserved.</p>
+    </div>
+  </footer>
 
   <script src="/auth-client.js"></script>
   <script>
-    fetch('header.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('header-placeholder').innerHTML = data;
-            if (window.AirlineAuth) window.AirlineAuth.init();
+    // Mobile nav toggle
+    (function () {
+      var toggle = document.getElementById('navToggle');
+      var menu = document.getElementById('mobileMenu');
+      if (!toggle || !menu) return;
+      function closeMenu() {
+        toggle.classList.remove('is-active');
+        menu.classList.remove('is-open');
+        document.body.classList.remove('menu-open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+      toggle.addEventListener('click', function () {
+        var isOpen = menu.classList.toggle('is-open');
+        toggle.classList.toggle('is-active', isOpen);
+        document.body.classList.toggle('menu-open', isOpen);
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+      menu.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', closeMenu);
+      });
+    })();
 
-            // nav is position:fixed (see <style> above), so it no longer
-            // takes up space in the document flow — push the page content
-            // down by the header's real rendered height instead of a
-            // guessed pixel value, and keep it correct across resizes.
-            var nav = document.querySelector('#header-placeholder nav');
-            if (nav) {
-                var offsetForHeader = function () {
-                    document.body.style.paddingTop = nav.offsetHeight + 'px';
-                };
-                offsetForHeader();
-                window.addEventListener('resize', offsetForHeader);
-            }
+    // Scroll-triggered reveal animations
+    (function () {
+      var els = document.querySelectorAll('.reveal');
+      if (!els.length) return;
+      if (!('IntersectionObserver' in window)) {
+        els.forEach(function (el) { el.classList.add('is-visible'); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            io.unobserve(entry.target);
+          }
         });
-
-    fetch('footer.html')
-        .then(response => response.text())
-        .then(data => document.getElementById('footer-placeholder').innerHTML = data);
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+      els.forEach(function (el) { io.observe(el); });
+      // Safety net: never leave content permanently invisible, even if
+      // something unusual happens with the observer (fast programmatic
+      // scroll, an odd viewport, etc).
+      setTimeout(function () {
+        els.forEach(function (el) { el.classList.add('is-visible'); });
+      }, 2500);
+    })();
   </script>
-
 </body>
 </html>
