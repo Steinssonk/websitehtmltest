@@ -8,262 +8,266 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="icon" type="image/png" href="https://i.imgur.com/98OXG6K.png">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@600;700;800&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    /* --- Base & Reset --- */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    /* ============ Tokens ============ */
+    :root {
+      --bg: #F4F2EB;
+      --bg-raised: #FFFFFF;
+      --ink: #16181B;
+      --ink-soft: #97958D;
+      --line: #E4E1D6;
+      --navy: #0B2A4A;
+      --navy-dark: #071C33;
+      --amber: #E8A23D;
+      --radius: 18px;
     }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      background-color: #ffffff;
-      color: #333;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
       line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* --- Global Typography Theme --- */
-    h1, h2, h3 {
-      font-family: 'Playfair Display', serif;
-      font-weight: 700;
-    }
+    a { color: inherit; }
+    img { max-width: 100%; display: block; }
+    button { font-family: inherit; }
 
-    .logo {
-      font-family: 'Raleway', sans-serif;
-      font-weight: 700;
-    }
-
-    /* --- Top Navigation --- */
-    nav {
+    /* ============ Nav ============ */
+    nav.top {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 1rem 5%;
-      background-color: #ffffff;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 100;
-      border-bottom: 1px solid #f0f0f0;
+      justify-content: space-between;
+      padding: 1.4rem 6%;
     }
 
-    .logo {
-      font-size: 1.8rem;
-      color: #002A5C;
-      letter-spacing: 0.5px;
-    }
-
-    .nav-links {
+    .brand {
       display: flex;
-      gap: 2rem;
-      list-style: none;
+      align-items: center;
+      gap: 0.55rem;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: -0.01em;
+      text-decoration: none;
     }
+
+    .brand-mark {
+      width: 26px; height: 26px;
+      border-radius: 7px;
+      background: linear-gradient(155deg, var(--navy), var(--navy-dark));
+      display: flex; align-items: center; justify-content: center;
+      color: var(--amber);
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+
+    .nav-links { display: flex; gap: 2.1rem; list-style: none; }
 
     .nav-links a {
       text-decoration: none;
-      color: #555;
+      color: var(--ink);
       font-weight: 500;
-      font-size: 0.95rem;
-      transition: color 0.2s ease;
+      font-size: 0.92rem;
+      opacity: 0.72;
+      transition: opacity 0.15s ease;
     }
-
-    .nav-links a:hover {
-      color: #002A5C;
-    }
+    .nav-links a:hover { opacity: 1; }
+    .nav-links a.current { opacity: 1; }
 
     .btn {
-      background-color: #002A5C;
-      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
       border: none;
-      padding: 0.6rem 1.5rem;
-      border-radius: 6px;
       cursor: pointer;
       font-weight: 600;
-      font-size: 0.95rem;
-      transition: all 0.2s ease;
-      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 0.65rem 1.35rem;
+      transition: transform 0.15s ease, background 0.15s ease, opacity 0.15s ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-dark { background: var(--ink); color: #fff; }
+    .btn-dark:hover { background: var(--navy-dark); }
+    .btn-outline { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+    .btn-outline:hover { border-color: var(--ink); }
+    .btn-sm { padding: 0.5rem 1.1rem; font-size: 0.85rem; }
+
+    /* ============ Hero ============ */
+    .hero { text-align: center; padding: 2.5rem 6% 4rem; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-raised);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0.4rem 0.9rem 0.4rem 0.55rem;
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+      font-weight: 500;
+      margin-bottom: 2.2rem;
     }
 
-    .btn:hover {
-      background-color: #001b3d;
+    .badge-dot {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #4a7a5a, #101c16);
     }
 
-    /* --- Page Header ---
-       No photo, no hero box — just the page title sitting directly on the
-       page, same treatment as the Hubs page, flowing straight into the
-       fleet content below. */
-    .page-header {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 6.5rem 5% 1.5rem;
-    }
-
-    .page-header-kicker {
-      font-size: 0.8rem;
-      color: #b8860b;
+    .hero h1 {
+      font-size: clamp(2.4rem, 5.6vw, 4.2rem);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      margin-bottom: 0.75rem;
-      font-family: 'Inter', sans-serif;
+      max-width: 820px;
+      margin: 0 auto;
     }
+    .hero h1 .soft { color: var(--ink-soft); font-weight: 600; }
 
-    .page-header-title {
-      font-size: 3.5rem;
-      line-height: 1.2;
-      margin-bottom: 1rem;
-      color: #111;
-    }
-
-    .page-header-subtitle {
-      font-size: 1rem;
-      color: #555;
+    .hero p.sub {
+      max-width: 560px;
+      margin: 1.4rem auto 0;
+      color: var(--ink-soft);
+      font-size: 1.05rem;
       line-height: 1.6;
-      max-width: 600px;
-      font-weight: 300;
     }
 
-    /* --- Fleet Sections --- */
-    .fleet-sections {
-      padding-top: 0;
+    /* ============ Section shells ============ */
+    section.block { max-width: 1240px; margin: 0 auto 6.5rem; padding: 0 6%; }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+      font-weight: 600;
+      margin-bottom: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .eyebrow .sq { width: 7px; height: 7px; background: var(--navy); display: inline-block; }
+
+    .block h2 {
+      font-size: clamp(1.9rem, 3.6vw, 2.6rem);
+      letter-spacing: -0.02em;
+      font-weight: 700;
+      line-height: 1.14;
+    }
+    .block h2 .soft { color: var(--ink-soft); font-weight: 600; }
+
+    .block p.lead {
+      max-width: 560px;
+      color: var(--ink-soft);
+      font-size: 1rem;
+      margin-top: 1rem;
+      line-height: 1.6;
     }
 
-    .page-section {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 5%;
-    }
-
-    .fleet-category-section {
-      padding: 2.5rem 0;
-    }
-
-    .fleet-category {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 5%;
-    }
-
-    .fleet-category-header {
-      margin-bottom: 1.5rem;
-      border-bottom: 1px solid #eef0f3;
-      padding-bottom: 0.75rem;
-    }
-
-    .fleet-category-header h2 {
-      font-size: 1.7rem;
-      color: #002A5C;
-      margin-bottom: 0.25rem;
-    }
-
-    .fleet-category-header p {
-      color: #555;
-      font-size: 0.95rem;
-      font-weight: 300;
-    }
-
-    /* Fleet Grid Boxes (Compact & Fancy) */
-    .fleet-grid-boxes {
+    /* ============ Fleet cards ============ */
+    .fleet-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 1.25rem;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+      margin-top: 2.6rem;
+      align-items: start;
     }
 
-    .fleet-box {
-      position: relative;
-      overflow: hidden;
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 1.5rem;
+    .fleet-card {
+      background: var(--bg-raised);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.6rem 1.6rem 1.8rem;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 8px 24px rgba(0, 42, 92, 0.05);
-      border: 1px solid rgba(0, 42, 92, 0.08);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-
-    .fleet-box:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 28px rgba(0, 42, 92, 0.1);
+    .fleet-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 34px rgba(11, 42, 74, 0.08);
     }
 
-    .fleet-box-mark {
-      position: absolute;
-      top: 1.25rem;
-      right: 1.25rem;
-      width: 22px;
-      height: 22px;
-      color: rgba(0, 42, 92, 0.12);
+    .fleet-card-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--navy-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--amber);
+      margin-bottom: 1.1rem;
     }
 
-    .fleet-box-tag {
-      font-size: 0.7rem;
-      color: #002A5C;
-      font-weight: 700;
+    .fleet-card-tag {
+      font-size: 0.72rem;
+      color: var(--ink-soft);
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 1.2px;
+      letter-spacing: 0.03em;
       margin-bottom: 0.4rem;
     }
 
-    .fleet-box-title {
-      font-size: 1.6rem;
-      line-height: 1.1;
-      color: #111;
-      margin-bottom: 0.5rem;
+    .fleet-card-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.6rem;
     }
 
-    .fleet-box-desc {
-      font-size: 0.85rem;
-      color: #64748b;
-      line-height: 1.4;
-      margin-bottom: 1rem;
+    .fleet-card-desc {
+      font-size: 0.88rem;
+      color: var(--ink-soft);
+      line-height: 1.55;
+      margin-bottom: 1.2rem;
     }
 
-    .fleet-box-divider {
+    .fleet-card-divider {
       border: none;
-      border-top: 1px solid #f1f5f9;
-      margin-bottom: 1rem;
+      border-top: 1px solid var(--line);
+      margin-bottom: 1.2rem;
     }
 
-    /* Modern Compact Chips for Aircraft */
-    .fleet-box-list {
+    .fleet-chip-list {
       list-style: none;
       display: flex;
       flex-wrap: wrap;
-      gap: 0.45rem;
+      gap: 0.5rem;
       margin-top: auto;
     }
 
-    .fleet-box-list li {
-      font-size: 0.8rem;
-      background: #f8fafc;
-      color: #1e293b;
+    .fleet-chip-list li {
+      font-size: 0.78rem;
+      background: var(--bg);
+      color: var(--ink);
       font-weight: 600;
-      padding: 0.3rem 0.65rem;
-      border-radius: 6px;
-      border: 1px solid #e2e8f0;
+      padding: 0.32rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--line);
       transition: background 0.15s ease, border-color 0.15s ease;
     }
 
-    .fleet-box-list li:hover {
-      background: #f1f5f9;
-      border-color: #cbd5e1;
+    .fleet-chip-list li:hover {
+      background: var(--bg-raised);
+      border-color: var(--navy);
     }
 
-    /* --- Footer Section --- */
+    /* ============ Footer ============ */
     footer {
-      background-color: #002A5C;
-      color: #ffffff;
-      padding: 3rem 5% 1.5rem;
-      margin-top: 4rem;
+      background: var(--navy-dark);
+      color: #fff;
+      padding: 3.2rem 6% 1.6rem;
     }
-
     .footer-content {
-      max-width: 1400px;
+      max-width: 1240px;
       margin: 0 auto;
       display: flex;
       flex-wrap: wrap;
@@ -271,195 +275,182 @@
       gap: 2.5rem;
       margin-bottom: 2.5rem;
     }
-
-    .footer-col {
-      flex: 1;
-      min-width: 220px;
-    }
-
-    .footer-col h3, .footer-col h4 {
-      color: #ffffff;
-      margin-bottom: 0.75rem;
-      font-size: 1.1rem;
-    }
-
-    .footer-col p, .footer-col a {
-      color: #cbd5e1;
-      font-size: 0.9rem;
-      text-decoration: none;
-    }
-
-    .footer-col ul {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
+    .footer-col { flex: 1; min-width: 220px; }
+    .footer-col h3, .footer-col h4 { margin-bottom: 0.75rem; font-size: 1.05rem; font-weight: 700; }
+    .footer-col p, .footer-col a { color: #9aa5b4; font-size: 0.88rem; text-decoration: none; line-height: 1.6; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
 
     .footer-bottom {
-      max-width: 1400px;
+      max-width: 1240px;
       margin: 0 auto;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      border-top: 1px solid rgba(255,255,255,0.1);
       padding-top: 1.25rem;
       text-align: center;
     }
+    .footer-bottom p { font-size: 0.78rem; color: #7f8fa1; }
 
-    .footer-bottom p {
-      font-size: 0.8rem;
-      color: #94a3b8;
-    }
-
-    /* Responsive tweaks */
+    /* ============ Responsive ============ */
     @media (max-width: 1024px) {
-      .nav-links { display: none; }
-      .page-header-title { font-size: 2.5rem; }
+      .fleet-grid { grid-template-columns: 1fr; }
     }
-
-    @media (max-width: 560px) {
-      .fleet-grid-boxes { grid-template-columns: 1fr; }
-      .fleet-box-title { font-size: 1.8rem; }
-      .fleet-category-section { padding: 2rem 0; }
+    @media (max-width: 980px) {
+      .nav-links { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <svg width="0" height="0" style="position: absolute;">
-    <symbol id="fleet-mark" viewBox="0 0 24 24">
-      <path d="M21 3L3 10.5l7.5 3L13.5 21 21 3z" fill="currentColor"/>
-    </symbol>
-  </svg>
-
-  <div id="header-placeholder"></div>
-
-  <div class="page-header">
-    <div class="page-header-kicker">Aircraft & Operations</div>
-    <h1 class="page-header-title">Our Fleet</h1>
-    <p class="page-header-subtitle">From the entry-level workhorses to the flagships of the skies, explore the aircraft our pilots fly across every stage of their career.</p>
-  </div>
-
-  <section class="fleet-sections">
-
-    <div class="fleet-category-section">
-      <div class="fleet-category">
-        <div class="fleet-category-header">
-          <h2>The Fleet</h2>
-          <p>Every aircraft we fly, grouped by manufacturer.</p>
-        </div>
-
-        <div class="fleet-grid-boxes">
-
-          <div class="fleet-box">
-            <svg class="fleet-box-mark"><use href="#fleet-mark"></use></svg>
-            <div class="fleet-box-tag">Our Airbus Fleet</div>
-            <h3 class="fleet-box-title">Airbus</h3>
-            <p class="fleet-box-desc">Every Airbus type we fly, from current widebodies to retired and reimagined variants.</p>
-            <hr class="fleet-box-divider">
-            <ul class="fleet-box-list">
-              <li>A350-900</li>
-              <li>A380-800</li>
-              <li>A300-600R</li>
-              <li>A310-300</li>
-              <li>A330-300</li>
-              <li>A340-300</li>
-              <li>A340-500</li>
-              <li>A330-900neo</li>
-              <li>A350-800</li>
-              <li>A321neo</li>
-              <li>A350F</li>
-            </ul>
-          </div>
-
-          <div class="fleet-box">
-            <svg class="fleet-box-mark"><use href="#fleet-mark"></use></svg>
-            <div class="fleet-box-tag">Our Boeing Fleet</div>
-            <h3 class="fleet-box-title">Boeing</h3>
-            <p class="fleet-box-desc">Every Boeing type we fly, from current workhorses to retired classics and reimagined variants.</p>
-            <hr class="fleet-box-divider">
-            <ul class="fleet-box-list">
-              <li>737-800</li>
-              <li>737-8 MAX</li>
-              <li>777-300ER</li>
-              <li>777-9X</li>
-              <li>787-10</li>
-              <li>747-400F</li>
-              <li>777-F</li>
-              <li>737-200</li>
-              <li>747-200</li>
-              <li>747-300</li>
-              <li>747-400</li>
-              <li>757-200</li>
-              <li>777-200</li>
-              <li>747-200F</li>
-              <li>707-320B</li>
-              <li>Boeing 2707</li>
-              <li>747-8i</li>
-              <li>787-9</li>
-              <li>757-200</li>
-            </ul>
-          </div>
-
-          <div class="fleet-box">
-            <svg class="fleet-box-mark"><use href="#fleet-mark"></use></svg>
-            <div class="fleet-box-tag">Other Aircraft</div>
-            <h3 class="fleet-box-title">Other</h3>
-            <p class="fleet-box-desc">Vintage classics, supersonic icons, and hypothetical variants outside the Airbus and Boeing lineups.</p>
-            <hr class="fleet-box-divider">
-            <ul class="fleet-box-list">
-              <li>F27-100 Friendship</li>
-              <li>DC-3 Dakota</li>
-              <li>DC-4</li>
-              <li>L-1049G</li>
-              <li>Comet 4B</li>
-              <li>BN-2A Islander</li>
-              <li>BAC 1-11-200</li>
-              <li>Concorde</li>
-              <li>Boom Overture '22</li>
-              <li>Boom Overture '16</li>
-              <li>Lockheed L-2000</li>
-              <li>K600</li>
-              <li>K500</li>
-              <li>DC-10</li>
-              <li>MD-12</li>
-              <li>K700</li>
-              <li>ATR 72-600</li>
-            </ul>
-          </div>
-
-        </div>
-      </div>
+  <nav class="top">
+    <a href="/" class="brand">
+      <span class="brand-mark">UY</span>
+      Udyanapura
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/programs">Programs</a></li>
+      <li><a href="/hubs">Hubs</a></li>
+      <li><a href="/fleet" class="current">Fleet</a></li>
+      <li><a href="/dashboard">Dashboard</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="/auth/discord" class="btn btn-dark btn-sm">Get Started</a>
     </div>
+  </nav>
 
+  <section class="hero">
+    <span class="badge">
+      <span class="badge-dot"></span>
+      Aircraft &amp; operations
+    </span>
+
+    <h1>Every aircraft.<br><span class="soft">Every career stage.</span></h1>
+
+    <p class="sub">From the entry-level workhorses to the flagships of the
+    skies — explore the aircraft our pilots fly across every stage of their
+    career.</p>
   </section>
 
-  <div id="footer-placeholder"></div>
+  <section class="block">
+    <div class="eyebrow"><span class="sq"></span> The fleet</div>
+    <h2>Grouped by<br><span class="soft">manufacturer.</span></h2>
+    <p class="lead">Every aircraft we fly, from current workhorses to retired
+    classics and a few things that never quite made it to production.</p>
+
+    <div class="fleet-grid">
+
+      <div class="fleet-card">
+        <div class="fleet-card-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-3 2v1.5l4.5-1.5 4.5 1.5V21l-3-2v-5.5z"/></svg>
+        </div>
+        <div class="fleet-card-tag">Our Airbus Fleet</div>
+        <div class="fleet-card-title">Airbus</div>
+        <p class="fleet-card-desc">Every Airbus type we fly, from current
+        widebodies to retired and reimagined variants.</p>
+        <hr class="fleet-card-divider">
+        <ul class="fleet-chip-list">
+          <li>A350-900</li>
+          <li>A380-800</li>
+          <li>A300-600R</li>
+          <li>A310-300</li>
+          <li>A330-300</li>
+          <li>A340-300</li>
+          <li>A340-500</li>
+          <li>A330-900neo</li>
+          <li>A350-800</li>
+          <li>A321neo</li>
+          <li>A350F</li>
+        </ul>
+      </div>
+
+      <div class="fleet-card">
+        <div class="fleet-card-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-3 2v1.5l4.5-1.5 4.5 1.5V21l-3-2v-5.5z"/></svg>
+        </div>
+        <div class="fleet-card-tag">Our Boeing Fleet</div>
+        <div class="fleet-card-title">Boeing</div>
+        <p class="fleet-card-desc">Every Boeing type we fly, from current
+        workhorses to retired classics and reimagined variants.</p>
+        <hr class="fleet-card-divider">
+        <ul class="fleet-chip-list">
+          <li>737-800</li>
+          <li>737-8 MAX</li>
+          <li>777-300ER</li>
+          <li>777-9X</li>
+          <li>787-10</li>
+          <li>747-400F</li>
+          <li>777-F</li>
+          <li>737-200</li>
+          <li>747-200</li>
+          <li>747-300</li>
+          <li>747-400</li>
+          <li>757-200</li>
+          <li>777-200</li>
+          <li>747-200F</li>
+          <li>707-320B</li>
+          <li>Boeing 2707</li>
+          <li>747-8i</li>
+          <li>787-9</li>
+        </ul>
+      </div>
+
+      <div class="fleet-card">
+        <div class="fleet-card-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-3 2v1.5l4.5-1.5 4.5 1.5V21l-3-2v-5.5z"/></svg>
+        </div>
+        <div class="fleet-card-tag">Other Aircraft</div>
+        <div class="fleet-card-title">Other</div>
+        <p class="fleet-card-desc">Vintage classics, supersonic icons, and
+        hypothetical variants outside the Airbus and Boeing lineups.</p>
+        <hr class="fleet-card-divider">
+        <ul class="fleet-chip-list">
+          <li>F27-100 Friendship</li>
+          <li>DC-3 Dakota</li>
+          <li>DC-4</li>
+          <li>L-1049G</li>
+          <li>Comet 4B</li>
+          <li>BN-2A Islander</li>
+          <li>BAC 1-11-200</li>
+          <li>Concorde</li>
+          <li>Boom Overture '22</li>
+          <li>Boom Overture '16</li>
+          <li>Lockheed L-2000</li>
+          <li>K600</li>
+          <li>K500</li>
+          <li>DC-10</li>
+          <li>MD-12</li>
+          <li>K700</li>
+          <li>ATR 72-600</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-col">
+        <h3>The Airline of Udyanapura</h3>
+        <p>Excellence in aviation, connecting pilots to advanced career pathways across Aeronautica.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="home.html">Home</a></li>
+          <li><a href="programs.html">Programs</a></li>
+          <li><a href="fleet.html">Fleet</a></li>
+          <li><a href="hubs.html">Hubs</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <p>Support &amp; Inquiries<br>Udyanapura Aviation Hub</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 The Airline of Udyanapura. All rights reserved.</p>
+    </div>
+  </footer>
 
   <script src="/auth-client.js"></script>
-  <script>
-    fetch('header.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('header-placeholder').innerHTML = data;
-            if (window.AirlineAuth) window.AirlineAuth.init();
-
-            // nav is position:fixed (see <style> above), so it no longer
-            // takes up space in the document flow — push the page content
-            // down by the header's real rendered height instead of a
-            // guessed pixel value, and keep it correct across resizes.
-            var nav = document.querySelector('#header-placeholder nav');
-            if (nav) {
-                var offsetForHeader = function () {
-                    document.body.style.paddingTop = nav.offsetHeight + 'px';
-                };
-                offsetForHeader();
-                window.addEventListener('resize', offsetForHeader);
-            }
-        });
-
-    fetch('footer.html')
-        .then(response => response.text())
-        .then(data => document.getElementById('footer-placeholder').innerHTML = data);
-  </script>
-
 </body>
 </html>
