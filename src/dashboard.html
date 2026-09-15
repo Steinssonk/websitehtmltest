@@ -177,7 +177,7 @@
 
         <!-- Sidebar Navigation -->
         <aside class="lg:col-span-1 space-y-2 lg:sticky lg:top-[calc(var(--header-h)+1rem)] self-start">
-            <nav class="space-y-1 bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
+            <nav class="space-y-1 bg-slate-50 p-3 rounded-2xl border border-slate-200 shadow-sm">
                 <button onclick="switchTab('dashboard')" id="btn-dashboard" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 bg-navy/5 text-navy border border-navy/10">
                     <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
                     <span>Dashboard</span>
@@ -217,7 +217,7 @@
                 <!-- Core Metrics Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- Flight Time -->
-                    <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+                    <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6 shadow-sm">
                         <div class="flex items-center justify-between text-slate-400 mb-2">
                             <span class="text-xs font-semibold uppercase tracking-wider">Flight Time</span>
                             <i data-lucide="clock" class="w-5 h-5 text-navy"></i>
@@ -231,7 +231,7 @@
                     </div>
 
                     <!-- Rank -->
-                    <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+                    <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6 shadow-sm">
                         <div class="flex items-center justify-between text-slate-400 mb-2">
                             <span class="text-xs font-semibold uppercase tracking-wider">Pilot Rank</span>
                             <i data-lucide="award" class="w-5 h-5 text-navy"></i>
@@ -245,7 +245,7 @@
                     </div>
 
                     <!-- Pay Earned -->
-                    <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+                    <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6 shadow-sm">
                         <div class="flex items-center justify-between text-slate-400 mb-2">
                             <span class="text-xs font-semibold uppercase tracking-wider">Pay Earned</span>
                             <i data-lucide="badge-dollar-sign" class="w-5 h-5 text-emerald-600"></i>
@@ -286,7 +286,7 @@
                 </div>
 
                 <!-- Dashboard Quick Actions Grid -->
-                <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
+                <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
                     <h3 class="font-serif font-bold text-lg text-slate-900">Quick Navigation</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <button onclick="switchTab('logger')" class="p-4 rounded-2xl bg-slate-50 border border-slate-200 hover:border-navy hover:bg-navy/5 transition-all text-left flex items-center space-x-4 group">
@@ -316,7 +316,7 @@
             <div id="tab-logger" class="space-y-6" hidden>
 
                 <!-- MANUAL LOGGING -->
-                <div id="logger-mode-manual" class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+                <div id="logger-mode-manual" class="bg-slate-50 border border-slate-200 rounded-3xl p-6 shadow-sm">
                     <h2 class="font-serif text-xl font-bold text-slate-900 mb-1">Flight Logger System</h2>
                     <p class="text-xs text-slate-500 mb-6">Select your parameters using the search filters below to log a new flight.</p>
 
@@ -333,43 +333,43 @@
                             <div class="relative">
                                 <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Departure (ICAO / Airport)</label>
                                 <div class="relative">
-                                    <input type="text" id="search-dep" placeholder="Search departure..." autocomplete="off" oninput="filterDropdown('dep')" onclick="toggleDropdown('dep')" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
+                                    <input type="text" id="search-dep" placeholder="Search departure..." autocomplete="off" oninput="filterDropdown('dep')" onclick="toggleDropdown('dep')" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
                                     <input type="hidden" id="input-dep" required>
                                     <div class="absolute right-3 top-3 text-slate-400 pointer-events-none"><i data-lucide="search" class="w-4 h-4"></i></div>
                                 </div>
-                                <div id="dropdown-dep" class="hidden absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-30 max-h-48 overflow-y-auto dropdown-results"></div>
+                                <div id="dropdown-dep" class="hidden absolute left-0 right-0 mt-1 bg-slate-50 border border-slate-200 rounded-xl shadow-lg z-30 max-h-48 overflow-y-auto dropdown-results"></div>
                             </div>
 
                             <!-- Destination -->
                             <div class="relative">
                                 <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Destination (ICAO / Airport)</label>
                                 <div class="relative">
-                                    <input type="text" id="search-dest" placeholder="Search destination..." autocomplete="off" oninput="filterDropdown('dest')" onclick="toggleDropdown('dest')" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
+                                    <input type="text" id="search-dest" placeholder="Search destination..." autocomplete="off" oninput="filterDropdown('dest')" onclick="toggleDropdown('dest')" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
                                     <input type="hidden" id="input-dest" required>
                                     <div class="absolute right-3 top-3 text-slate-400 pointer-events-none"><i data-lucide="search" class="w-4 h-4"></i></div>
                                 </div>
-                                <div id="dropdown-dest" class="hidden absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-30 max-h-48 overflow-y-auto dropdown-results"></div>
+                                <div id="dropdown-dest" class="hidden absolute left-0 right-0 mt-1 bg-slate-50 border border-slate-200 rounded-xl shadow-lg z-30 max-h-48 overflow-y-auto dropdown-results"></div>
                             </div>
 
                             <!-- Aircraft -->
                             <div class="relative sm:col-span-2">
                                 <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Aircraft Type</label>
                                 <div class="relative">
-                                    <input type="text" id="search-aircraft" placeholder="Search aircraft model..." autocomplete="off" oninput="filterDropdown('aircraft')" onclick="toggleDropdown('aircraft')" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
+                                    <input type="text" id="search-aircraft" placeholder="Search aircraft model..." autocomplete="off" oninput="filterDropdown('aircraft')" onclick="toggleDropdown('aircraft')" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
                                     <input type="hidden" id="input-aircraft" required>
                                     <div class="absolute right-3 top-3 text-slate-400 pointer-events-none"><i data-lucide="search" class="w-4 h-4"></i></div>
                                 </div>
-                                <div id="dropdown-aircraft" class="hidden absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-30 max-h-48 overflow-y-auto dropdown-results"></div>
+                                <div id="dropdown-aircraft" class="hidden absolute left-0 right-0 mt-1 bg-slate-50 border border-slate-200 rounded-xl shadow-lg z-30 max-h-48 overflow-y-auto dropdown-results"></div>
                             </div>
 
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Flight Time (Minutes)</label>
-                                <input type="number" step="any" id="input-time" required placeholder="e.g., 390.5" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
+                                <input type="number" step="any" id="input-time" required placeholder="e.g., 390.5" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
                             </div>
 
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Distance Value (<span id="distance-unit-label">nm</span>)</label>
-                                <input type="number" step="any" id="input-distance" required placeholder="e.g., 3450.5" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
+                                <input type="number" step="any" id="input-distance" required placeholder="e.g., 3450.5" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
                             </div>
                         </div>
 
@@ -383,7 +383,7 @@
                 </div>
 
                 <!-- AUTOMATIC LOGGING -->
-                <div id="logger-mode-auto" class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm" hidden>
+                <div id="logger-mode-auto" class="bg-slate-50 border border-slate-200 rounded-3xl p-6 shadow-sm" hidden>
                     <div class="mb-1">
                         <h2 class="font-serif text-xl font-bold text-slate-900 mb-1">Automatic Flight Logger</h2>
                         <p class="text-xs text-slate-500">Upload a screenshot of your FDR data (the in-game "Server Info" panel). We'll read it, match flights against the registered fleet, and let you review before logging.</p>
@@ -452,7 +452,7 @@
                 </div>
 
                 <!-- Claim Summary & Action Center -->
-                <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-6">
+                <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6 shadow-sm space-y-6">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                         <div>
                             <h3 class="font-serif font-bold text-lg text-slate-900">Payout Summary & Items</h3>
@@ -494,7 +494,7 @@
 
             <!-- SETTINGS TAB -->
             <div id="tab-settings" class="space-y-6" hidden>
-                <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+                <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6 shadow-sm">
                     <h2 class="font-serif text-xl font-bold text-slate-900 mb-1">Preferences</h2>
                     <p class="text-xs text-slate-500 mb-6">Configure interface configurations and units of measurement.</p>
 
@@ -565,7 +565,7 @@
 
 <!-- AUTH GATE POPUP -->
 <div id="auth-gate" class="fixed inset-0 z-[60] flex items-center justify-center bg-navy-deep/50 backdrop-blur-sm hidden">
-    <div class="bg-white rounded-3xl w-full max-w-sm p-8 shadow-2xl m-4 text-center">
+    <div class="bg-slate-50 border border-slate-200 rounded-3xl w-full max-w-sm p-8 shadow-2xl m-4 text-center">
         <div class="w-14 h-14 rounded-2xl bg-navy/5 border border-navy/10 flex items-center justify-center mx-auto mb-5">
             <i data-lucide="lock" class="w-6 h-6 text-navy"></i>
         </div>
@@ -845,7 +845,7 @@
             const inCart = selectedRewards.some(r => r.rankId === m.id);
             
             let statusHTML = '';
-            let wrapperClasses = 'bg-white border border-slate-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between transition-all';
+            let wrapperClasses = 'bg-slate-50 border border-slate-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between transition-all';
 
             if (isClaimed) {
                 wrapperClasses += ' border-emerald-400 bg-emerald-50/20';
@@ -870,11 +870,11 @@
                         <div class="relative">
                             <label class="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-2">Select Aircraft</label>
                             <div class="relative">
-                                <input type="text" id="search-reward-${m.id}" placeholder="Search options..." autocomplete="off" oninput="filterDropdown('reward-${m.id}')" onclick="toggleDropdown('reward-${m.id}')" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
+                                <input type="text" id="search-reward-${m.id}" placeholder="Search options..." autocomplete="off" oninput="filterDropdown('reward-${m.id}')" onclick="toggleDropdown('reward-${m.id}')" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
                                 <input type="hidden" id="input-reward-${m.id}">
                                 <div class="absolute right-3 top-3 text-slate-400 pointer-events-none"><i data-lucide="chevron-down" class="w-4 h-4"></i></div>
                             </div>
-                            <div id="dropdown-reward-${m.id}" class="hidden absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-30 max-h-48 overflow-y-auto dropdown-results"></div>
+                            <div id="dropdown-reward-${m.id}" class="hidden absolute left-0 right-0 mt-1 bg-slate-50 border border-slate-200 rounded-xl shadow-lg z-30 max-h-48 overflow-y-auto dropdown-results"></div>
                         </div>
                         <button onclick="addToCart('${m.id}', '${m.title}')" class="w-full ${inCart ? 'bg-amber-600 hover:bg-amber-700' : 'bg-navy hover:bg-navy-deep'} text-white font-semibold py-2.5 rounded-xl shadow-sm transition-all flex items-center justify-center space-x-2 text-xs">
                             <i data-lucide="${inCart ? 'check' : 'shopping-bag'}" class="w-3.5 h-3.5"></i>
@@ -951,7 +951,7 @@
                     <button onclick="clearCart()" class="text-xs text-red-500 hover:text-red-700 font-medium transition-colors">Clear All</button>
                 </div>
                 ${selectedRewards.map(item => `
-                    <div class="flex items-center justify-between p-3 rounded-xl bg-white border border-slate-200 w-full">
+                    <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 w-full">
                         <div class="flex items-center space-x-3">
                             <div class="w-8 h-8 rounded-lg bg-navy/10 text-navy flex items-center justify-center">
                                 <i data-lucide="plane" class="w-4 h-4"></i>
