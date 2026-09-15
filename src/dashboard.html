@@ -127,10 +127,11 @@
         html.dashboard-dark .text-red-700 { color: #f87171 !important; }
         html.dashboard-dark .hover\:text-red-700:hover { color: #fca5a5 !important; }
 
-        /* Header, dark mode only — the header itself lives in header.html
-           and is styled below under "Shared site header"; these overrides
-           only take effect once html.dashboard-dark is set (dashboard page
-           only), the rest of the site keeps the normal light header. */
+        /* Header, dark mode only — the header's own markup/styles live in
+           header.html (fetched client-side by /site-chrome.js); these
+           overrides only take effect once html.dashboard-dark is set
+           (dashboard page only), the rest of the site keeps the normal
+           light header. */
         html.dashboard-dark #header-placeholder nav {
             background-color: #0f1729;
             border-bottom-color: #1e293b;
@@ -139,192 +140,18 @@
         html.dashboard-dark #header-placeholder .nav-links a { color: #93a5c2; }
         html.dashboard-dark #header-placeholder .nav-links a:hover { color: #eaf1ff; }
         html.dashboard-dark #header-placeholder #user-name { color: #eaf1ff !important; }
-
-        /* --- Shared site header, matching every other page --- */
-        html {
-            --header-h: 76px; /* fallback until JS measures the real nav height below */
-        }
-        #header-placeholder nav {
-            box-sizing: border-box;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 6%;
-            background-color: #012B7A;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 100;
-            box-shadow: 0 2px 16px rgba(1, 20, 58, 0.18);
-        }
-        #header-placeholder .logo {
-            font-size: 1.05rem;
-            color: #fff;
-            letter-spacing: -0.01em;
-            font-family: 'Inter', sans-serif;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-        }
-        #header-placeholder .brand-logo {
-            height: 32px;
-            width: auto;
-            object-fit: contain;
-            display: block;
-        }
-        #header-placeholder .nav-links {
-            display: flex;
-            gap: 2.1rem;
-            list-style: none;
-        }
-        #header-placeholder .nav-links a {
-            text-decoration: none;
-            color: rgba(255, 255, 255, 0.75);
-            font-weight: 500;
-            font-size: 0.92rem;
-            transition: color 0.15s ease;
-        }
-        #header-placeholder .nav-links a:hover {
-            color: #fff;
-        }
-        #header-placeholder .btn {
-            background-color: #16181B;
-            color: white;
-            border: none;
-            padding: 0.65rem 1.35rem;
-            border-radius: 999px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.92rem;
-            text-decoration: none;
-            display: inline-block;
-            transition: transform 0.15s ease, background 0.15s ease;
-            font-family: 'Inter', sans-serif;
-        }
-        #header-placeholder .btn:hover {
-            background-color: #001D52;
-            transform: translateY(-1px);
-        }
-
-        /* --- Mobile nav toggle + menu (shared look across the site) --- */
-        .nav-toggle {
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-end;
-            gap: 5px;
-            width: 32px;
-            height: 32px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            z-index: 210;
-        }
-        .nav-toggle span {
-            display: block;
-            height: 2px;
-            border-radius: 2px;
-            background: #fff;
-            transition: transform 0.25s ease, opacity 0.2s ease, width 0.2s ease, background 0.2s ease;
-        }
-        .nav-toggle span:nth-child(1) { width: 22px; }
-        .nav-toggle span:nth-child(2) { width: 16px; }
-        .nav-toggle span:nth-child(3) { width: 22px; }
-        .nav-toggle.is-active span { width: 22px; background: #16181B; }
-        .nav-toggle.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-        .nav-toggle.is-active span:nth-child(2) { opacity: 0; }
-        .nav-toggle.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-        .mobile-menu {
-            position: fixed;
-            inset: 0;
-            background: #F4F2EB;
-            z-index: 200;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 2.2rem;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-12px);
-            transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
-        }
-        .mobile-menu.is-open { opacity: 1; visibility: visible; transform: translateY(0); }
-        .mobile-menu ul { list-style: none; display: flex; flex-direction: column; align-items: center; gap: 1.7rem; }
-        .mobile-menu ul a { text-decoration: none; color: #16181B; font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em; font-family: 'Inter', sans-serif; }
-        .mobile-menu .btn { font-size: 0.95rem; }
-        body.menu-open { overflow: hidden; }
-
         html.dashboard-dark .mobile-menu { background: #0b1220; }
         html.dashboard-dark .mobile-menu ul a { color: #eaf1ff; }
         html.dashboard-dark .nav-toggle span { background: #eaf1ff; }
 
-        @media (max-width: 980px) {
-            #header-placeholder .nav-links { display: none; }
-            .nav-toggle { display: flex; }
+        html {
+            --header-h: 76px; /* fallback until /site-chrome.js measures the real nav height */
         }
-        @media (min-width: 981px) {
-            .mobile-menu { display: none; }
-        }
-
-        /* --- Textured navy pattern for Banners/Timelines --- */
         body {
             padding-top: var(--header-h);
         }
         .textured-banner {
             background-color: #001D52;
-        }
-
-        /* --- Shared site footer, matching every other page --- */
-        footer {
-            background-color: #001D52;
-            color: #ffffff;
-            padding: 3.2rem 6% 1.6rem;
-            margin-top: 5rem;
-        }
-        .footer-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            gap: 2.5rem;
-            margin-bottom: 2.5rem;
-        }
-        .footer-col {
-            flex: 1;
-            min-width: 220px;
-        }
-        .footer-col h3, .footer-col h4 {
-            color: #ffffff;
-            margin-bottom: 0.75rem;
-            font-size: 1.1rem;
-        }
-        .footer-col p, .footer-col a {
-            color: #cbd5e1;
-            font-size: 0.9rem;
-            text-decoration: none;
-        }
-        .footer-col ul {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        .footer-bottom {
-            max-width: 1400px;
-            margin: 0 auto;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 1.25rem;
-            text-align: center;
-        }
-        .footer-bottom p {
-            font-size: 0.8rem;
-            color: #7f8fa1;
         }
     </style>
 </head>
@@ -506,7 +333,7 @@
                             <div class="relative">
                                 <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Departure (ICAO / Airport)</label>
                                 <div class="relative">
-                                    <input type="text" id="search-dep" placeholder="Search departure..." autocomplete="off" oninput="filterDropdown('dep')" onclick="toggleDropdown('dep')" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
+                                    <input type="text" id="search-dep" placeholder="Search departure..." autocomplete="off" oninput="filterDropdown('dep')" onclick="toggleDropdown('dep')" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
                                     <input type="hidden" id="input-dep" required>
                                     <div class="absolute right-3 top-3 text-slate-400 pointer-events-none"><i data-lucide="search" class="w-4 h-4"></i></div>
                                 </div>
@@ -517,7 +344,7 @@
                             <div class="relative">
                                 <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Destination (ICAO / Airport)</label>
                                 <div class="relative">
-                                    <input type="text" id="search-dest" placeholder="Search destination..." autocomplete="off" oninput="filterDropdown('dest')" onclick="toggleDropdown('dest')" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
+                                    <input type="text" id="search-dest" placeholder="Search destination..." autocomplete="off" oninput="filterDropdown('dest')" onclick="toggleDropdown('dest')" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
                                     <input type="hidden" id="input-dest" required>
                                     <div class="absolute right-3 top-3 text-slate-400 pointer-events-none"><i data-lucide="search" class="w-4 h-4"></i></div>
                                 </div>
@@ -528,7 +355,7 @@
                             <div class="relative sm:col-span-2">
                                 <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Aircraft Type</label>
                                 <div class="relative">
-                                    <input type="text" id="search-aircraft" placeholder="Search aircraft model..." autocomplete="off" oninput="filterDropdown('aircraft')" onclick="toggleDropdown('aircraft')" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
+                                    <input type="text" id="search-aircraft" placeholder="Search aircraft model..." autocomplete="off" oninput="filterDropdown('aircraft')" onclick="toggleDropdown('aircraft')" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
                                     <input type="hidden" id="input-aircraft" required>
                                     <div class="absolute right-3 top-3 text-slate-400 pointer-events-none"><i data-lucide="search" class="w-4 h-4"></i></div>
                                 </div>
@@ -537,12 +364,12 @@
 
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Flight Time (Minutes)</label>
-                                <input type="number" step="any" id="input-time" required placeholder="e.g., 390.5" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
+                                <input type="number" step="any" id="input-time" required placeholder="e.g., 390.5" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
                             </div>
 
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Distance Value (<span id="distance-unit-label">nm</span>)</label>
-                                <input type="number" step="any" id="input-distance" required placeholder="e.g., 3450.5" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
+                                <input type="number" step="any" id="input-distance" required placeholder="e.g., 3450.5" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
                             </div>
                         </div>
 
@@ -757,6 +584,7 @@
 
 <!-- Application Script Logic -->
 <script src="/auth-client.js"></script>
+<script src="/site-chrome.js"></script>
 <script>
     let airports = [];
     let aircraftList = [];
@@ -1042,7 +870,7 @@
                         <div class="relative">
                             <label class="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-2">Select Aircraft</label>
                             <div class="relative">
-                                <input type="text" id="search-reward-${m.id}" placeholder="Search options..." autocomplete="off" oninput="filterDropdown('reward-${m.id}')" onclick="toggleDropdown('reward-${m.id}')" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
+                                <input type="text" id="search-reward-${m.id}" placeholder="Search options..." autocomplete="off" oninput="filterDropdown('reward-${m.id}')" onclick="toggleDropdown('reward-${m.id}')" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-navy">
                                 <input type="hidden" id="input-reward-${m.id}">
                                 <div class="absolute right-3 top-3 text-slate-400 pointer-events-none"><i data-lucide="chevron-down" class="w-4 h-4"></i></div>
                             </div>
@@ -1819,64 +1647,10 @@
         })
         .catch(() => { applyPaycheckStatus(false); });
 
-    const headerReady = fetch('/header.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('header-placeholder').innerHTML = data;
-            if (window.AirlineAuth) window.AirlineAuth.init();
-
-            // nav is position:fixed (see #header-placeholder nav above), so
-            // it no longer takes up space in the document flow — push the
-            // page content down by the header's real rendered height
-            // instead of a guessed pixel value, and keep it correct across
-            // resizes.
-            const nav = document.querySelector('#header-placeholder nav');
-            if (nav) {
-                const offsetForHeader = () => {
-                    document.documentElement.style.setProperty('--header-h', nav.offsetHeight + 'px');
-                };
-                offsetForHeader();
-                window.addEventListener('resize', offsetForHeader);
-            }
-
-            // Mobile nav toggle — the button and menu only exist once the
-            // fetched header markup above has been injected, so this has
-            // to be wired up here rather than at top-level script scope.
-            const toggle = document.getElementById('navToggle');
-            const menu = document.getElementById('mobileMenu');
-            if (toggle && menu) {
-                const closeMenu = () => {
-                    toggle.classList.remove('is-active');
-                    menu.classList.remove('is-open');
-                    document.body.classList.remove('menu-open');
-                    toggle.setAttribute('aria-expanded', 'false');
-                };
-                toggle.addEventListener('click', () => {
-                    const isOpen = menu.classList.toggle('is-open');
-                    toggle.classList.toggle('is-active', isOpen);
-                    document.body.classList.toggle('menu-open', isOpen);
-                    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-                    // Keep the mobile CTA in sync with the real auth button
-                    // (label/href flip between "Get Started" and "Log out"
-                    // once AirlineAuth.init() resolves sign-in state).
-                    if (isOpen) {
-                        const realBtn = document.getElementById('auth-btn');
-                        const mobileBtn = document.getElementById('mobile-auth-btn');
-                        if (realBtn && mobileBtn) {
-                            mobileBtn.textContent = realBtn.textContent;
-                            mobileBtn.href = realBtn.href;
-                        }
-                    }
-                });
-                menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', closeMenu));
-            }
-        })
-        .catch(err => console.error('Failed to load header:', err));
-
-    const footerReady = fetch('/footer.html')
-        .then(response => response.text())
-        .then(data => { document.getElementById('footer-placeholder').innerHTML = data; })
-        .catch(err => console.error('Failed to load footer:', err));
+    // Header + footer are fetched, injected, and wired up (mobile menu,
+    // header-height var, current-page highlight, sign-in state) by the
+    // shared /site-chrome.js loader — see that file for details.
+    const chromeReady = window.SiteChrome.ready;
 
     function showAuthGate() {
         document.getElementById('app-shell').classList.add('gated');
@@ -1926,7 +1700,7 @@
     // timeout as a safety net in case something never resolves.
     const readyTimeout = new Promise(resolve => setTimeout(resolve, 8000));
     Promise.race([
-        Promise.allSettled([operationsReady, headerReady, footerReady, pilotStatsReady]),
+        Promise.allSettled([operationsReady, chromeReady, pilotStatsReady]),
         readyTimeout,
     ]).then(hidePageLoading);
 

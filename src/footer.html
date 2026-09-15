@@ -1,3 +1,60 @@
+<!-- Shared site footer — fully self-contained (markup + styles).
+     Fetched client-side by every page via /site-chrome.js and injected
+     into <div id="footer-placeholder">. Edit this one file to change
+     the footer everywhere; nothing else needs to change. -->
+<style>
+  #footer-placeholder, #footer-placeholder * { box-sizing: border-box; }
+
+  #footer-placeholder footer {
+    background-color: #001D52;
+    color: #ffffff;
+    padding: 3.2rem 6% 1.6rem;
+    margin-top: 5rem;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  #footer-placeholder .footer-content {
+    max-width: 1240px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2.5rem;
+    margin-bottom: 2.5rem;
+  }
+  #footer-placeholder .footer-col { flex: 1; min-width: 220px; }
+  #footer-placeholder .footer-col h3,
+  #footer-placeholder .footer-col h4 {
+    margin-bottom: 0.75rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #ffffff;
+  }
+  #footer-placeholder .footer-col p,
+  #footer-placeholder .footer-col a {
+    color: #9aa5b4;
+    font-size: 0.88rem;
+    text-decoration: none;
+    line-height: 1.6;
+  }
+  #footer-placeholder .footer-col a:hover { color: #cbd5e1; }
+  #footer-placeholder .footer-col ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+  }
+  #footer-placeholder .footer-bottom {
+    max-width: 1240px;
+    margin: 0 auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1.25rem;
+    text-align: center;
+  }
+  #footer-placeholder .footer-bottom p { font-size: 0.78rem; color: #7f8fa1; }
+</style>
+
 <footer>
     <div class="footer-content">
         <div class="footer-col">
@@ -7,14 +64,15 @@
         <div class="footer-col">
             <h4>Quick Links</h4>
             <ul>
-                <li><a href="home.html">Home</a></li>
-                <li><a href="programs.html">Programs</a></li>
-                <li><a href="#">Careers</a></li>
+                <li><a href="/">Home</a></li>
+                <li><a href="/programs">Programs</a></li>
+                <li><a href="/fleet">Fleet</a></li>
+                <li><a href="/hubs">Hubs</a></li>
             </ul>
         </div>
         <div class="footer-col">
             <h4>Contact</h4>
-            <p>Support & Inquiries<br>Udyanapura Aviation Hub</p>
+            <p>Support &amp; Inquiries<br>Udyanapura Aviation Hub</p>
         </div>
     </div>
     <div class="footer-bottom">

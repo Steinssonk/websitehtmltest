@@ -13,10 +13,11 @@ import hubsContent from './hubs.html';
 import dashboardContent from './dashboard.html';
 
 // Each page here is a complete, self-contained HTML document (it has its
-// own <!DOCTYPE>, <head>, and <body>, and fetches header.html/footer.html
-// client-side to fill in the shared nav and footer). The worker's job is
-// to serve the right file for the right path, plus handle the Discord
-// OAuth + session routes below.
+// own <!DOCTYPE>, <head>, and <body>). Every page includes /site-chrome.js,
+// which fetches header.html/footer.html client-side and fills in the
+// shared nav and footer — see the SITE_CHROME_JS constant below. The
+// worker's job is to serve the right file for the right path, plus
+// handle the Discord OAuth + session routes below.
 const pageRoutes = {
   '/': homeContent,
   '/index.html': homeContent,
@@ -67,6 +68,15 @@ export default {
     try {
       if (pathname === '/auth-client.js') {
         return new Response(AUTH_CLIENT_JS, {
+          headers: {
+            'Content-Type': 'application/javascript;charset=UTF-8',
+            'Cache-Control': 'public, max-age=3600',
+          },
+        });
+      }
+
+      if (pathname === '/site-chrome.js') {
+        return new Response(SITE_CHROME_JS, {
           headers: {
             'Content-Type': 'application/javascript;charset=UTF-8',
             'Cache-Control': 'public, max-age=3600',
@@ -750,5 +760,114 @@ const AUTH_CLIENT_JS = `(function () {
   }
 
   window.AirlineAuth = { init: init };
+})();
+`;
+
+// ---------------------------------------------------------------------
+// Client-side script served at /site-chrome.js
+//
+// Every page includes a bare <div id="header-placeholder"></div> and
+// <div id="footer-placeholder"></div> plus this one script. It fetches
+// the standalone header.html/footer.html fragments (markup + their own
+// <style>), injects them, measures the fixed header's real height so
+// page content is never hidden underneath it, wires up the mobile menu,
+// highlights the current page's nav link, and kicks off AirlineAuth so
+// the sign-in state is consistent everywhere. Editing header.html or
+// footer.html is enough to change every page — nothing here or in the
+// pages themselves needs to change alongside it.
+// ---------------------------------------------------------------------
+
+const SITE_CHROME_JS = `(function () {
+  function qs(id) { return document.getElementById(id); }
+
+  function setHeaderHeightVar(nav) {
+    function apply() {
+      document.documentElement.style.setProperty('--header-h', nav.offsetHeight + 'px');
+    }
+    apply();
+    window.addEventListener('resize', apply);
+  }
+
+  // Marks the nav link matching the current page with .current, in both
+  // the desktop nav and the mobile menu.
+  function markCurrentLinks(root) {
+    var path = window.location.pathname.replace(/\\.html$/, '');
+    if (path === '' || path === '/index') path = '/';
+    root.querySelectorAll('a[href]').forEach(function (a) {
+      var href = a.getAttribute('href');
+      if (!href || href.indexOf('/') !== 0) return;
+      var normalized = href.replace(/\\.html$/, '');
+      if (normalized === '/index') normalized = '/';
+      if (normalized === path) a.classList.add('current');
+    });
+  }
+
+  function wireMobileMenu() {
+    var toggle = qs('navToggle');
+    var menu = qs('mobileMenu');
+    if (!toggle || !menu) return;
+
+    function closeMenu() {
+      toggle.classList.remove('is-active');
+      menu.classList.remove('is-open');
+      document.body.classList.remove('menu-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+
+    toggle.addEventListener('click', function () {
+      var isOpen = menu.classList.toggle('is-open');
+      toggle.classList.toggle('is-active', isOpen);
+      document.body.classList.toggle('menu-open', isOpen);
+      toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+
+      // Keep the mobile CTA in sync with the real auth button (label/
+      // href flip between "Get Started" and "Log out" once
+      // AirlineAuth.init() resolves sign-in state).
+      if (isOpen) {
+        var realBtn = qs('auth-btn');
+        var mobileBtn = qs('mobile-auth-btn');
+        if (realBtn && mobileBtn) {
+          mobileBtn.textContent = realBtn.textContent;
+          mobileBtn.href = realBtn.href;
+        }
+      }
+    });
+
+    menu.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', closeMenu);
+    });
+  }
+
+  function loadFragment(url, targetId) {
+    return fetch(url)
+      .then(function (res) { return res.text(); })
+      .then(function (html) {
+        var el = qs(targetId);
+        if (el) el.innerHTML = html;
+        return el;
+      });
+  }
+
+  var headerReady = loadFragment('/header.html', 'header-placeholder').then(function (el) {
+    if (!el) return;
+
+    // nav is position:fixed, so it no longer takes up space in the
+    // document flow — push page content down by the header's real
+    // rendered height instead of a guessed pixel value.
+    var nav = el.querySelector('nav');
+    if (nav) setHeaderHeightVar(nav);
+
+    markCurrentLinks(el);
+    wireMobileMenu();
+
+    if (window.AirlineAuth) window.AirlineAuth.init();
+  }).catch(function (err) { console.error('Failed to load header:', err); });
+
+  var footerReady = loadFragment('/footer.html', 'footer-placeholder')
+    .catch(function (err) { console.error('Failed to load footer:', err); });
+
+  window.SiteChrome = {
+    ready: Promise.all([headerReady, footerReady])
+  };
 })();
 `;

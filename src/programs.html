@@ -32,45 +32,16 @@
       color: var(--ink);
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
-      padding-top: 72px;
+      padding-top: var(--header-h, 76px);
     }
 
     a { color: inherit; }
     img { max-width: 100%; display: block; }
     button { font-family: inherit; }
 
-    /* ============ Nav ============ */
-    nav.top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem 6%;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 100;
-      background: var(--navy);
-      box-shadow: 0 2px 16px rgba(1, 20, 58, 0.18);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      text-decoration: none;
-    }
-
-    .nav-links { display: flex; gap: 2.1rem; list-style: none; }
-
-    .nav-links a {
-      text-decoration: none;
-      color: rgba(255, 255, 255, 0.75);
-      font-weight: 500;
-      font-size: 0.92rem;
-      transition: color 0.15s ease;
-    }
-    .nav-links a:hover { color: #fff; }
-    .nav-links a.current { color: #fff; }
+    /* Header (logo/nav-links/auth) and its mobile menu are fully
+       self-contained in header.html — fetched and injected by
+       /site-chrome.js into #header-placeholder. Nothing to style here. */
 
     .btn {
       display: inline-flex;
@@ -418,42 +389,14 @@
 
     .dev-card-body .btn { margin-top: 1.4rem; align-self: flex-start; }
 
-    /* ============ Footer ============ */
-    footer {
-      background: var(--navy-dark);
-      color: #fff;
-      margin-top: 6.5rem;
-      padding: 3.2rem 6% 1.6rem;
-    }
-    .footer-content {
-      max-width: 1240px;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 2.5rem;
-      margin-bottom: 2.5rem;
-    }
-    .footer-col { flex: 1; min-width: 220px; }
-    .footer-col h3, .footer-col h4 { margin-bottom: 0.75rem; font-size: 1.05rem; font-weight: 700; }
-    .footer-col p, .footer-col a { color: #9aa5b4; font-size: 0.88rem; text-decoration: none; line-height: 1.6; }
-    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
-
-    .footer-bottom {
-      max-width: 1240px;
-      margin: 0 auto;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      padding-top: 1.25rem;
-      text-align: center;
-    }
-    .footer-bottom p { font-size: 0.78rem; color: #7f8fa1; }
+    /* Footer is fully self-contained in footer.html — fetched and
+       injected by /site-chrome.js into #footer-placeholder. */
 
     /* ============ Responsive ============ */
     @media (max-width: 1100px) {
       .pay-grid { grid-template-columns: repeat(3, 1fr); }
     }
     @media (max-width: 980px) {
-      .nav-links { display: none; }
       .dev-grid { grid-template-columns: 1fr; }
       .rank-timeline { flex-direction: column; gap: 1.75rem; }
       .rank-timeline::before { display: none; }
@@ -465,90 +408,6 @@
     }
     @media (max-width: 640px) {
       .pay-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-  
-    /* ============ Logo image ============ */
-    .nav-right { display: flex; align-items: center; gap: 0.9rem; }
-    .brand-logo {
-      height: 32px;
-      width: auto;
-      object-fit: contain;
-      display: block;
-    }
-
-    /* ============ Mobile nav toggle ============ */
-    .nav-toggle {
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-end;
-      gap: 5px;
-      width: 32px;
-      height: 32px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      z-index: 210;
-    }
-    .nav-toggle span {
-      display: block;
-      height: 2px;
-      border-radius: 2px;
-      background: #fff;
-      transition: transform 0.25s ease, opacity 0.2s ease, width 0.2s ease, background 0.2s ease;
-    }
-    .nav-toggle span:nth-child(1) { width: 22px; }
-    .nav-toggle span:nth-child(2) { width: 16px; }
-    .nav-toggle span:nth-child(3) { width: 22px; }
-    .nav-toggle.is-active span { width: 22px; background: var(--ink); }
-    .nav-toggle.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-    .nav-toggle.is-active span:nth-child(2) { opacity: 0; }
-    .nav-toggle.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-    .mobile-menu {
-      position: fixed;
-      inset: 0;
-      background: var(--bg);
-      z-index: 200;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2.2rem;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(-12px);
-      transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
-    }
-    .mobile-menu.is-open {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-    .mobile-menu ul {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.7rem;
-    }
-    .mobile-menu ul a {
-      text-decoration: none;
-      color: var(--ink);
-      font-size: 1.5rem;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-    }
-    .mobile-menu ul a.current { color: var(--navy); }
-    .mobile-menu .btn { font-size: 0.95rem; }
-    body.menu-open { overflow: hidden; }
-
-    @media (max-width: 980px) {
-      .nav-toggle { display: flex; }
-    }
-    @media (min-width: 981px) {
-      .mobile-menu { display: none; }
     }
 
     /* ============ Scroll reveal ============ */
@@ -600,35 +459,7 @@
 </head>
 <body>
 
-  <nav class="top">
-    <a href="/" class="brand">
-      <img class="brand-logo" src="data:image/png;base64,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" alt="Udyanapura">
-    </a>
-    <ul class="nav-links">
-      <li><a href="/">Home</a></li>
-      <li><a href="/programs" class="current">Programs</a></li>
-      <li><a href="/hubs">Hubs</a></li>
-      <li><a href="/fleet">Fleet</a></li>
-      <li><a href="/dashboard">Dashboard</a></li>
-    </ul>
-    <div class="nav-right">
-      <a href="/auth/discord" class="btn btn-dark btn-sm">Get Started</a>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </nav>
-
-  <div class="mobile-menu" id="mobileMenu">
-    <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="/programs" class="current">Programs</a></li>
-      <li><a href="/hubs">Hubs</a></li>
-      <li><a href="/fleet">Fleet</a></li>
-      <li><a href="/dashboard">Dashboard</a></li>
-    </ul>
-    <a href="/auth/discord" class="btn btn-dark">Get Started</a>
-  </div>
+<div id="header-placeholder"></div>
 
   <section class="hero">
     <span class="badge">
@@ -876,55 +707,11 @@
     </div>
   </section>
 
-  <footer>
-    <div class="footer-content">
-      <div class="footer-col">
-        <h3>The Airline of Udyanapura</h3>
-        <p>Excellence in aviation, connecting pilots to advanced career pathways across Aeronautica.</p>
-      </div>
-      <div class="footer-col">
-        <h4>Quick Links</h4>
-        <ul>
-          <li><a href="home.html">Home</a></li>
-          <li><a href="programs.html">Programs</a></li>
-          <li><a href="fleet.html">Fleet</a></li>
-          <li><a href="hubs.html">Hubs</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Contact</h4>
-        <p>Support &amp; Inquiries<br>Udyanapura Aviation Hub</p>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2026 The Airline of Udyanapura. All rights reserved.</p>
-    </div>
-  </footer>
+  <div id="footer-placeholder"></div>
 
   <script src="/auth-client.js"></script>
+  <script src="/site-chrome.js"></script>
   <script>
-    // Mobile nav toggle
-    (function () {
-      var toggle = document.getElementById('navToggle');
-      var menu = document.getElementById('mobileMenu');
-      if (!toggle || !menu) return;
-      function closeMenu() {
-        toggle.classList.remove('is-active');
-        menu.classList.remove('is-open');
-        document.body.classList.remove('menu-open');
-        toggle.setAttribute('aria-expanded', 'false');
-      }
-      toggle.addEventListener('click', function () {
-        var isOpen = menu.classList.toggle('is-open');
-        toggle.classList.toggle('is-active', isOpen);
-        document.body.classList.toggle('menu-open', isOpen);
-        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-      });
-      menu.querySelectorAll('a').forEach(function (a) {
-        a.addEventListener('click', closeMenu);
-      });
-    })();
-
     // Scroll-triggered reveal animations
     (function () {
       var els = document.querySelectorAll('.reveal');

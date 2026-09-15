@@ -32,7 +32,7 @@
       color: var(--ink);
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
-      padding-top: 72px;
+      padding-top: var(--header-h, 76px);
     }
 
     a { color: inherit; }
@@ -41,39 +41,9 @@
 
     .wrap { max-width: 1240px; margin: 0 auto; padding: 0 6%; }
 
-    /* ============ Nav ============ */
-    nav.top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 72px;
-      padding: 0 6%;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 100;
-      background: var(--navy);
-      box-shadow: 0 2px 16px rgba(1, 20, 58, 0.18);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      text-decoration: none;
-    }
-
-    .nav-links { display: flex; gap: 2.1rem; list-style: none; }
-
-    .nav-links a {
-      text-decoration: none;
-      color: rgba(255, 255, 255, 0.75);
-      font-weight: 500;
-      font-size: 0.92rem;
-      transition: color 0.15s ease;
-    }
-    .nav-links a:hover { color: #fff; }
-    .nav-links a.current { color: #fff; }
+    /* Header (logo/nav-links/auth) and its mobile menu are fully
+       self-contained in header.html — fetched and injected by
+       /site-chrome.js into #header-placeholder. Nothing to style here. */
 
     .btn {
       display: inline-flex;
@@ -605,40 +575,11 @@
     .news-row .date { font-size: 0.8rem; color: var(--ink-soft); flex-shrink: 0; }
     .news-row .arrow { color: var(--ink-soft); flex-shrink: 0; }
 
-    /* ============ Footer ============ */
-    footer {
-      background: var(--navy-dark);
-      color: #fff;
-      margin-top: 6.5rem;
-      padding: 3.2rem 6% 1.6rem;
-    }
-
-    .footer-content {
-      max-width: 1240px;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 2.5rem;
-      margin-bottom: 2.5rem;
-    }
-    .footer-col { flex: 1; min-width: 220px; }
-    .footer-col h3, .footer-col h4 { margin-bottom: 0.75rem; font-size: 1.05rem; font-weight: 700; }
-    .footer-col p, .footer-col a { color: #9aa5b4; font-size: 0.88rem; text-decoration: none; line-height: 1.6; }
-    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
-
-    .footer-bottom {
-      max-width: 1240px;
-      margin: 0 auto;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      padding-top: 1.25rem;
-      text-align: center;
-    }
-    .footer-bottom p { font-size: 0.78rem; color: #7f8fa1; }
+    /* Footer is fully self-contained in footer.html — fetched and
+       injected by /site-chrome.js into #footer-placeholder. */
 
     /* ============ Responsive ============ */
     @media (max-width: 980px) {
-      .nav-links { display: none; }
       .cap-grid { grid-template-columns: 1fr; gap: 1.6rem; }
       .cap-sticky { position: static; padding-bottom: 0; }
       .cap-tabs { flex-direction: row; overflow-x: auto; }
@@ -647,97 +588,6 @@
       .block-head { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
       .trust-row { gap: 1.5rem; }
       .hero-plane-wrap { width: 92%; right: -18%; top: 2%; }
-    }
-  
-    /* ============ Logo image ============ */
-    .nav-right { display: flex; align-items: center; gap: 0.9rem; }
-    .brand-logo {
-      height: 32px;
-      width: auto;
-      object-fit: contain;
-      display: block;
-    }
-    .brand-logo--text {
-      height: auto;
-      color: #fff;
-      font-weight: 700;
-      font-size: 1.1rem;
-      letter-spacing: -0.01em;
-    }
-
-    /* ============ Mobile nav toggle ============ */
-    .nav-toggle {
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-end;
-      gap: 5px;
-      width: 32px;
-      height: 32px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      z-index: 210;
-    }
-    .nav-toggle span {
-      display: block;
-      height: 2px;
-      border-radius: 2px;
-      background: #fff;
-      transition: transform 0.25s ease, opacity 0.2s ease, width 0.2s ease, background 0.2s ease;
-    }
-    .nav-toggle span:nth-child(1) { width: 22px; }
-    .nav-toggle span:nth-child(2) { width: 16px; }
-    .nav-toggle span:nth-child(3) { width: 22px; }
-    .nav-toggle.is-active span { width: 22px; background: var(--ink); }
-    .nav-toggle.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-    .nav-toggle.is-active span:nth-child(2) { opacity: 0; }
-    .nav-toggle.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-    .mobile-menu {
-      position: fixed;
-      inset: 0;
-      background: var(--bg);
-      z-index: 200;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2.2rem;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(-12px);
-      transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
-    }
-    .mobile-menu.is-open {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-    .mobile-menu ul {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.7rem;
-    }
-    .mobile-menu ul a {
-      text-decoration: none;
-      color: var(--ink);
-      font-size: 1.5rem;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-    }
-    .mobile-menu ul a.current { color: var(--navy); }
-    .mobile-menu .btn { font-size: 0.95rem; }
-    body.menu-open { overflow: hidden; }
-
-    @media (max-width: 980px) {
-      .nav-toggle { display: flex; }
-    }
-    @media (min-width: 981px) {
-      .mobile-menu { display: none; }
     }
 
     /* ============ Scroll reveal ============ */
@@ -792,35 +642,7 @@
 </head>
 <body>
 
-  <nav class="top">
-    <a href="/" class="brand">
-      <span class="brand-logo brand-logo--text">Udyanapura</span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="/" class="current">Home</a></li>
-      <li><a href="/programs">Programs</a></li>
-      <li><a href="/hubs">Hubs</a></li>
-      <li><a href="/fleet">Fleet</a></li>
-      <li><a href="/dashboard">Dashboard</a></li>
-    </ul>
-    <div class="nav-right">
-      <a href="/auth/discord" class="btn btn-dark btn-sm">Get Started</a>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </nav>
-
-  <div class="mobile-menu" id="mobileMenu">
-    <ul>
-      <li><a href="/" class="current">Home</a></li>
-      <li><a href="/programs">Programs</a></li>
-      <li><a href="/hubs">Hubs</a></li>
-      <li><a href="/fleet">Fleet</a></li>
-      <li><a href="/dashboard">Dashboard</a></li>
-    </ul>
-    <a href="/auth/discord" class="btn btn-dark">Get Started</a>
-  </div>
+  <div id="header-placeholder"></div>
 
   <section class="hero hero--photo">
     <div class="hero-bg" aria-hidden="true"></div>
@@ -944,32 +766,10 @@
   <!-- ============ News / General Info ============ -->
   <!-- Removed for now -->
 
-  <footer>
-    <div class="footer-content">
-      <div class="footer-col">
-        <h3>The Airline of Udyanapura</h3>
-        <p>Excellence in aviation, connecting pilots to advanced career pathways across Aeronautica.</p>
-      </div>
-      <div class="footer-col">
-        <h4>Quick Links</h4>
-        <ul>
-          <li><a href="home.html">Home</a></li>
-          <li><a href="programs.html">Programs</a></li>
-          <li><a href="fleet.html">Fleet</a></li>
-          <li><a href="hubs.html">Hubs</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Contact</h4>
-        <p>Support &amp; Inquiries<br>Udyanapura Aviation Hub</p>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2026 The Airline of Udyanapura. All rights reserved.</p>
-    </div>
-  </footer>
+  <div id="footer-placeholder"></div>
 
   <script src="/auth-client.js"></script>
+  <script src="/site-chrome.js"></script>
   <script>
     // Programs / Fleet / Hubs. The three cards are real stacked elements
     // that scroll past a sticky left column, rather than one box whose
@@ -1064,28 +864,6 @@
     })();
   </script>
   <script>
-    // Mobile nav toggle
-    (function () {
-      var toggle = document.getElementById('navToggle');
-      var menu = document.getElementById('mobileMenu');
-      if (!toggle || !menu) return;
-      function closeMenu() {
-        toggle.classList.remove('is-active');
-        menu.classList.remove('is-open');
-        document.body.classList.remove('menu-open');
-        toggle.setAttribute('aria-expanded', 'false');
-      }
-      toggle.addEventListener('click', function () {
-        var isOpen = menu.classList.toggle('is-open');
-        toggle.classList.toggle('is-active', isOpen);
-        document.body.classList.toggle('menu-open', isOpen);
-        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-      });
-      menu.querySelectorAll('a').forEach(function (a) {
-        a.addEventListener('click', closeMenu);
-      });
-    })();
-
     // Scroll-triggered reveal animations
     (function () {
       var els = document.querySelectorAll('.reveal');
@@ -1189,7 +967,7 @@
       var MARGIN_X = 32;
       var MARGIN_Y = 24;
       // Height of the fixed nav, which the content must stay clear of.
-      var NAV_H = 72;
+      var NAV_H = 76; // matches header.html's nav height
       // Zoom progress at which the navy backdrop starts filling in above
       // and below the section; it's fully opaque by the time we peak.
       var FILL_START = 0.45;
