@@ -20,8 +20,8 @@
                         serif: ['Inter', 'sans-serif'],
                     },
                     colors: {
-                        navy: '#0B2A4A',
-                        'navy-deep': '#071C33',
+                        navy: '#012B7A',
+                        'navy-deep': '#001D52',
                         gold: '#E8A23D',
                         'gold-deep': '#C6842A',
                     }
@@ -41,7 +41,7 @@
            the "selected" pill stays legible in dark mode instead of
            inheriting the same override used for card backgrounds. */
         .seg-btn { padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; transition: all 0.15s ease; }
-        .seg-btn-active { background-color: #ffffff; color: #0B2A4A; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .seg-btn-active { background-color: #ffffff; color: #012B7A; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         .seg-btn-inactive { color: #97958D; }
         .seg-btn-inactive:hover { color: #16181B; }
         html.dashboard-dark .seg-btn-active { background-color: #2a3a5c; color: #eaf1ff; }
@@ -51,7 +51,7 @@
         /* --- Page loading overlay --- */
         #page-loading { transition: opacity 0.2s ease; background-color: #F4F2EB; }
         html.dashboard-dark #page-loading { background-color: #0b1220; }
-        .spinner { border: 3px solid rgba(11, 42, 74, 0.15); border-top-color: #0B2A4A; border-radius: 9999px; width: 2.25rem; height: 2.25rem; animation: spin 0.8s linear infinite; }
+        .spinner { border: 3px solid rgba(1, 43, 122, 0.15); border-top-color: #012B7A; border-radius: 9999px; width: 2.25rem; height: 2.25rem; animation: spin 0.8s linear infinite; }
         html.dashboard-dark .spinner { border-color: rgba(255, 255, 255, 0.12); border-top-color: #6f9bff; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -67,9 +67,9 @@
         .bg-slate-100 { background-color: #EDEAE0 !important; }
         .bg-slate-200,
         .bg-slate-200\/70 { background-color: #E4E1D6 !important; }
-        .bg-slate-700 { background-color: #071C33 !important; }
-        .bg-slate-900\/70 { background-color: rgba(7, 28, 51, 0.7) !important; }
-        .hover\:bg-slate-900:hover { background-color: #071C33 !important; }
+        .bg-slate-700 { background-color: #001D52 !important; }
+        .bg-slate-900\/70 { background-color: rgba(0, 29, 82, 0.7) !important; }
+        .hover\:bg-slate-900:hover { background-color: #001D52 !important; }
         .border-slate-100 { border-color: #E4E1D6 !important; }
         .border-slate-200 { border-color: #E4E1D6 !important; }
         .text-slate-300 { color: #9aa5b4 !important; }
@@ -149,29 +149,28 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.4rem 6%;
-            background-color: #F4F2EB;
+            padding: 1rem 6%;
+            background-color: #012B7A;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             z-index: 100;
-            border-bottom: 1px solid #E4E1D6;
+            box-shadow: 0 2px 16px rgba(1, 20, 58, 0.18);
         }
         #header-placeholder .logo {
             font-size: 1.05rem;
-            color: #16181B;
+            color: #fff;
             letter-spacing: -0.01em;
             font-family: 'Inter', sans-serif;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 0.55rem;
             text-decoration: none;
         }
         #header-placeholder .brand-logo {
-            width: 28px;
-            height: 28px;
+            height: 32px;
+            width: auto;
             object-fit: contain;
             display: block;
         }
@@ -182,15 +181,13 @@
         }
         #header-placeholder .nav-links a {
             text-decoration: none;
-            color: #16181B;
-            opacity: 0.72;
+            color: rgba(255, 255, 255, 0.75);
             font-weight: 500;
             font-size: 0.92rem;
-            transition: opacity 0.15s ease;
+            transition: color 0.15s ease;
         }
         #header-placeholder .nav-links a:hover {
-            opacity: 1;
-            color: #16181B;
+            color: #fff;
         }
         #header-placeholder .btn {
             background-color: #16181B;
@@ -207,7 +204,7 @@
             font-family: 'Inter', sans-serif;
         }
         #header-placeholder .btn:hover {
-            background-color: #071C33;
+            background-color: #001D52;
             transform: translateY(-1px);
         }
 
@@ -230,13 +227,13 @@
             display: block;
             height: 2px;
             border-radius: 2px;
-            background: #16181B;
-            transition: transform 0.25s ease, opacity 0.2s ease, width 0.2s ease;
+            background: #fff;
+            transition: transform 0.25s ease, opacity 0.2s ease, width 0.2s ease, background 0.2s ease;
         }
         .nav-toggle span:nth-child(1) { width: 22px; }
         .nav-toggle span:nth-child(2) { width: 16px; }
         .nav-toggle span:nth-child(3) { width: 22px; }
-        .nav-toggle.is-active span { width: 22px; }
+        .nav-toggle.is-active span { width: 22px; background: #16181B; }
         .nav-toggle.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
         .nav-toggle.is-active span:nth-child(2) { opacity: 0; }
         .nav-toggle.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
@@ -279,12 +276,12 @@
             padding-top: var(--header-h);
         }
         .textured-banner {
-            background-color: #071C33;
+            background-color: #001D52;
         }
 
         /* --- Shared site footer, matching every other page --- */
         footer {
-            background-color: #071C33;
+            background-color: #001D52;
             color: #ffffff;
             padding: 3.2rem 6% 1.6rem;
             margin-top: 5rem;
