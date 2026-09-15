@@ -46,7 +46,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1rem 6%;
+      height: 72px;
+      padding: 0 6%;
       position: fixed;
       top: 0;
       left: 0;
@@ -147,23 +148,54 @@
     .hero--photo {
       position: relative;
       overflow: hidden;
-      padding-top: 5.5rem;
-      padding-bottom: 5rem;
-      border-radius: 0 0 32px 32px;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 2rem;
+      padding-bottom: 4rem;
+      transform-origin: center center;
+      will-change: transform, opacity;
     }
     .hero-bg {
       position: absolute;
-      inset: -20px;
-      background: var(--navy) url('https://imgur.com/vVmPLg7.png')
-      filter: blur(7px);
-      transform: scale(1.08);
+      top: -90px;
+      left: -30px;
+      right: -30px;
+      bottom: -30px;
+      background: var(--navy) url('https://imgur.com/Iqrj8Jd.png') 78% 68% / cover no-repeat;
+      z-index: 0;
     }
     .hero-tint {
       position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(1,43,122,0.24) 0%, rgba(0,16,46,0.5) 100%);
+      top: -90px;
+      left: -30px;
+      right: -30px;
+      bottom: -30px;
+      background: linear-gradient(180deg, rgba(1,43,122,0.24) 0%, rgba(0,16,46,0.55) 100%);
+      z-index: 1;
     }
-    .hero-inner { position: relative; z-index: 2; }
+    .hero-plane-wrap {
+      position: absolute;
+      top: 9%;
+      right: 4%;
+      width: 56%;
+      max-width: 880px;
+      z-index: 4;
+      pointer-events: none;
+      will-change: transform;
+      transform: translate3d(-34vw, 22vh, 0) rotate(-8deg) scale(0.82);
+    }
+    .hero-plane {
+      width: 100%;
+      display: block;
+      filter: drop-shadow(0 40px 55px rgba(0, 10, 30, 0.45));
+      animation: heroPlaneFloat 7s ease-in-out infinite;
+    }
+    @keyframes heroPlaneFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-16px); }
+    }
+    .hero-inner { position: relative; z-index: 3; width: 100%; }
 
     .hero--photo .badge {
       background: rgba(255,255,255,0.12);
@@ -183,7 +215,7 @@
     .hero--photo .trust-row { opacity: 0.85; }
     .hero--photo .trust-row span { color: rgba(255,255,255,0.92); }
 
-    .trust { margin-top: 1.5rem; text-align: center; padding-bottom: 4.5rem; }
+    .trust { margin-top: 1.5rem; text-align: center; padding-bottom: 1rem; }
     .trust-label { font-size: 0.78rem; color: var(--ink-soft); margin-bottom: 1.2rem; }
     .trust-row {
       display: flex; justify-content: center; align-items: center;
@@ -193,9 +225,25 @@
 
     /* ============ Mission band ============ */
     .mission {
+      position: relative;
+      z-index: 5;
       background: var(--navy-dark);
       color: #F4F2EB;
       padding: 4.5rem 0;
+      transform-origin: center center;
+      will-change: transform, opacity, filter;
+    }
+
+    /* Full-bleed backdrop that fades in as the mission section reaches
+       the middle of the screen, so the area above and below it becomes
+       the same navy instead of showing the sections either side. */
+    .mission-backdrop {
+      position: fixed;
+      inset: 0;
+      background: var(--navy-dark);
+      z-index: 4;
+      opacity: 0;
+      pointer-events: none;
     }
 
     .mission-inner {
@@ -277,39 +325,33 @@
     }
 
     /* ============ 3-box capability section ============ */
-    .cap-scroll {
-      position: relative;
+    /* Left column (heading + tabs) stays pinned while the right column
+       scrolls its three cards past it, so each card gets its own moment
+       on screen instead of the content swapping inside one fixed box. */
+    .cap-grid {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) 1.5fr;
+      gap: 3.5rem;
+      align-items: start;
       margin-top: 2.6rem;
-      /* 3 tabs x 85vh of scroll each gives a clear, unhurried moment for
-         every tab as the user scrolls past it. */
-      height: 255vh;
     }
-    .cap-zone-trigger {
-      position: absolute;
-      left: 0;
-      width: 1px;
-      height: 33.334%;
-      pointer-events: none;
-    }
-    .cap-zone-trigger[data-tab="programs"] { top: 0; }
-    .cap-zone-trigger[data-tab="fleet"] { top: 33.333%; }
-    .cap-zone-trigger[data-tab="hubs"] { top: 66.666%; }
 
     .cap-sticky {
       position: sticky;
       top: 110px;
+      padding-bottom: 2rem;
     }
 
-    .cap-grid {
-      display: grid;
-      grid-template-columns: 260px 1fr;
-      gap: 2.5rem;
-      align-items: start;
+    .cap-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 1.6rem;
     }
 
     .cap-tabs {
       display: flex;
       flex-direction: column;
+      margin-top: 1.8rem;
     }
 
     .cap-tab {
@@ -343,7 +385,7 @@
       position: relative;
       border-radius: 22px;
       overflow: hidden;
-      min-height: 460px;
+      min-height: clamp(460px, 68vh, 620px);
       background: #0c100e;
       display: flex;
       flex-direction: column;
@@ -365,6 +407,12 @@
       position: absolute; inset: 0;
       background: linear-gradient(0deg, rgba(8,12,10,0.92) 10%, rgba(8,12,10,0.15) 60%, rgba(8,12,10,0.35) 100%);
     }
+
+    /* Per-card image framing: push each photo fully to one edge instead
+       of the default centered crop. */
+    .cap-card[data-tab="programs"] .cap-card-img img { object-position: left center; }
+    .cap-card[data-tab="fleet"] .cap-card-img img { object-position: right center; }
+    .cap-card[data-tab="hubs"] .cap-card-img img { object-position: right center; }
 
     .cap-card-top {
       position: relative;
@@ -426,6 +474,48 @@
       gap: 0.5rem;
     }
     .cap-stat b { color: #fff; font-size: 1.3rem; font-weight: 700; }
+
+    /* Each card eases up into place as it enters the viewport, and the
+       one currently being read lifts slightly while the others sit back. */
+    .cap-card {
+      opacity: 0;
+      transform: translateY(42px) scale(0.965);
+      transition:
+        opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .cap-card.is-in {
+      opacity: 1;
+      transform: translateY(0) scale(0.975);
+    }
+    .cap-card.is-current {
+      transform: translateY(0) scale(1);
+      box-shadow: 0 40px 80px rgba(11, 42, 74, 0.22);
+    }
+    .cap-card.is-current .cap-card-img img { opacity: 0.72; }
+    .cap-card .cap-card-body h3,
+    .cap-card .cap-card-body p,
+    .cap-card .cap-stat {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .cap-card.is-in .cap-card-body h3 { opacity: 1; transform: none; transition-delay: 0.08s; }
+    .cap-card.is-in .cap-card-body p  { opacity: 1; transform: none; transition-delay: 0.16s; }
+    .cap-card.is-in .cap-stat         { opacity: 1; transform: none; transition-delay: 0.24s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cap-card,
+      .cap-card .cap-card-body h3,
+      .cap-card .cap-card-body p,
+      .cap-card .cap-stat {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+    }
 
     /* ============ News / blog ============ */
     .news-featured {
@@ -549,12 +639,14 @@
     /* ============ Responsive ============ */
     @media (max-width: 980px) {
       .nav-links { display: none; }
-      .cap-grid { grid-template-columns: 1fr; }
+      .cap-grid { grid-template-columns: 1fr; gap: 1.6rem; }
+      .cap-sticky { position: static; padding-bottom: 0; }
       .cap-tabs { flex-direction: row; overflow-x: auto; }
       .cap-tabs .cap-tab { border-top: none; border-bottom: 1px solid var(--line); white-space: nowrap; }
       .news-featured { grid-template-columns: 1fr; }
       .block-head { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
       .trust-row { gap: 1.5rem; }
+      .hero-plane-wrap { width: 92%; right: -18%; top: 2%; }
     }
   
     /* ============ Logo image ============ */
@@ -564,6 +656,13 @@
       width: auto;
       object-fit: contain;
       display: block;
+    }
+    .brand-logo--text {
+      height: auto;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.01em;
     }
 
     /* ============ Mobile nav toggle ============ */
@@ -647,7 +746,7 @@
       transform: translateY(22px);
       transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+    .reveal.is-visible { opacity: 1; transform: none; }
     .reveal-stagger > *:nth-child(1) { transition-delay: 0s; }
     .reveal-stagger > *:nth-child(2) { transition-delay: 0.08s; }
     .reveal-stagger > *:nth-child(3) { transition-delay: 0.16s; }
@@ -655,6 +754,8 @@
     .reveal-stagger > *:nth-child(5) { transition-delay: 0.32s; }
     @media (prefers-reduced-motion: reduce) {
       .reveal, .reveal-stagger > * { opacity: 1; transform: none; transition: none; }
+      .hero-plane { animation: none; }
+      .hero-plane-wrap { transform: none !important; transition: none !important; }
     }
 
     /* ============ Bento box card ============ */
@@ -693,7 +794,7 @@
 
   <nav class="top">
     <a href="/" class="brand">
-      <img class="brand-logo" src="data:image/png;base64,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" alt="Udyanapura">
+      <span class="brand-logo brand-logo--text">Udyanapura</span>
     </a>
     <ul class="nav-links">
       <li><a href="/" class="current">Home</a></li>
@@ -724,6 +825,9 @@
   <section class="hero hero--photo">
     <div class="hero-bg" aria-hidden="true"></div>
     <div class="hero-tint" aria-hidden="true"></div>
+    <div class="hero-plane-wrap" id="heroPlaneWrap">
+      <img class="hero-plane" src="https://imgur.com/TuirEDm.png" alt="" aria-hidden="true">
+    </div>
     <div class="hero-inner">
     <a href="https://discord.gg/3rWUYV3wDu" target="_blank" rel="noopener noreferrer" class="badge">
       <span class="badge-dot"></span>
@@ -754,59 +858,85 @@
   </section>
 
   <!-- ============ Our Mission ============ -->
-  <section class="mission reveal">
+  <div class="mission-backdrop" id="missionBackdrop" aria-hidden="true"></div>
+
+  <section class="mission" id="missionSection">
     <div class="mission-inner">
       <div class="mission-eyebrow"><span class="sq"></span> OUR MISSION</div>
-      <p>The Airline of Udyanapura exists to turn simulated flight into a real
-      career path. <span class="muted">Structured programs, honest hours, and a
+      <p>Singapore Airlines exists to help pilots alike and support them through their journey. <span class="muted">Structured programs, honest hours, and a
       fleet built to be flown — not just admired. Every pilot who joins us starts
       somewhere specific and knows exactly what comes next.</span></p>
     </div>
   </section>
 
   <!-- ============ 3 Boxes: Programs / Fleet / Hubs ============ -->
-  <section class="block reveal">
-    <div class="eyebrow"><span class="sq"></span> What we offer</div>
-    <h2>One airline.<br><span class="soft">Three paths forward.</span></h2>
-    <p class="lead">Whether you're chasing hours, choosing your next aircraft, or
-    picking a hub to call home — here's where to start.</p>
-
-    <div class="cap-scroll">
-      <div class="cap-zone-trigger" data-tab="programs"></div>
-      <div class="cap-zone-trigger" data-tab="fleet"></div>
-      <div class="cap-zone-trigger" data-tab="hubs"></div>
-
+  <section class="block reveal" id="capSection">
+    <div class="cap-grid">
       <div class="cap-sticky">
-        <div class="cap-grid">
-          <div class="cap-tabs" id="capTabs">
-            <button class="cap-tab active" data-tab="programs">
-              <span class="marker"></span> Programs
-            </button>
-            <button class="cap-tab" data-tab="fleet">
-              <span class="marker"></span> Fleet
-            </button>
-            <button class="cap-tab" data-tab="hubs">
-              <span class="marker"></span> Hubs
-            </button>
-          </div>
+        <div class="eyebrow"><span class="sq"></span> What we offer</div>
+        <h2>One airline.<br><span class="soft">Three paths forward.</span></h2>
+        <p class="lead">Whether you're chasing hours, choosing your next aircraft, or
+        picking a hub to call home — here's where to start.</p>
 
-          <a class="cap-card" id="capCard" href="programs.html">
+        <div class="cap-tabs" id="capTabs">
+          <button class="cap-tab active" data-tab="programs">
+            <span class="marker"></span> Programs
+          </button>
+          <button class="cap-tab" data-tab="fleet">
+            <span class="marker"></span> Fleet
+          </button>
+          <button class="cap-tab" data-tab="hubs">
+            <span class="marker"></span> Hubs
+          </button>
+        </div>
+      </div>
+
+      <div class="cap-cards" id="capCards">
+          <a class="cap-card" data-tab="programs" href="programs.html">
             <svg class="box-expand cap-card-expand" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
-            <div class="cap-card-img"><img id="capImg" src="https://i.imgur.com/t7PLNUA.png" alt=""></div>
+            <div class="cap-card-img"><img src="https://i.imgur.com/t7PLNUA.png" alt=""></div>
             <div class="cap-card-top">
-              <div class="cap-card-icon" id="capIcon">
+              <div class="cap-card-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L14 9 L21 12 L14 13 L12 22 L10 13 L3 12 L10 9 Z"/></svg>
               </div>
-              <div class="cap-card-tag" id="capTag">CAREER PATH</div>
+              <div class="cap-card-tag">CAREER PATH</div>
             </div>
             <div class="cap-card-body">
-              <h3 id="capTitle">Structured, from first solo to command.</h3>
-              <p id="capDesc">Every rating builds on the last, with real milestones
-              and real accountability along the way.</p>
-              <div class="cap-stat"><span id="capStatLabel">PROGRAM STAGES</span> <b id="capStatValue">5</b></div>
+              <h3>Structured, from first solo to command.</h3>
+              <p>Every rating builds on the last, with real milestones and real accountability along the way.</p>
+              <div class="cap-stat"><span>PROGRAM STAGES</span> <b>5</b></div>
             </div>
           </a>
-        </div>
+          <a class="cap-card" data-tab="fleet" href="fleet.html">
+            <svg class="box-expand cap-card-expand" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+            <div class="cap-card-img"><img src="https://imgur.com/DNtb6bF.png" alt=""></div>
+            <div class="cap-card-top">
+              <div class="cap-card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-3 2v1.5l4.5-1.5 4.5 1.5V21l-3-2v-5.5z"/></svg>
+              </div>
+              <div class="cap-card-tag">AIRCRAFT</div>
+            </div>
+            <div class="cap-card-body">
+              <h3>A fleet built to be flown.</h3>
+              <p>From regional jets to widebody long-haul, matched to pilot rating and hub demand.</p>
+              <div class="cap-stat"><span>AIRCRAFT TYPES</span> <b>6</b></div>
+            </div>
+          </a>
+          <a class="cap-card" data-tab="hubs" href="hubs.html">
+            <svg class="box-expand cap-card-expand" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+            <div class="cap-card-img"><img src="https://imgur.com/QXjs4Vb.png" alt=""></div>
+            <div class="cap-card-top">
+              <div class="cap-card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-7.2 7-12a7 7 0 0 0-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+              </div>
+              <div class="cap-card-tag">DESTINATIONS</div>
+            </div>
+            <div class="cap-card-body">
+              <h3>Fly from hubs that make sense.</h3>
+              <p>Carefully chosen bases so routes connect naturally, not just for the sake of a map.</p>
+              <div class="cap-stat"><span>ACTIVE HUBS</span> <b>4</b></div>
+            </div>
+          </a>
       </div>
     </div>
   </section>
@@ -841,103 +971,96 @@
 
   <script src="/auth-client.js"></script>
   <script>
-    // 3-box tab switcher (Programs / Fleet / Hubs)
+    // Programs / Fleet / Hubs. The three cards are real stacked elements
+    // that scroll past a sticky left column, rather than one box whose
+    // contents get swapped. Each card eases in as it enters the viewport,
+    // and whichever card is nearest the middle of the screen is marked
+    // current (lifted slightly) with its tab highlighted.
     (function () {
-      var icons = {
-        star: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L14 9 L21 12 L14 13 L12 22 L10 13 L3 12 L10 9 Z"/></svg>',
-        plane: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-3 2v1.5l4.5-1.5 4.5 1.5V21l-3-2v-5.5z"/></svg>',
-        pin: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-7.2 7-12a7 7 0 0 0-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>'
-      };
+      var tabs = Array.prototype.slice.call(document.querySelectorAll('.cap-tab'));
+      var cards = Array.prototype.slice.call(document.querySelectorAll('.cap-card'));
+      if (!tabs.length || !cards.length) return;
 
-      var data = {
-        programs: {
-          href: 'programs.html',
-          img: 'https://i.imgur.com/t7PLNUA.png',
-          icon: icons.star,
-          tag: 'CAREER PATH',
-          title: 'Structured, from first solo to command.',
-          desc: 'Every rating builds on the last, with real milestones and real accountability along the way.',
-          statLabel: 'PROGRAM STAGES',
-          statValue: '5'
-        },
-        fleet: {
-          href: 'fleet.html',
-          img: 'https://imgur.com/DNtb6bF.png',
-          icon: icons.plane,
-          tag: 'AIRCRAFT',
-          title: 'A fleet built to be flown.',
-          desc: 'From regional jets to widebody long-haul, matched to pilot rating and hub demand.',
-          statLabel: 'AIRCRAFT TYPES',
-          statValue: '6'
-        },
-        hubs: {
-          href: 'hubs.html',
-          img: 'https://imgur.com/QXjs4Vb.png',
-          icon: icons.pin,
-          tag: 'DESTINATIONS',
-          title: 'Fly from hubs that make sense.',
-          desc: 'Carefully chosen bases so routes connect naturally, not just for the sake of a map.',
-          statLabel: 'ACTIVE HUBS',
-          statValue: '4'
-        }
-      };
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      var tabs = document.querySelectorAll('.cap-tab');
-      var card = document.getElementById('capCard');
-      var img = document.getElementById('capImg');
-      var icon = document.getElementById('capIcon');
-      var tag = document.getElementById('capTag');
-      var title = document.getElementById('capTitle');
-      var desc = document.getElementById('capDesc');
-      var statLabel = document.getElementById('capStatLabel');
-      var statValue = document.getElementById('capStatValue');
-      var activeTabName = 'programs';
+      // --- entrance: reveal each card once, as it comes into view ---
+      if (reduceMotion || !('IntersectionObserver' in window)) {
+        cards.forEach(function (c) { c.classList.add('is-in'); });
+      } else {
+        var enterObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-in');
+              enterObserver.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.18, rootMargin: '0px 0px -10% 0px' });
+        cards.forEach(function (c) { enterObserver.observe(c); });
+      }
 
-      function activateTab(name) {
-        if (name === activeTabName || !data[name]) return;
-        activeTabName = name;
+      // --- active state: whichever card is closest to the viewport middle ---
+      var currentName = null;
 
+      function setCurrent(name) {
+        if (name === currentName) return;
+        currentName = name;
         tabs.forEach(function (t) {
           t.classList.toggle('active', t.getAttribute('data-tab') === name);
         });
-
-        var d = data[name];
-        img.style.opacity = 0;
-        setTimeout(function () {
-          card.href = d.href;
-          img.src = d.img;
-          icon.innerHTML = d.icon;
-          tag.textContent = d.tag;
-          title.textContent = d.title;
-          desc.textContent = d.desc;
-          statLabel.textContent = d.statLabel;
-          statValue.textContent = d.statValue;
-          img.style.opacity = 0.62;
-        }, 150);
+        cards.forEach(function (c) {
+          c.classList.toggle('is-current', c.getAttribute('data-tab') === name);
+        });
       }
 
+      var ticking = false;
+
+      function update() {
+        ticking = false;
+        var mid = window.innerHeight / 2;
+        var best = null;
+        var bestDist = Infinity;
+
+        cards.forEach(function (c) {
+          var rect = c.getBoundingClientRect();
+          // ignore cards entirely off screen
+          if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+          var dist = Math.abs(rect.top + rect.height / 2 - mid);
+          if (dist < bestDist) {
+            bestDist = dist;
+            best = c;
+          }
+        });
+
+        if (best) setCurrent(best.getAttribute('data-tab'));
+      }
+
+      function onScroll() {
+        if (!ticking) {
+          requestAnimationFrame(update);
+          ticking = true;
+        }
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+
+      // --- tabs scroll to their card ---
       tabs.forEach(function (tab) {
         tab.addEventListener('click', function () {
-          activateTab(tab.getAttribute('data-tab'));
+          var name = tab.getAttribute('data-tab');
+          var target = cards.filter(function (c) {
+            return c.getAttribute('data-tab') === name;
+          })[0];
+          if (!target) return;
+          var rect = target.getBoundingClientRect();
+          var y = rect.top + window.scrollY - (window.innerHeight - rect.height) / 2;
+          window.scrollTo({
+            top: Math.max(0, y),
+            behavior: reduceMotion ? 'auto' : 'smooth'
+          });
         });
       });
-
-      // Scroll-driven switching: as the tall .cap-scroll wrapper scrolls
-      // past, the sticky card stays pinned while three thin trigger
-      // elements (one per third of the wrapper's height) cross the
-      // vertical center of the viewport, advancing programs -> fleet ->
-      // hubs on the way down and back again on the way up.
-      var zoneTriggers = document.querySelectorAll('.cap-zone-trigger');
-      if (zoneTriggers.length && 'IntersectionObserver' in window) {
-        var zoneObserver = new IntersectionObserver(function (entries) {
-          entries.forEach(function (entry) {
-            if (entry.isIntersecting) {
-              activateTab(entry.target.getAttribute('data-tab'));
-            }
-          });
-        }, { threshold: 0, rootMargin: '-50% 0px -50% 0px' });
-        zoneTriggers.forEach(function (zone) { zoneObserver.observe(zone); });
-      }
     })();
   </script>
   <script>
@@ -983,6 +1106,188 @@
       setTimeout(function () {
         els.forEach(function (el) { el.classList.add('is-visible'); });
       }, 2500);
+    })();
+  </script>
+  <script>
+    // Scroll-driven hero plane: starts low/left and off-scale, and eases
+    // into its resting top-right position as the user scrolls through
+    // the hero section.
+    (function () {
+      var wrap = document.getElementById('heroPlaneWrap');
+      var heroEl = document.querySelector('.hero--photo');
+      if (!wrap || !heroEl) return;
+
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduceMotion) return;
+
+      var START_X = -34;   // vw
+      var START_Y = 22;    // vh
+      var START_ROT = -8;  // deg
+      var START_SCALE = 0.82;
+
+      var ticking = false;
+
+      function render() {
+        ticking = false;
+        var heroHeight = heroEl.offsetHeight || window.innerHeight;
+        var progress = window.scrollY / heroHeight;
+        if (progress < 0) progress = 0;
+        if (progress > 1) progress = 1;
+        // ease-out so the motion settles rather than arriving linearly
+        var eased = 1 - Math.pow(1 - progress, 2);
+
+        var x = START_X * (1 - eased);
+        var y = START_Y * (1 - eased);
+        var rot = START_ROT * (1 - eased);
+        var scale = START_SCALE + (1 - START_SCALE) * eased;
+
+        wrap.style.transform =
+          'translate3d(' + x + 'vw, ' + y + 'vh, 0) rotate(' + rot + 'deg) scale(' + scale + ')';
+      }
+
+      function onScroll() {
+        if (!ticking) {
+          requestAnimationFrame(render);
+          ticking = true;
+        }
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', render);
+      render();
+    })();
+  </script>
+  <script>
+    // Mission zoom, driven by how close the mission section's CENTER is
+    // to the CENTER of the viewport. Zoom peaks exactly when the section
+    // is centered on screen and eases back off symmetrically as it moves
+    // away in either direction, so the effect is "closest to the middle
+    // of the screen = most zoomed in".
+    //
+    // Nothing here alters scroll position: the animation is a pure
+    // scrub, so the page never pulls or holds the user in place.
+    //
+    // The peak zoom level is capped dynamically against BOTH the viewport
+    // width and height, so the mission text can never overflow the screen
+    // or slide up under the fixed nav bar.
+    (function () {
+      var heroEl = document.querySelector('.hero--photo');
+      var missionEl = document.getElementById('missionSection');
+      var backdrop = document.getElementById('missionBackdrop');
+      var missionInner = missionEl ? missionEl.querySelector('.mission-inner') : null;
+      var missionText = missionEl ? missionEl.querySelector('p') : null;
+      if (!heroEl || !missionEl) return;
+
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduceMotion) return;
+
+      var ticking = false;
+
+      // How far we'd like to zoom at peak, purely for feel.
+      var DESIRED_MAX_SCALE = 2.6;
+      // Breathing room kept around the content at peak zoom.
+      var MARGIN_X = 32;
+      var MARGIN_Y = 24;
+      // Height of the fixed nav, which the content must stay clear of.
+      var NAV_H = 72;
+      // Zoom progress at which the navy backdrop starts filling in above
+      // and below the section; it's fully opaque by the time we peak.
+      var FILL_START = 0.45;
+
+      var missionMaxScale = DESIRED_MAX_SCALE;
+
+      function computeMaxScale() {
+        // scrollWidth/offsetHeight report the element's laid-out size and
+        // are unaffected by CSS `transform`, so these are always the
+        // natural (unscaled) dimensions, even mid-animation.
+        var naturalW = missionText ? missionText.scrollWidth : 0;
+        var naturalH = missionInner ? missionInner.offsetHeight : 0;
+
+        var limit = DESIRED_MAX_SCALE;
+
+        if (naturalW) {
+          limit = Math.min(limit, (window.innerWidth - MARGIN_X * 2) / naturalW);
+        }
+        if (naturalH) {
+          // Usable band is the viewport minus the nav strip and margins.
+          var usableH = window.innerHeight - NAV_H - MARGIN_Y * 2;
+          limit = Math.min(limit, usableH / naturalH);
+        }
+
+        // Never shrink the section below its natural size.
+        missionMaxScale = Math.max(1, limit);
+      }
+
+      // Distance (px) over which the zoom ramps in and out around center.
+      function falloff() {
+        return Math.max(240, window.innerHeight * 0.75);
+      }
+
+      function smoothstep(t) {
+        return t * t * (3 - 2 * t);
+      }
+
+      // 0 when the section's center is a full falloff() away from the
+      // viewport center, 1 when the two centers coincide.
+      function progressNow() {
+        var rect = missionEl.getBoundingClientRect();
+        var sectionCenter = rect.top + rect.height / 2;
+        var viewportCenter = window.innerHeight / 2;
+        var dist = Math.abs(sectionCenter - viewportCenter);
+        var p = 1 - dist / falloff();
+        if (p < 0) p = 0;
+        if (p > 1) p = 1;
+        // ease so it settles gently at the peak instead of arriving linearly
+        return smoothstep(p);
+      }
+
+      // The hero keeps its own one-way progress tied to scrolling past it,
+      // so it doesn't fade back in once you're below the mission.
+      function heroProgress() {
+        var h = heroEl.offsetHeight || window.innerHeight;
+        var p = window.scrollY / h;
+        if (p < 0) p = 0;
+        if (p > 1) p = 1;
+        return p;
+      }
+
+      function render() {
+        ticking = false;
+
+        var hp = heroProgress();
+        heroEl.style.transform = 'scale(' + (1 + hp * 0.08) + ')';
+        heroEl.style.opacity = 1 - hp * 0.5;
+
+        var p = progressNow();
+        missionEl.style.transform =
+          'scale(' + (1 + p * (missionMaxScale - 1)) + ')';
+
+        if (backdrop) {
+          // Remap the tail of the zoom onto 0..1 so the navy fill arrives
+          // as the section closes in on the middle, then holds solid at
+          // the peak and drains back out on the way past.
+          var fill = (p - FILL_START) / (1 - FILL_START);
+          if (fill < 0) fill = 0;
+          if (fill > 1) fill = 1;
+          backdrop.style.opacity = smoothstep(fill);
+        }
+      }
+
+      function onScroll() {
+        if (!ticking) {
+          requestAnimationFrame(render);
+          ticking = true;
+        }
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', function () {
+        computeMaxScale();
+        render();
+      });
+
+      computeMaxScale();
+      render();
     })();
   </script>
 </body>
