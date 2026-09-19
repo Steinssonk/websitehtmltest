@@ -160,14 +160,14 @@
     }
     .hero-plane-wrap {
       position: absolute;
-      top: 7%;
-      right: 9%;
+      top: 4%;
+      right: 12%;
       width: 62%;
       max-width: 880px;
       z-index: 4;
       pointer-events: none;
       will-change: transform;
-      transform: translate3d(-6vw, 30vh, 0) rotate(-8deg) scale(0.82);
+      transform: translate3d(0, 0, 0);
     }
     .hero-plane {
       width: 100%;
@@ -912,9 +912,10 @@
     })();
   </script>
   <script>
-    // Scroll-driven hero plane: starts low/left and off-scale, and eases
-    // into its resting top-right position as the user scrolls through
-    // the hero section.
+    // Scroll-driven hero plane: it flies straight forward along its own
+    // heading as the user scrolls through the hero — no rotation and no
+    // scaling, so the motion reads as the aircraft travelling nose-first
+    // rather than being nudged around the screen.
     (function () {
       var wrap = document.getElementById('heroPlaneWrap');
       var heroEl = document.querySelector('.hero--photo');
@@ -923,12 +924,14 @@
       var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (reduceMotion) return;
 
-      // Starts down and to the right of its resting spot — clear of the
-      // hero copy, which now sits along the left edge.
-      var START_X = -6;    // vw
-      var START_Y = 30;    // vh
-      var START_ROT = -8;  // deg
-      var START_SCALE = 0.82;
+      // The aircraft in hero-plane.webp is in a shallow nose-down right
+      // turn, so "forward" is down and to the right at roughly this
+      // angle off horizontal. Both axes are measured in vw so the
+      // heading holds its angle at every viewport aspect ratio.
+      var HEADING_DEG = 17;
+      var TRAVEL = 58;     // vw covered across the full hero scroll
+      var DX = Math.cos(HEADING_DEG * Math.PI / 180);
+      var DY = Math.sin(HEADING_DEG * Math.PI / 180);
 
       var ticking = false;
 
@@ -941,13 +944,10 @@
         // ease-out so the motion settles rather than arriving linearly
         var eased = 1 - Math.pow(1 - progress, 2);
 
-        var x = START_X * (1 - eased);
-        var y = START_Y * (1 - eased);
-        var rot = START_ROT * (1 - eased);
-        var scale = START_SCALE + (1 - START_SCALE) * eased;
+        var distance = TRAVEL * eased;
 
         wrap.style.transform =
-          'translate3d(' + x + 'vw, ' + y + 'vh, 0) rotate(' + rot + 'deg) scale(' + scale + ')';
+          'translate3d(' + (distance * DX) + 'vw, ' + (distance * DY) + 'vw, 0)';
       }
 
       function onScroll() {
