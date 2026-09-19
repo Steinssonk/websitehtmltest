@@ -237,6 +237,20 @@
     /* Full-bleed backdrop that fades in as the mission section reaches
        the middle of the screen, so the area above and below it becomes
        the same navy instead of showing the sections either side. */
+    /* The hero and mission sections are scaled up by their own scroll
+       effects, so their boxes grow wider than the viewport even though
+       the text inside stays capped to fit. These wrappers trim that
+       sideways overhang at the source, so it never reaches the page.
+       overflow-x only — the sections still need to grow vertically. */
+    .zoom-clip {
+      overflow-x: clip;
+      overflow-y: visible;
+    }
+    /* Keeps the mission section above .mission-backdrop (z-index 4) now
+       that the wrapper, not the section, is what the backdrop stacks
+       against. */
+    .mission-clip { position: relative; z-index: 5; }
+
     .mission-backdrop {
       position: fixed;
       inset: 0;
@@ -676,6 +690,7 @@
 
   <div id="header-placeholder"></div>
 
+  <div class="zoom-clip">
   <section class="hero hero--photo">
     <div class="hero-bg" aria-hidden="true"></div>
     <div class="hero-tint" aria-hidden="true"></div>
@@ -710,10 +725,12 @@
     </div>
     </div>
   </section>
+  </div>
 
   <!-- ============ Our Mission ============ -->
   <div class="mission-backdrop" id="missionBackdrop" aria-hidden="true"></div>
 
+  <div class="zoom-clip mission-clip">
   <section class="mission" id="missionSection">
     <div class="mission-inner">
       <div class="mission-eyebrow"><span class="sq"></span> OUR MISSION</div>
@@ -722,6 +739,7 @@
       somewhere specific and knows exactly what comes next.</span></p>
     </div>
   </section>
+  </div>
 
   <!-- ============ 3 Boxes: Programs / Fleet / Hubs ============ -->
   <section class="block reveal" id="capSection">
