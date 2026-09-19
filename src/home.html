@@ -26,6 +26,13 @@
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    /* The hero and mission sections are scaled up by their scroll-driven
+       zoom effects, which pushes them a little wider than the viewport.
+       `clip` (rather than `hidden`) trims that sideways overhang without
+       turning the page into a scroll container — `hidden` would do that
+       and break the sticky column in the "What we offer" section. */
+    html, body { overflow-x: clip; }
+
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: var(--bg);
