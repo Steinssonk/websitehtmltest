@@ -7,6 +7,12 @@ import headerHtml from './header.html';
 import footerHtml from './footer.html';
 import metaTags from './meta.html';
 import homeContent from './home.html';
+// The hero's two layers (night-city backdrop + cut-out aircraft) ship with
+// the worker as binary Data modules — see the *.webp rule in wrangler.toml
+// — and are served from /assets/ below, so the home page doesn't depend on
+// any third-party image host.
+import heroBgImage from './assets/hero-bg.webp';
+import heroPlaneImage from './assets/hero-plane.webp';
 import programsContent from './programs.html';
 import fleetContent from './fleet.html';
 import hubsContent from './hubs.html';
@@ -18,6 +24,12 @@ import dashboardContent from './dashboard.html';
 // shared nav and footer — see the SITE_CHROME_JS constant below. The
 // worker's job is to serve the right file for the right path, plus
 // handle the Discord OAuth + session routes below.
+// Binary files served straight from the worker bundle.
+const staticAssets = {
+  '/assets/hero-bg.webp': { body: heroBgImage, type: 'image/webp' },
+  '/assets/hero-plane.webp': { body: heroPlaneImage, type: 'image/webp' },
+};
+
 const pageRoutes = {
   '/': homeContent,
   '/index.html': homeContent,
@@ -71,6 +83,15 @@ export default {
           headers: {
             'Content-Type': 'application/javascript;charset=UTF-8',
             'Cache-Control': 'public, max-age=3600',
+          },
+        });
+      }
+
+      if (staticAssets[pathname]) {
+        return new Response(staticAssets[pathname].body, {
+          headers: {
+            'Content-Type': staticAssets[pathname].type,
+            'Cache-Control': 'public, max-age=31536000, immutable',
           },
         });
       }

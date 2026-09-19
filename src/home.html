@@ -66,7 +66,7 @@
     .btn-sm { padding: 0.5rem 1.1rem; font-size: 0.85rem; }
 
     /* ============ Hero ============ */
-    .hero { text-align: center; padding: 2.5rem 6% 0; }
+    .hero { text-align: left; padding: 2.5rem 6% 0; }
 
     .badge {
       display: inline-flex;
@@ -95,13 +95,23 @@
       letter-spacing: -0.03em;
       font-weight: 700;
       max-width: 900px;
-      margin: 0 auto;
+      margin: 0;
     }
     .hero h1 .soft { color: var(--ink-soft); font-weight: 600; }
+    /* The aircraft sits at z-index 4. Everything in the hero copy is
+       lifted above it except the second headline line, which is dropped
+       below so the plane crosses in front of "of Aeronautica." alone. */
+    .hero-inner > .badge,
+    .hero-inner > .sub,
+    .hero-inner > .hero-actions,
+    .hero-inner > .trust,
+    .hero h1 .hero-line { position: relative; z-index: 5; }
+    .hero h1 .soft { position: relative; z-index: 2; }
+    .hero h1 .hero-line, .hero h1 .soft { display: inline-block; }
 
     .hero p.sub {
       max-width: 560px;
-      margin: 1.4rem auto 0;
+      margin: 1.4rem 0 0;
       color: var(--ink-soft);
       font-size: 1.05rem;
       line-height: 1.6;
@@ -109,7 +119,7 @@
 
     .hero-actions {
       display: flex;
-      justify-content: center;
+      justify-content: flex-start;
       gap: 0.8rem;
       margin-top: 2.1rem;
     }
@@ -123,6 +133,8 @@
       align-items: center;
       padding-top: 2rem;
       padding-bottom: 4rem;
+      padding-left: 0;
+      padding-right: 0;
       transform-origin: center center;
       will-change: transform, opacity;
     }
@@ -132,7 +144,7 @@
       left: -30px;
       right: -30px;
       bottom: -30px;
-      background: var(--navy) url('https://imgur.com/Iqrj8Jd.png') 78% 68% / cover no-repeat;
+      background: var(--navy) url('/assets/hero-bg.webp') 50% 55% / cover no-repeat;
       z-index: 0;
     }
     .hero-tint {
@@ -141,19 +153,21 @@
       left: -30px;
       right: -30px;
       bottom: -30px;
-      background: linear-gradient(180deg, rgba(1,43,122,0.24) 0%, rgba(0,16,46,0.55) 100%);
+      background:
+        linear-gradient(90deg, rgba(0,10,32,0.62) 0%, rgba(0,10,32,0.18) 55%, rgba(0,10,32,0) 100%),
+        linear-gradient(180deg, rgba(1,43,122,0.10) 0%, rgba(0,12,38,0.38) 100%);
       z-index: 1;
     }
     .hero-plane-wrap {
       position: absolute;
-      top: 9%;
-      right: 4%;
-      width: 56%;
+      top: 7%;
+      right: 9%;
+      width: 62%;
       max-width: 880px;
       z-index: 4;
       pointer-events: none;
       will-change: transform;
-      transform: translate3d(-34vw, 22vh, 0) rotate(-8deg) scale(0.82);
+      transform: translate3d(-6vw, 30vh, 0) rotate(-8deg) scale(0.82);
     }
     .hero-plane {
       width: 100%;
@@ -165,7 +179,16 @@
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-16px); }
     }
-    .hero-inner { position: relative; z-index: 3; width: 100%; }
+    /* No z-index here on purpose: hero-inner must NOT create its own
+       stacking context, so the headline's two lines can sit on either
+       side of the aircraft (see .hero-line / .hero h1 .soft below). */
+    .hero-inner {
+      position: relative;
+      width: 100%;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 6%;
+    }
 
     .hero--photo .badge {
       background: rgba(255,255,255,0.12);
@@ -185,10 +208,10 @@
     .hero--photo .trust-row { opacity: 0.85; }
     .hero--photo .trust-row span { color: rgba(255,255,255,0.92); }
 
-    .trust { margin-top: 1.5rem; text-align: center; padding-bottom: 1rem; }
+    .trust { margin-top: 1.5rem; text-align: left; padding-bottom: 1rem; }
     .trust-label { font-size: 0.78rem; color: var(--ink-soft); margin-bottom: 1.2rem; }
     .trust-row {
-      display: flex; justify-content: center; align-items: center;
+      display: flex; justify-content: flex-start; align-items: center;
       flex-wrap: wrap; gap: 2.6rem; opacity: 0.55;
     }
     .trust-row span { font-weight: 700; font-size: 1.1rem; letter-spacing: -0.01em; color: var(--ink); }
@@ -587,7 +610,9 @@
       .news-featured { grid-template-columns: 1fr; }
       .block-head { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
       .trust-row { gap: 1.5rem; }
-      .hero-plane-wrap { width: 92%; right: -18%; top: 2%; }
+      /* On narrow screens the copy fills the upper half, so the
+         aircraft drops below it rather than sitting across it. */
+      .hero-plane-wrap { width: 104%; right: -22%; top: auto; bottom: 4%; }
     }
 
     /* ============ Scroll reveal ============ */
@@ -648,7 +673,7 @@
     <div class="hero-bg" aria-hidden="true"></div>
     <div class="hero-tint" aria-hidden="true"></div>
     <div class="hero-plane-wrap" id="heroPlaneWrap">
-      <img class="hero-plane" src="https://imgur.com/TuirEDm.png" alt="" aria-hidden="true">
+      <img class="hero-plane" src="/assets/hero-plane.webp" alt="" aria-hidden="true">
     </div>
     <div class="hero-inner">
     <a href="https://discord.gg/3rWUYV3wDu" target="_blank" rel="noopener noreferrer" class="badge">
@@ -656,7 +681,7 @@
       Now recruiting pilots
     </a>
 
-    <h1>Command the skies<br><span class="soft">of Aeronautica.</span></h1>
+    <h1><span class="hero-line">Command the skies</span><br><span class="soft">of Aeronautica.</span></h1>
 
     <p class="sub">One of Aeronautica's largest airlines. Real routes, real hours,
     real careers — from your first solo to widebody command.</p>
@@ -898,8 +923,10 @@
       var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (reduceMotion) return;
 
-      var START_X = -34;   // vw
-      var START_Y = 22;    // vh
+      // Starts down and to the right of its resting spot — clear of the
+      // hero copy, which now sits along the left edge.
+      var START_X = -6;    // vw
+      var START_Y = 30;    // vh
       var START_ROT = -8;  // deg
       var START_SCALE = 0.82;
 

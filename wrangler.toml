@@ -6,6 +6,11 @@ compatibility_date = "2026-03-01"
 type = "Text"
 globs = ["*.html"]
 
+# Hero imagery is imported by src/index.js and served from /assets/.
+[[rules]]
+type = "Data"
+globs = ["*.webp"]
+
 [vars]
 DISCORD_CLIENT_ID = "1536683890142482433"
 SHEET_ID = "1RyT3k2L8jfFJt-2vtW8cxLyP7U2kEPE-qxJiNkOldKo"
