@@ -1070,18 +1070,25 @@
         return Math.max(240, window.innerHeight * 0.75);
       }
 
+      // How far the section travels at its natural size before the zoom
+      // picks up, so it doesn't start growing the instant it appears.
+      var HOLD = 200;
+
       function smoothstep(t) {
         return t * t * (3 - 2 * t);
       }
 
-      // 0 when the section's center is a full falloff() away from the
-      // viewport center, 1 when the two centers coincide.
+      // 0 while the section's center is still more than falloff() away
+      // from the viewport center, and through the HOLD band just inside
+      // that, then ramping to 1 as the two centers meet.
       function progressNow() {
         var rect = missionEl.getBoundingClientRect();
         var sectionCenter = rect.top + rect.height / 2;
         var viewportCenter = window.innerHeight / 2;
         var dist = Math.abs(sectionCenter - viewportCenter);
-        var p = 1 - dist / falloff();
+        // Never let the hold eat the whole ramp on a short viewport.
+        var ramp = Math.max(120, falloff() - HOLD);
+        var p = 1 - dist / ramp;
         if (p < 0) p = 0;
         if (p > 1) p = 1;
         // ease so it settles gently at the peak instead of arriving linearly
