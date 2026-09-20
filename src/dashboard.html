@@ -79,15 +79,13 @@
            background instead, so an input reads as a recess in the card
            rather than another card. The tag+class selector outranks the
            plain class above, and both sit below the dark-mode rules. */
-        .bg-slate-50 { background-color: transparent !important; }
+        .bg-slate-50 { background-color: #FFFFFF !important; }
         /* Boxes nested inside a panel — the settings rows, the claim
            items, the logger instructions — sit on a tint so they read as
            insets rather than panels of their own. Dropdown popovers are
            excluded: they float over a panel, so they stay white. */
         .bg-slate-50 .bg-slate-50 { background-color: #F4F7F9 !important; }
-        /* Dropdown popovers still need an opaque fill — they float over
-           the content behind them — so they take the inset tint. */
-        .bg-slate-50 [id^="dropdown-"].bg-slate-50 { background-color: #F4F7F9 !important; }
+        .bg-slate-50 [id^="dropdown-"].bg-slate-50 { background-color: #FFFFFF !important; }
         /* Fields sit on their own faint tint so they read as fillable
            against the white panel around them. */
         .bg-slate-50 input.bg-slate-50,
@@ -99,8 +97,9 @@
         .bg-slate-700 { background-color: #001D52 !important; }
         .bg-slate-900\/70 { background-color: rgba(0, 29, 82, 0.7) !important; }
         .hover\:bg-slate-900:hover { background-color: #001D52 !important; }
-        /* Boxes are unfilled and outlined instead. Dark mode keeps its
-           own borders, being more specific. */
+        /* Panels are white and outlined; the boxes nested inside them and
+           the form fields take a tint. Dark mode keeps its own borders,
+           being more specific. */
         .border-slate-100 { border-color: #D1D5DB !important; }
         .border-slate-200 { border-color: #D1D5DB !important; }
         .shadow-sm, .shadow, .shadow-md,
@@ -111,7 +110,7 @@
         .text-slate-600 { color: #7d7b73 !important; }
         .text-slate-700 { color: #16181B !important; }
         .text-slate-900 { color: #16181B !important; }
-        .hover\:bg-slate-50:hover { background-color: #F4F7F9 !important; }
+        .hover\:bg-slate-50:hover { background-color: #FFFFFF !important; }
         .hover\:text-slate-600:hover { color: #7d7b73 !important; }
         .hover\:text-slate-900:hover { color: #16181B !important; }
         .bg-amber-600 { background-color: #E8A23D !important; }
