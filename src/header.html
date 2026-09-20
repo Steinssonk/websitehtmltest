@@ -97,6 +97,16 @@
     display: none;
     align-items: center;
     gap: 0.6rem;
+    min-width: 0;
+  }
+
+  /* A long username shouldn't be able to push the nav into the links or
+     off the bar on a narrow screen. */
+  #header-placeholder #user-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 160px;
   }
   #header-placeholder .user-badge img {
     width: 32px;
@@ -138,12 +148,12 @@
     justify-content: center;
     align-items: flex-end;
     gap: 5px;
-    width: 32px;
-    height: 32px;
+    width: 44px;
+    height: 44px;
     background: none;
     border: none;
     cursor: pointer;
-    padding: 0;
+    padding: 0 6px;
     z-index: 210;
   }
   .nav-toggle span {
@@ -187,6 +197,19 @@
   @media (max-width: 980px) {
     #header-placeholder .nav-links { display: none; }
     .nav-toggle { display: flex; }
+  }
+
+  @media (max-width: 640px) {
+    #header-placeholder nav { height: 72px; }
+    #header-placeholder .brand-logo { height: 50px; max-width: 150px; }
+    #header-placeholder .btn { padding: 0.5rem 1rem; font-size: 0.85rem; }
+    #header-placeholder #user-name { max-width: 28vw; }
+  }
+
+  /* On the narrowest phones the avatar alone stands in for the signed-in
+     user, so the logo, the button and the menu toggle all still fit. */
+  @media (max-width: 480px) {
+    #header-placeholder #user-name { display: none; }
   }
   @media (min-width: 981px) {
     .mobile-menu { display: none; }

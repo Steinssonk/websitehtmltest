@@ -63,6 +63,9 @@
       position: relative;
       overflow: hidden;
       min-height: 66.67vh;
+      /* svh tracks the screen actually visible on mobile, where 100vh
+         includes the browser chrome and overshoots. */
+      min-height: 66.67svh;
       display: flex;
       align-items: center;
       padding: 3rem 0;
