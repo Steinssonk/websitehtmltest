@@ -97,11 +97,11 @@
         .bg-slate-700 { background-color: #001D52 !important; }
         .bg-slate-900\/70 { background-color: rgba(0, 29, 82, 0.7) !important; }
         .hover\:bg-slate-900:hover { background-color: #001D52 !important; }
-        /* Panels are white and outlined; the boxes nested inside them and
-           the form fields take a tint. Dark mode keeps its own borders,
-           being more specific. */
-        .border-slate-100 { border-color: #D1D5DB !important; }
-        .border-slate-200 { border-color: #D1D5DB !important; }
+        /* Boxes carry no outline: panels, the boxes nested inside them,
+           and the form fields are told apart by their fill alone. Dark
+           mode keeps its own borders, being more specific. */
+        .border-slate-100 { border-color: transparent !important; }
+        .border-slate-200 { border-color: transparent !important; }
         .shadow-sm, .shadow, .shadow-md,
         .shadow-lg, .shadow-xl, .shadow-2xl { box-shadow: none !important; }
         /* Two exceptions on the career banner. Tailwind draws ring-* as a
