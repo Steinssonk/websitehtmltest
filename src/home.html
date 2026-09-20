@@ -8,13 +8,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="icon" type="image/png" href="https://i.imgur.com/98OXG6K.png">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,700;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     /* ============ Tokens ============ */
     :root {
       --bg: #F4F6F9;
       --bg-raised: #FFFFFF;
+      /* Headline face: bold upright for the dark line, regular
+         italic for the soft line under it. */
+      --font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       --ink: #16181B;
       --ink-soft: #97958D;
       /* Boxes carry no outline; the token stays so the 1px border
@@ -99,6 +102,7 @@
     }
 
     .hero h1 {
+      font-family: var(--font-display);
       font-size: clamp(2.6rem, 6vw, 4.6rem);
       line-height: 1.06;
       letter-spacing: -0.03em;
@@ -106,7 +110,7 @@
       max-width: 900px;
       margin: 0;
     }
-    .hero h1 .soft { color: var(--ink-soft); font-weight: 600; }
+    .hero h1 .soft { color: var(--ink-soft); font-weight: 400; font-style: italic; }
     /* The aircraft sits at z-index 4. Everything in the hero copy is
        lifted above it except the second headline line, which is dropped
        below so the plane crosses in front of "of Aeronautica." alone. */
@@ -307,12 +311,13 @@
     .eyebrow .sq { width: 7px; height: 7px; background: var(--navy); display: inline-block; }
 
     .block h2 {
+      font-family: var(--font-display);
       font-size: clamp(2rem, 4vw, 2.8rem);
       letter-spacing: -0.02em;
       font-weight: 700;
       line-height: 1.12;
     }
-    .block h2 .soft { color: var(--ink-soft); font-weight: 600; }
+    .block h2 .soft { color: var(--ink-soft); font-weight: 400; font-style: italic; }
 
     .block p.lead {
       max-width: 560px;
