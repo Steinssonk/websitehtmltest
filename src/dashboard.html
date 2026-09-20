@@ -104,6 +104,17 @@
         .border-slate-200 { border-color: #D1D5DB !important; }
         .shadow-sm, .shadow, .shadow-md,
         .shadow-lg, .shadow-xl, .shadow-2xl { box-shadow: none !important; }
+        /* Two exceptions on the career banner. Tailwind draws ring-* as a
+           box-shadow, so the reset above was erasing the gold ring that
+           marks the current rank; and the rank badges are the same navy
+           as the banner behind them, so without their shadow they have no
+           edge at all. */
+        #rank-timeline-grid .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.35) !important;
+        }
+        #rank-timeline-grid .ring-2 {
+            box-shadow: 0 0 0 2px #E8A23D, 0 10px 15px -3px rgba(0, 0, 0, 0.35) !important;
+        }
         .text-slate-300 { color: #9aa5b4 !important; }
         .text-slate-400 { color: #97958D !important; }
         .text-slate-500 { color: #97958D !important; }
