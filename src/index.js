@@ -7,11 +7,13 @@ import headerHtml from './header.html';
 import footerHtml from './footer.html';
 import metaTags from './meta.html';
 import homeContent from './home.html';
+import aboutContent from './about.html';
 // The hero's two layers (night-city backdrop + cut-out aircraft) ship with
 // the worker as binary Data modules — see the *.webp rule in wrangler.toml
 // — and are served from /assets/ below, so the home page doesn't depend on
 // any third-party image host.
 import heroBgImage from './assets/hero-bg.webp';
+import aboutHeroImage from './assets/about-hero.webp';
 import heroPlaneImage from './assets/hero-plane.webp';
 import programsContent from './programs.html';
 import fleetContent from './fleet.html';
@@ -28,12 +30,16 @@ import dashboardContent from './dashboard.html';
 const staticAssets = {
   '/assets/hero-bg.webp': { body: heroBgImage, type: 'image/webp' },
   '/assets/hero-plane.webp': { body: heroPlaneImage, type: 'image/webp' },
+  '/assets/about-hero.webp': { body: aboutHeroImage, type: 'image/webp' },
 };
 
 const pageRoutes = {
   '/': homeContent,
   '/index.html': homeContent,
   '/home.html': homeContent,
+
+  '/about': aboutContent,
+  '/about.html': aboutContent,
 
   '/programs': programsContent,
   '/programs.html': programsContent,

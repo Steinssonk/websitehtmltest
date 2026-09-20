@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - The Airline of Udyanapura</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="icon" type="image/png" href="https://i.imgur.com/98OXG6K.png">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,700;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============ Tokens ============ */
+    :root {
+      --bg: #F4F6F9;
+      --bg-raised: #FFFFFF;
+      /* Headline face: bold upright for the dark line, regular
+         italic for the soft line under it. */
+      --font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --ink: #16181B;
+      --ink-soft: #97958D;
+      /* Boxes carry no outline; the token stays so the 1px border
+         declarations keep their place in the layout. */
+      --line: transparent;
+      --navy: #012B7A;
+      --navy-dark: #001D52;
+      --amber: #E8A23D;
+      --radius: 15px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body { overflow-x: clip; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      padding-top: var(--header-h, 76px);
+    }
+
+    a { color: inherit; }
+    img { max-width: 100%; display: block; }
+    button { font-family: inherit; }
+
+    /* Header (logo/nav-links/auth) and its mobile menu are fully
+       self-contained in header.html — fetched and injected by
+       /site-chrome.js into #header-placeholder. Nothing to style here. */
+
+    /* ============ Hero ============ */
+    /* Two thirds of the viewport tall. */
+    .hero--photo {
+      position: relative;
+      overflow: hidden;
+      min-height: 66.67vh;
+      display: flex;
+      align-items: center;
+      padding: 3rem 0;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: var(--navy-dark) url('/assets/about-hero.webp') 50% 45% / cover no-repeat;
+      z-index: 0;
+    }
+
+    /* Darkens the left of the frame, where the copy sits, and leaves the
+       aircraft's nose on the right of the photo readable. */
+    .hero-tint {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(0,10,32,0.72) 0%, rgba(0,10,32,0.30) 55%, rgba(0,10,32,0.05) 100%),
+        linear-gradient(180deg, rgba(0,12,38,0.20) 0%, rgba(0,12,38,0.45) 100%);
+      z-index: 1;
+    }
+
+    /* Same 1240px / 6% gutter as every other page, so the copy lines up
+       with the content below it. */
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 6%;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 1.1rem;
+    }
+    .eyebrow .sq { width: 8px; height: 8px; background: var(--amber); }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5.6vw, 4.2rem);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      font-weight: 700;
+      color: #fff;
+      max-width: 900px;
+    }
+    .hero h1 .soft { color: rgba(255,255,255,0.62); font-weight: 400; font-style: italic; }
+
+    .hero p.sub {
+      max-width: 560px;
+      margin-top: 1.4rem;
+      color: rgba(255,255,255,0.78);
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    /* Footer is fully self-contained in footer.html — fetched and
+       injected by /site-chrome.js into #footer-placeholder. */
+
+    @media (max-width: 720px) {
+      /* The copy spans the full width here, so it crosses the lit part
+         of the photo — the scrim evens out instead of favouring the
+         left. */
+      .hero-tint {
+        background: linear-gradient(180deg, rgba(0,10,32,0.55) 0%, rgba(0,10,32,0.78) 100%);
+      }
+      .hero p.sub { font-size: 0.98rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="header-placeholder"></div>
+
+  <section class="hero hero--photo">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-tint" aria-hidden="true"></div>
+
+    <div class="hero-inner">
+      <div class="eyebrow"><span class="sq"></span> About us</div>
+
+      <h1>More than an airline.<br><span class="soft">A place to grow.</span></h1>
+
+      <p class="sub">Built by pilots, for pilots — an airline where every hour
+      flown counts towards something, and where the people beside you are the
+      reason it's worth flying at all.</p>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/site-chrome.js"></script>
+</body>
+</html>
