@@ -152,7 +152,7 @@
     .hero--photo {
       position: relative;
       overflow: hidden;
-      min-height: 100vh;
+      min-height: calc(100vh - var(--header-h, 100px));
       display: flex;
       align-items: center;
       padding-top: 2rem;
@@ -384,13 +384,13 @@
     .cap-tabs {
       display: flex;
       flex-direction: column;
-      margin-top: 1.8rem;
+      margin-top: 3.2rem;
     }
 
     .cap-tab {
       background: none;
       border: none;
-      border-top: 1px solid var(--line);
+      border-top: 1px solid #D1D5DB;
       text-align: left;
       padding: 1.1rem 0.4rem;
       font-size: 0.95rem;
@@ -402,7 +402,8 @@
       gap: 0.6rem;
       transition: color 0.15s ease;
     }
-    .cap-tabs .cap-tab:last-child { border-bottom: 1px solid var(--line); }
+    /* Rules separate the items; the outer edges stay open. */
+    .cap-tabs .cap-tab:first-child { border-top: none; }
 
     .cap-tab .marker {
       width: 7px; height: 7px;
@@ -644,7 +645,8 @@
       .cap-grid { grid-template-columns: 1fr; gap: 1.6rem; }
       .cap-sticky { position: static; padding-bottom: 0; }
       .cap-tabs { flex-direction: row; overflow-x: auto; }
-      .cap-tabs .cap-tab { border-top: none; border-bottom: 1px solid var(--line); white-space: nowrap; }
+      .cap-tabs .cap-tab { border-top: none; border-bottom: 1px solid #D1D5DB; white-space: nowrap; }
+      .cap-tabs .cap-tab:last-child { border-bottom: none; }
       .news-featured { grid-template-columns: 1fr; }
       .block-head { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
       .trust-row { gap: 1.5rem; }
