@@ -371,7 +371,10 @@
 
     .cap-sticky {
       position: sticky;
-      top: 110px;
+      /* Locks just under the fixed header, so the column stops moving the
+         moment it reaches the top of the page rather than after it has
+         already scrolled past. */
+      top: calc(var(--header-h, 100px) + 1.5rem);
       padding-bottom: 2rem;
     }
 
