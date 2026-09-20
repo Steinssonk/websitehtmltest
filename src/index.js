@@ -127,6 +127,10 @@ export default {
         return handleMe(request, env);
       }
 
+      if (pathname === '/api/discord-members') {
+        return handleDiscordMembers(env);
+      }
+
       if (pathname === '/api/operations') {
         return handleOperations(env);
       }
@@ -309,6 +313,43 @@ function handleLogout(url) {
 }
 
 
+
+// Discord's widget endpoint for the server, proxied rather than called
+// from the browser so the guild id isn't baked into the page and the
+// response can be cached at the edge. Note what the widget actually
+// reports: presence_count is members ONLINE right now, not the server's
+// total membership — Discord doesn't expose the total here. The widget
+// must stay enabled in Server Settings > Widget or this 403s.
+async function handleDiscordMembers(env) {
+  const guildId = env.DISCORD_GUILD_ID;
+  const fail = (reason) =>
+    new Response(JSON.stringify({ ok: false, reason }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60' },
+    });
+
+  if (!guildId) return fail('no-guild-id');
+
+  try {
+    const res = await fetch(`https://discord.com/api/guilds/${guildId}/widget.json`, {
+      cf: { cacheTtl: 300, cacheEverything: true },
+    });
+    if (!res.ok) return fail(`discord-${res.status}`);
+
+    const data = await res.json();
+    const online = Number(data.presence_count);
+    if (!Number.isFinite(online)) return fail('no-presence-count');
+
+    return new Response(JSON.stringify({ ok: true, online }), {
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=300',
+      },
+    });
+  } catch (err) {
+    return fail('fetch-failed');
+  }
+}
 
 async function handleMe(request, env) {
   const cookies = parseCookies(request.headers.get('Cookie') || '');

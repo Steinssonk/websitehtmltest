@@ -156,7 +156,7 @@
       gap: 1.2rem;
       margin-top: 2.6rem;
       align-items: start;
-      text-align: left;
+      text-align: center;
     }
 
     .box {
@@ -175,14 +175,23 @@
       align-items: center;
       justify-content: center;
       color: var(--amber);
-      margin-bottom: 1.1rem;
+      margin: 0 auto 1.1rem;
     }
 
-    .stat-title {
-      font-size: 1.15rem;
+    /* Each box leads with its figure and names it underneath. */
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 2.6vw, 2.1rem);
       font-weight: 700;
-      letter-spacing: -0.01em;
-      margin-bottom: 0.55rem;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    .stat-label {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ink-soft);
+      margin-top: 0.25rem;
+      margin-bottom: 0.7rem;
     }
     .stat-desc { font-size: 0.92rem; color: var(--ink-soft); line-height: 1.6; }
 
@@ -238,8 +247,10 @@
             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
           </svg>
         </div>
-        <!-- Replace with the live Discord member count. -->
-        <div class="stat-title">2,000+ members and counting</div>
+        <!-- Filled from the Discord widget at runtime; the number here is
+             the fallback if that request fails. -->
+        <div class="stat-value" id="member-count">256</div>
+        <div class="stat-label">members and counting</div>
         <p class="stat-desc">Our Discord is where every flight starts — briefings,
         route swaps, screenshots and the people who make the airline worth
         flying for.</p>
@@ -252,7 +263,8 @@
             <circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/>
           </svg>
         </div>
-        <div class="stat-title">10M+ WP paid out to pilots</div>
+        <div class="stat-value">10M+ WP</div>
+        <div class="stat-label">paid out to pilots</div>
         <p class="stat-desc">Every hour logged turns into WP, and every rank
         unlocks a better rate. Ten million and rising, all of it earned in the
         air.</p>
@@ -265,7 +277,8 @@
             <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/>
           </svg>
         </div>
-        <div class="stat-title">Trusted by dozens of pilots</div>
+        <div class="stat-value">Trusted by</div>
+        <div class="stat-label">dozens of pilots</div>
         <p class="stat-desc">From first solos to widebody commands, pilots stay
         because the hours are honest and the path forward is never a guess.</p>
       </div>
@@ -274,6 +287,25 @@
   </section>
 
   <div id="footer-placeholder"></div>
+
+  <script>
+    // Live member figure from the server's Discord widget, via the
+    // worker at /api/discord-members. The widget reports who is ONLINE
+    // rather than total membership — Discord exposes nothing else here.
+    // Any failure leaves the number already in the markup in place.
+    (function () {
+      var el = document.getElementById('member-count');
+      if (!el) return;
+      fetch('/api/discord-members')
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (data) {
+          if (data && data.ok && typeof data.online === 'number') {
+            el.textContent = data.online.toLocaleString();
+          }
+        })
+        .catch(function () { /* keep the fallback */ });
+    })();
+  </script>
 
   <script src="/site-chrome.js"></script>
 </body>
