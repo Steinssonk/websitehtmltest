@@ -90,18 +90,25 @@
       padding: 0 6%;
     }
 
-    .eyebrow {
+    /* The same pill used on the other pages' heroes. */
+    .badge {
       display: inline-flex;
       align-items: center;
-      gap: 0.55rem;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.7);
-      margin-bottom: 1.1rem;
+      gap: 0.5rem;
+      background: var(--bg-raised);
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      padding: 0.4rem 0.9rem 0.4rem 0.55rem;
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+      font-weight: 500;
+      margin-bottom: 1.6rem;
     }
-    .eyebrow .sq { width: 8px; height: 8px; background: var(--amber); }
+    .badge-dot {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #4a7a5a, #101c16);
+    }
 
     .hero h1 {
       font-family: var(--font-display);
@@ -199,6 +206,125 @@
       .stat-grid { grid-template-columns: 1fr; }
     }
 
+
+    /* ============ Upcoming events ============ */
+    /* Same navy band as the programs page's rank section. */
+    .event-band {
+      background: var(--navy-dark);
+      padding: 4.5rem 0;
+    }
+    .event-band-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 6%;
+      text-align: center;
+    }
+    .event-band h2 { color: #fff; }
+    .event-band p.lead { color: #9aa5b4; }
+
+    .event-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+      margin-top: 2.8rem;
+      text-align: left;
+    }
+
+    .event-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 15px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Placeholder until each event has real artwork; swap the background
+       for an <img> when there is one. */
+    .event-img {
+      aspect-ratio: 16 / 9;
+      background:
+        linear-gradient(135deg, rgba(232,162,61,0.25) 0%, rgba(1,43,122,0.55) 60%, rgba(0,29,82,0.9) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.45);
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .event-body {
+      padding: 1.4rem 1.5rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .event-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: #fff;
+    }
+    .event-when {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--amber);
+      margin-top: 0.35rem;
+    }
+    .event-desc {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.7);
+      margin-top: 0.8rem;
+    }
+    .event-prize {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      align-self: flex-start;
+      margin-top: 1rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 15px;
+      background: rgba(232,162,61,0.12);
+      border: 1px solid rgba(232,162,61,0.25);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--amber);
+    }
+    /* Pushes the button and host line to the bottom, so cards of
+       different description lengths still line up. */
+    .event-foot { margin-top: auto; padding-top: 1.3rem; }
+    .event-foot .btn { width: 100%; justify-content: center; }
+    .event-host {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.45);
+      margin-top: 0.7rem;
+      text-align: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.92rem;
+      text-decoration: none;
+      border-radius: 15px;
+      padding: 0.65rem 1.35rem;
+      transition: transform 0.15s ease, background 0.15s ease, opacity 0.15s ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-amber { background: var(--amber); color: var(--navy-dark); }
+    .btn-amber:hover { background: #f0b257; }
+
+    @media (max-width: 980px) {
+      .event-grid { grid-template-columns: 1fr; max-width: 420px; margin-left: auto; margin-right: auto; }
+    }
+
     /* Footer is fully self-contained in footer.html — fetched and
        injected by /site-chrome.js into #footer-placeholder. */
 
@@ -222,7 +348,7 @@
     <div class="hero-tint" aria-hidden="true"></div>
 
     <div class="hero-inner">
-      <div class="eyebrow"><span class="sq"></span> About us</div>
+      <div class="badge"><span class="badge-dot"></span> About us</div>
 
       <h1>More than an airline.<br><span class="soft">A place to grow.</span></h1>
 
@@ -283,6 +409,61 @@
         because the hours are honest and the path forward is never a guess.</p>
       </div>
 
+    </div>
+  </section>
+
+  <!-- ============ Upcoming events ============ -->
+  <!-- Placeholder events — swap the copy, artwork and hosts for the real
+       ones as they get scheduled. -->
+  <section class="event-band">
+    <div class="event-band-inner">
+      <h2>Upcoming Events</h2>
+      <p class="lead">Group flights, competitions and one-off routes — open to
+      every pilot on the roster.</p>
+
+      <div class="event-grid">
+
+        <article class="event-card">
+          <div class="event-img">Event image</div>
+          <div class="event-body">
+            <h3 class="event-title">Group Flight: Clarence — Valois</h3>
+            <div class="event-when">12 October 2025 · 2 hours</div>
+            <p class="event-desc">A full-line formation departure out of Clarence, cruising the coastal route into Valois. All ratings welcome.</p>
+            <span class="event-prize">Prize — 25,000 WP</span>
+            <div class="event-foot">
+              <a href="https://discord.gg/3rWUYV3wDu" target="_blank" rel="noopener noreferrer" class="btn btn-amber">Participate</a>
+              <div class="event-host">Hosted by @placeholder</div>
+            </div>
+          </div>
+        </article>
+        <article class="event-card">
+          <div class="event-img">Event image</div>
+          <div class="event-body">
+            <h3 class="event-title">Landing Challenge</h3>
+            <div class="event-when">26 October 2025 · 90 minutes</div>
+            <p class="event-desc">One approach, one shot. Smoothest touchdown on the day takes the top prize, judged on the FDR trace.</p>
+            <span class="event-prize">Prize — 50,000 WP + livery unlock</span>
+            <div class="event-foot">
+              <a href="https://discord.gg/3rWUYV3wDu" target="_blank" rel="noopener noreferrer" class="btn btn-amber">Participate</a>
+              <div class="event-host">Hosted by @placeholder</div>
+            </div>
+          </div>
+        </article>
+        <article class="event-card">
+          <div class="event-img">Event image</div>
+          <div class="event-body">
+            <h3 class="event-title">Night Ops Week</h3>
+            <div class="event-when">3 — 9 November 2025 · All week</div>
+            <p class="event-desc">Every hour flown after sunset counts double towards your next rank. Fly as much or as little as you like.</p>
+            <span class="event-prize">Prize — 2x WP on all night hours</span>
+            <div class="event-foot">
+              <a href="https://discord.gg/3rWUYV3wDu" target="_blank" rel="noopener noreferrer" class="btn btn-amber">Participate</a>
+              <div class="event-host">Hosted by @placeholder</div>
+            </div>
+          </div>
+        </article>
+
+      </div>
     </div>
   </section>
 
