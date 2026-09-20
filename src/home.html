@@ -690,9 +690,12 @@
        aircraft gets the bottom band to itself. */
     @media (max-width: 640px) {
       .hero--photo {
-        align-items: flex-start;
-        padding-top: 1.75rem;
-        padding-bottom: 0;
+        /* Centred, but only within the space above the aircraft: the
+           bottom padding reserves that band, so the copy sits in the
+           middle of what's left rather than being pushed onto it. */
+        align-items: center;
+        padding-top: 1.5rem;
+        padding-bottom: 30vh;
       }
       .hero h1 { font-size: clamp(2.3rem, 10vw, 3rem); }
       .hero p.sub { margin-top: 1rem; font-size: 1rem; }
@@ -715,6 +718,7 @@
        the aircraft drops further out of frame rather than climbing back
        into the country row. */
     @media (max-width: 640px) and (max-height: 740px) {
+      .hero--photo { padding-bottom: 20vh; }
       .hero-plane-wrap { width: 132%; right: -28%; bottom: -22%; }
     }
 
