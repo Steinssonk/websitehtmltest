@@ -80,6 +80,10 @@
     .btn:hover { transform: translateY(-1px); }
     .btn-dark { background: var(--ink); color: #fff; }
     .btn-dark:hover { background: var(--navy-dark); }
+    /* Hero primary: white with dark text, so it reads as the lead action
+       against both the photo hero and the light one. */
+    .btn-light { background: #FFFFFF; color: var(--ink); }
+    .btn-light:hover { background: #ECEEF2; }
     .btn-outline { background: transparent; color: var(--ink); border: 1px solid var(--line); }
     .btn-outline:hover { border-color: var(--ink); }
     .btn-sm { padding: 0.5rem 1.1rem; font-size: 0.85rem; }
@@ -290,6 +294,10 @@
       line-height: 1.35;
       letter-spacing: -0.01em;
       max-width: 1100px;
+      /* Centred inside the container: the zoom scales the section about
+         its own centre, so a paragraph sitting off-centre gets thrown
+         past the viewport edge as it grows. */
+      margin: 0 auto;
     }
 
     .mission p .muted { color: #7f8fa1; }
@@ -715,8 +723,8 @@
     real careers — from your first solo to widebody command.</p>
 
     <div class="hero-actions">
-      <a href="https://discord.gg/3rWUYV3wDu" target="_blank" rel="noopener noreferrer" class="btn btn-dark">Get Started</a>
-      <a href="fleet.html" class="btn btn-outline">View Fleet</a>
+      <a href="https://discord.gg/3rWUYV3wDu" target="_blank" rel="noopener noreferrer" class="btn btn-light">Get Started</a>
+      <a href="/about" class="btn btn-outline">About us</a>
     </div>
 
     <div class="trust">

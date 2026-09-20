@@ -71,7 +71,15 @@
     .btn:hover { transform: translateY(-1px); }
     .btn-dark { background: var(--ink); color: #fff; }
     .btn-dark:hover { background: var(--navy-dark); }
+    /* Hero primary: white with dark text. This hero sits on the light
+       page background rather than a photo, so the fill alone would barely
+       register — it takes the same black outline as the secondary. */
+    .btn-light { background: #FFFFFF; color: var(--ink); border: 1px solid var(--ink); }
+    .btn-light:hover { background: #ECEEF2; }
     .btn-outline { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+    /* This hero sits on the page background rather than a photo, so its
+       secondary action needs a real outline to read as a button. */
+    .btn-outline-dark { border-color: var(--ink); }
     .btn-outline:hover { border-color: var(--ink); }
     .btn-sm { padding: 0.5rem 1.1rem; font-size: 0.85rem; }
 
@@ -488,8 +496,8 @@
     senior captain.</p>
 
     <div class="hero-actions">
-      <a href="https://discord.gg/3rWUYV3wDu" target="_blank" rel="noopener noreferrer" class="btn btn-dark">Get Started</a>
-      <a href="fleet.html" class="btn btn-outline">View Fleet</a>
+      <a href="https://discord.gg/3rWUYV3wDu" target="_blank" rel="noopener noreferrer" class="btn btn-light">Get Started</a>
+      <a href="/about" class="btn btn-outline btn-outline-dark">About us</a>
     </div>
 
     <div class="hero-visual" aria-hidden="true">
