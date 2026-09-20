@@ -362,7 +362,7 @@
        scrolls its three cards past it, so each card gets its own moment
        on screen instead of the content swapping inside one fixed box. */
     /* Begins where the mission band ends; see .cap-grid's margin. */
-    #capSection { margin-top: 0; }
+    #capSection { margin-top: 0; padding-top: 3rem; }
 
     .cap-grid {
       display: grid;
@@ -379,6 +379,7 @@
 
     .cap-sticky {
       position: sticky;
+      min-height: clamp(460px, 68vh, 620px);
       /* Locks just under the fixed header, so the column stops moving the
          moment it reaches the top of the page rather than after it has
          already scrolled past. */
