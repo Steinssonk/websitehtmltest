@@ -684,6 +684,40 @@
       .hero h1 .soft { z-index: 5; }
     }
 
+    /* ---- Phone hero ----
+       Rather than have the aircraft cut through the buttons and the
+       country row, the copy is packed into the top of the frame and the
+       aircraft gets the bottom band to itself. */
+    @media (max-width: 640px) {
+      .hero--photo {
+        align-items: flex-start;
+        padding-top: 1.75rem;
+        padding-bottom: 0;
+      }
+      .hero h1 { font-size: clamp(2.3rem, 10vw, 3rem); }
+      .hero p.sub { margin-top: 1rem; font-size: 1rem; }
+      .hero-actions { margin-top: 1.5rem; }
+      .hero-actions .btn { padding: 0.75rem 1.4rem; }
+      .trust { margin-top: 1.4rem; }
+      .trust-label { margin-bottom: 0.7rem; }
+      /* One tidy line instead of leaving "Europe" stranded below. */
+      .trust-row { gap: 0.85rem; flex-wrap: nowrap; }
+      .trust-row span { font-size: 0.82rem; }
+      .hero-plane-wrap {
+        width: 150%;
+        right: -34%;
+        top: auto;
+        bottom: -8%;
+      }
+    }
+
+    /* On a short phone the copy leaves almost no band at the bottom, so
+       the aircraft drops further out of frame rather than climbing back
+       into the country row. */
+    @media (max-width: 640px) and (max-height: 740px) {
+      .hero-plane-wrap { width: 132%; right: -28%; bottom: -22%; }
+    }
+
     /* ============ Scroll reveal ============ */
     .reveal {
       opacity: 0;
