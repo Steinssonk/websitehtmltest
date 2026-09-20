@@ -51,7 +51,7 @@
       color: var(--ink);
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
-      padding-top: var(--header-h, 100px);
+      padding-top: var(--header-h, 84px);
     }
 
     a { color: inherit; }
@@ -152,7 +152,7 @@
     .hero--photo {
       position: relative;
       overflow: hidden;
-      min-height: calc(100vh - var(--header-h, 100px));
+      min-height: calc(100vh - var(--header-h, 84px));
       display: flex;
       align-items: center;
       padding-top: 2rem;
@@ -374,7 +374,7 @@
       /* Locks just under the fixed header, so the column stops moving the
          moment it reaches the top of the page rather than after it has
          already scrolled past. */
-      top: calc(var(--header-h, 100px) + 1.5rem);
+      top: calc(var(--header-h, 84px) + 1.5rem);
       padding-bottom: 2rem;
     }
 
@@ -1050,7 +1050,7 @@
       var MARGIN_X = 32;
       var MARGIN_Y = 24;
       // Height of the fixed nav, which the content must stay clear of.
-      var NAV_H = 100; // matches header.html's nav height
+      var NAV_H = 84; // matches header.html's nav height
       // Zoom progress at which the navy backdrop starts filling in above
       // and below the section; it's fully opaque by the time we peak.
       var FILL_START = 0.45;
