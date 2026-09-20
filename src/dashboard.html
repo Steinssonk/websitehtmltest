@@ -30,7 +30,7 @@
         }
     </script>
     <style>
-        body { background-color: #f5f5f5; color: #16181B; }
+        body { background-color: #F4F6F9; color: #16181B; }
         .dropdown-results::-webkit-scrollbar { width: 4px; }
         .dropdown-results::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
         /* One corner radius across the whole site. Tailwind's rounded-*
@@ -41,6 +41,8 @@
            and a hairline progress track. */
         .rounded-sm, .rounded, .rounded-md, .rounded-lg,
         .rounded-xl, .rounded-2xl, .rounded-3xl { border-radius: 15px !important; }
+
+        .border-2 { border-width: 1px !important; }
 
         #app-shell { transition: filter 0.3s ease; }
         #app-shell.gated { filter: blur(7px); pointer-events: none; user-select: none; }
@@ -58,7 +60,7 @@
         html.dashboard-dark .seg-btn-inactive:hover { color: #eaf1ff; }
 
         /* --- Page loading overlay --- */
-        #page-loading { transition: opacity 0.2s ease; background-color: #f5f5f5; }
+        #page-loading { transition: opacity 0.2s ease; background-color: #F4F6F9; }
         html.dashboard-dark #page-loading { background-color: #0b1220; }
         .spinner { border: 3px solid rgba(1, 43, 122, 0.15); border-top-color: #012B7A; border-radius: 9999px; width: 2.25rem; height: 2.25rem; animation: spin 0.8s linear infinite; }
         html.dashboard-dark .spinner { border-color: rgba(255, 255, 255, 0.12); border-top-color: #6f9bff; }
@@ -78,17 +80,25 @@
            rather than another card. The tag+class selector outranks the
            plain class above, and both sit below the dark-mode rules. */
         .bg-slate-50 { background-color: #FFFFFF !important; }
-        input.bg-slate-50,
-        select.bg-slate-50,
-        textarea.bg-slate-50 { background-color: #f5f5f5 !important; }
-        .bg-slate-100 { background-color: #e8e8e8 !important; }
+        /* Boxes nested inside a panel — the settings rows, the claim
+           items, the logger instructions — sit on a tint so they read as
+           insets rather than panels of their own. Dropdown popovers are
+           excluded: they float over a panel, so they stay white. */
+        .bg-slate-50 .bg-slate-50 { background-color: #F0F4F8 !important; }
+        .bg-slate-50 [id^="dropdown-"].bg-slate-50 { background-color: #FFFFFF !important; }
+        /* A field takes the colour of whatever it sits in and is defined
+           by its outline alone. */
+        .bg-slate-50 input.bg-slate-50,
+        .bg-slate-50 select.bg-slate-50,
+        .bg-slate-50 textarea.bg-slate-50 { background-color: #FFFFFF !important; }
+        .bg-slate-100 { background-color: #F0F4F8 !important; }
         .bg-slate-200,
-        .bg-slate-200\/70 { background-color: #dcdcdc !important; }
+        .bg-slate-200\/70 { background-color: #E3E8EF !important; }
         .bg-slate-700 { background-color: #001D52 !important; }
         .bg-slate-900\/70 { background-color: rgba(0, 29, 82, 0.7) !important; }
         .hover\:bg-slate-900:hover { background-color: #001D52 !important; }
-        .border-slate-100 { border-color: #dcdcdc !important; }
-        .border-slate-200 { border-color: #dcdcdc !important; }
+        .border-slate-100 { border-color: #D1D5DB !important; }
+        .border-slate-200 { border-color: #D1D5DB !important; }
         .text-slate-300 { color: #9aa5b4 !important; }
         .text-slate-400 { color: #97958D !important; }
         .text-slate-500 { color: #97958D !important; }
@@ -337,7 +347,7 @@
                     <h2 class="font-serif text-xl font-bold text-slate-900 mb-1">Flight Logger System</h2>
                     <p class="text-xs text-slate-500 mb-6">Select your parameters using the search filters below to log a new flight.</p>
 
-                    <div class="bg-navy/5 border border-navy/10 rounded-2xl p-4 mb-6 text-xs text-slate-600 leading-relaxed">
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-6 text-xs text-slate-600 leading-relaxed">
                         Add your flight logging instructions here.
                     </div>
 
