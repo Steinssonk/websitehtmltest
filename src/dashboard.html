@@ -72,7 +72,15 @@
            cream tokens, the same technique already used below for dark
            mode. Semantic colors (emerald = success, red = error) are left
            alone on purpose. */
-        .bg-slate-50 { background-color: #ebebed !important; }
+        /* Panels, cards and dropdowns are white so they lift off the
+           page; the form controls that share this class take the page
+           background instead, so an input reads as a recess in the card
+           rather than another card. The tag+class selector outranks the
+           plain class above, and both sit below the dark-mode rules. */
+        .bg-slate-50 { background-color: #FFFFFF !important; }
+        input.bg-slate-50,
+        select.bg-slate-50,
+        textarea.bg-slate-50 { background-color: #ebebed !important; }
         .bg-slate-100 { background-color: #e0e0e3 !important; }
         .bg-slate-200,
         .bg-slate-200\/70 { background-color: #d4d4d9 !important; }
@@ -87,7 +95,7 @@
         .text-slate-600 { color: #7d7b73 !important; }
         .text-slate-700 { color: #16181B !important; }
         .text-slate-900 { color: #16181B !important; }
-        .hover\:bg-slate-50:hover { background-color: #ebebed !important; }
+        .hover\:bg-slate-50:hover { background-color: #FFFFFF !important; }
         .hover\:text-slate-600:hover { color: #7d7b73 !important; }
         .hover\:text-slate-900:hover { color: #16181B !important; }
         .bg-amber-600 { background-color: #E8A23D !important; }
