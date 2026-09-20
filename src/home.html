@@ -122,14 +122,17 @@
       margin: 0;
     }
     .hero h1 .soft { color: var(--ink-soft); font-weight: 400; font-style: italic; }
-    /* The aircraft sits at z-index 4. Everything in the hero copy is
-       lifted above it except the second headline line, which is dropped
-       below so the plane crosses in front of "of Aeronautica." alone. */
+    /* The aircraft sits at z-index 4. Only the first headline line is
+       lifted above it; the rest of the hero copy stays below, so the
+       plane passes in front of everything else. They still sit above the
+       photo and its tint (z-index 0 and 1), and the plane is
+       pointer-events: none, so the badge and buttons stay clickable
+       wherever it crosses them. */
+    .hero h1 .hero-line { position: relative; z-index: 5; }
     .hero-inner > .badge,
     .hero-inner > .sub,
     .hero-inner > .hero-actions,
     .hero-inner > .trust,
-    .hero h1 .hero-line { position: relative; z-index: 5; }
     .hero h1 .soft { position: relative; z-index: 2; }
     .hero h1 .hero-line, .hero h1 .soft { display: inline-block; }
 
