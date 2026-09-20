@@ -380,10 +380,11 @@
     .cap-sticky {
       position: sticky;
       min-height: clamp(460px, 68vh, 620px);
-      /* Locks just under the fixed header, so the column stops moving the
-         moment it reaches the top of the page rather than after it has
-         already scrolled past. */
-      top: calc(var(--header-h, 84px) + 1.5rem);
+      /* Offset by exactly the space above the eyebrow — the section's 3rem
+         of padding plus the grid's 1.5rem — so the column reaches its pin
+         at the same instant the mission band's bottom meets the header,
+         and the cards start moving the moment the mission is covered. */
+      top: calc(var(--header-h, 84px) + 4.5rem);
       padding-bottom: 2rem;
     }
 
