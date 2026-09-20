@@ -384,6 +384,15 @@
       gap: 1.6rem;
     }
 
+    /* Runway under the whole grid. Without it the page runs out of
+       scroll while the last card is still mid-screen, leaving it clipped
+       by the fixed header at the bottom of the page; this lets it finish
+       its pass first. It sits outside the grid on purpose, so the sticky
+       column releases with the last card instead of hanging on alone
+       beside empty space. Sized against the footer block that follows,
+       with a floor for short viewports. */
+    #capSection { padding-bottom: max(6rem, calc(100vh - 24rem)); }
+
     .cap-tabs {
       display: flex;
       flex-direction: column;
