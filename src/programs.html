@@ -15,6 +15,10 @@
     :root {
       --bg: #F4F6F9;
       --bg-raised: #FFFFFF;
+      /* Content gutter, matching the dashboard's Tailwind steps
+         (px-4 / sm:px-6 / lg:px-8) so every page's container lines up
+         with it and with the header. */
+      --gutter: 1rem;
       /* Headline face: bold upright for the dark line, regular
          italic for the soft line under it. */
       --font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -28,6 +32,9 @@
       --amber: #E8A23D;
       --radius: 15px;
     }
+
+    @media (min-width: 640px)  { :root { --gutter: 1.5rem; } }
+    @media (min-width: 1024px) { :root { --gutter: 2rem; } }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -143,7 +150,7 @@
     }
 
     /* ============ Section shells ============ */
-    section.block { max-width: 1240px; margin: 6rem auto 0; padding: 0 6%; }
+    section.block { max-width: 1280px; margin: 6rem auto 0; padding: 0 var(--gutter); }
     section.block:first-of-type { margin-top: 0; }
 
     .eyebrow {
@@ -248,7 +255,7 @@
       background: var(--navy-dark);
       padding: 4.5rem 0;
     }
-    .rank-band-inner { max-width: 1240px; margin: 0 auto; padding: 0 6%; }
+    .rank-band-inner { max-width: 1280px; margin: 0 auto; padding: 0 var(--gutter); }
 
     .rank-timeline {
       position: relative;

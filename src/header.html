@@ -5,6 +5,13 @@
 <style>
   #header-placeholder, #header-placeholder * { box-sizing: border-box; }
 
+  /* Same gutter steps as the dashboard's Tailwind container, declared
+     here because this fragment is injected into pages that each define
+     their own tokens. */
+  #header-placeholder { --gutter: 1rem; }
+  @media (min-width: 640px)  { #header-placeholder { --gutter: 1.5rem; } }
+  @media (min-width: 1024px) { #header-placeholder { --gutter: 2rem; } }
+
   #header-placeholder nav {
     display: flex;
     align-items: center;
@@ -20,18 +27,17 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
 
-  /* Matches section.block on every page: max-width 1240px, centred,
-     with a 6% gutter measured against the container rather than the
-     window — so the header's edges track the content's edges. */
+  /* Matches every page's container: 1280px max-width, centred, with the
+     gutter steps above — so the header's edges track the content's. */
   #header-placeholder .nav-inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    max-width: 1240px;
+    max-width: 1280px;
     height: 100%;
     margin: 0 auto;
-    padding: 0 6%;
+    padding: 0 var(--gutter);
   }
 
   /* Logo + nav links grouped together on the left, right next to

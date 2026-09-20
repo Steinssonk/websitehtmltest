@@ -5,16 +5,23 @@
 <style>
   #footer-placeholder, #footer-placeholder * { box-sizing: border-box; }
 
+  #footer-placeholder, #footer-placeholder * { box-sizing: border-box; }
+
+  #footer-placeholder { --gutter: 1rem; }
+  @media (min-width: 640px)  { #footer-placeholder { --gutter: 1.5rem; } }
+  @media (min-width: 1024px) { #footer-placeholder { --gutter: 2rem; } }
+
   #footer-placeholder footer {
     background-color: #001D52;
     color: #ffffff;
-    padding: 3.2rem 6% 1.6rem;
+    padding: 3.2rem 0 1.6rem;
     margin-top: 5rem;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
   #footer-placeholder .footer-content {
-    max-width: 1240px;
+    max-width: 1280px;
     margin: 0 auto;
+    padding: 0 var(--gutter);
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -46,8 +53,10 @@
     padding: 0;
   }
   #footer-placeholder .footer-bottom {
-    max-width: 1240px;
+    max-width: 1280px;
     margin: 0 auto;
+    padding-left: var(--gutter);
+    padding-right: var(--gutter);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding-top: 1.25rem;
     text-align: center;

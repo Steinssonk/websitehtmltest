@@ -15,6 +15,10 @@
     :root {
       --bg: #F4F6F9;
       --bg-raised: #FFFFFF;
+      /* Content gutter, matching the dashboard's Tailwind steps
+         (px-4 / sm:px-6 / lg:px-8) so every page's container lines up
+         with it and with the header. */
+      --gutter: 1rem;
       /* Headline face: bold upright for the dark line, regular
          italic for the soft line under it. */
       --font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -28,6 +32,9 @@
       --amber: #E8A23D;
       --radius: 15px;
     }
+
+    @media (min-width: 640px)  { :root { --gutter: 1.5rem; } }
+    @media (min-width: 1024px) { :root { --gutter: 2rem; } }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -79,15 +86,15 @@
       z-index: 1;
     }
 
-    /* Same 1240px / 6% gutter as every other page, so the copy lines up
-       with the content below it. */
+    /* Same container as every other page, so the copy lines up with the
+       content below it. */
     .hero-inner {
       position: relative;
       z-index: 2;
       width: 100%;
-      max-width: 1240px;
+      max-width: 1280px;
       margin: 0 auto;
-      padding: 0 6%;
+      padding: 0 var(--gutter);
     }
 
     /* The same pill used on the other pages' heroes. */
@@ -134,9 +141,9 @@
     /* Same container, spacing and card treatment as every other page's
        sections, so this sits on the page background they all share. */
     section.block {
-      max-width: 1240px;
+      max-width: 1280px;
       margin: 6rem auto 6.5rem;
-      padding: 0 6%;
+      padding: 0 var(--gutter);
       text-align: center;
     }
 
