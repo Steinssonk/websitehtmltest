@@ -361,12 +361,20 @@
     /* Left column (heading + tabs) stays pinned while the right column
        scrolls its three cards past it, so each card gets its own moment
        on screen instead of the content swapping inside one fixed box. */
+    /* Begins where the mission band ends; see .cap-grid's margin. */
+    #capSection { margin-top: 0; }
+
     .cap-grid {
       display: grid;
       grid-template-columns: minmax(260px, 1fr) 1.5fr;
       gap: 3.5rem;
       align-items: start;
-      margin-top: 2.6rem;
+      /* Matches .cap-sticky's offset below the header, so the column
+         reaches its pin exactly as the mission band clears the header —
+         the cards start moving the moment the mission is gone, with no
+         dead scroll in between. The mission band's own bottom padding
+         provides the visual separation. */
+      margin-top: 1.5rem;
     }
 
     .cap-sticky {
@@ -383,15 +391,6 @@
       flex-direction: column;
       gap: 1.6rem;
     }
-
-    /* Runway under the whole grid. Without it the page runs out of
-       scroll while the last card is still mid-screen, leaving it clipped
-       by the fixed header at the bottom of the page; this lets it finish
-       its pass first. It sits outside the grid on purpose, so the sticky
-       column releases with the last card instead of hanging on alone
-       beside empty space. Sized against the footer block that follows,
-       with a floor for short viewports. */
-    #capSection { padding-bottom: max(6rem, calc(100vh - 24rem)); }
 
     .cap-tabs {
       display: flex;
