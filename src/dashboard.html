@@ -99,6 +99,14 @@
         .hover\:bg-slate-900:hover { background-color: #001D52 !important; }
         .border-slate-100 { border-color: #D1D5DB !important; }
         .border-slate-200 { border-color: #D1D5DB !important; }
+        /* Panels are outlined in near-white, so they read as a clean sheet
+           against the page. The boxes nested inside them, and the form
+           fields, keep the darker outline that defines them. */
+        html:not(.dashboard-dark) .bg-slate-50.border-slate-200 { border-color: #FEFEFE !important; }
+        html:not(.dashboard-dark) .bg-slate-50 .bg-slate-50.border-slate-200,
+        html:not(.dashboard-dark) .bg-slate-50 input.bg-slate-50,
+        html:not(.dashboard-dark) .bg-slate-50 select.bg-slate-50,
+        html:not(.dashboard-dark) .bg-slate-50 textarea.bg-slate-50 { border-color: #D1D5DB !important; }
         .text-slate-300 { color: #9aa5b4 !important; }
         .text-slate-400 { color: #97958D !important; }
         .text-slate-500 { color: #97958D !important; }
