@@ -17,7 +17,9 @@
             --bg-raised: #FFFFFF;
             --ink: #16181B;
             --ink-soft: #97958D;
-            --line: #FAFAFA;
+            /* Boxes carry no outline; the token stays so the 1px border
+         declarations keep their place in the layout. */
+      --line: transparent;
             --navy: #012B7A;
             --navy-dark: #001D52;
             --amber: #E8A23D;
@@ -170,14 +172,14 @@
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             border-radius: 0 15px 15px 0;
-            background: transparent;
+            background-color: var(--bg-raised);
         }
 
         .hub-item:hover,
         .hub-item:focus-visible,
         .hub-item.is-active {
             border-left-color: var(--navy);
-            background-color: var(--bg-raised);
+            background-color: transparent;
             outline: none;
             transform: translateX(6px);
         }
@@ -290,7 +292,6 @@
             border: 1px solid var(--line);
             border-radius: 15px;
             padding: 0.95rem 1.1rem;
-            box-shadow: 0 20px 40px rgba(11, 42, 74, 0.15);
             text-align: left;
             opacity: 0;
             visibility: hidden;
