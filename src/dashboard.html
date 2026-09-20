@@ -44,6 +44,17 @@
 
         .border-2 { border-width: 1px !important; }
 
+        /* The page's main column uses Tailwind's max-w-7xl (1280px) with a
+           32px gutter, while the shared header and footer — and every
+           other page — use 1240px with a 6% gutter. Line this one up with
+           those rather than the other way round, so the header's logo and
+           auth button sit on the content's edges here too. */
+        #app-shell > div.max-w-7xl {
+            max-width: 1240px;
+            padding-left: 6%;
+            padding-right: 6%;
+        }
+
         #app-shell { transition: filter 0.3s ease; }
         #app-shell.gated { filter: blur(7px); pointer-events: none; user-select: none; }
 
