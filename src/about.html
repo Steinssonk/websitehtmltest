@@ -304,9 +304,7 @@
   <div id="footer-placeholder"></div>
 
   <script>
-    // Live member figure from the server's Discord widget, via the
-    // worker at /api/discord-members. The widget reports who is ONLINE
-    // rather than total membership — Discord exposes nothing else here.
+    // Total server membership, via the worker at /api/discord-members.
     // Any failure leaves the number already in the markup in place.
     (function () {
       var el = document.getElementById('member-count');
@@ -314,8 +312,8 @@
       fetch('/api/discord-members')
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (data) {
-          if (data && data.ok && typeof data.online === 'number') {
-            el.textContent = data.online.toLocaleString();
+          if (data && data.ok && typeof data.total === 'number') {
+            el.textContent = data.total.toLocaleString();
           }
         })
         .catch(function () { /* keep the fallback */ });

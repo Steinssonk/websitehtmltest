@@ -13,10 +13,11 @@ globs = ["*.webp"]
 
 [vars]
 DISCORD_CLIENT_ID = "1536683890142482433"
-# Server whose widget feeds the member counter on /about. The widget has
-# to be enabled in Discord under Server Settings > Widget, and it reports
-# members currently ONLINE, not total membership.
-DISCORD_GUILD_ID = "1353923672779259964"
+# Feeds the member counter on /about. Discord's invite endpoint returns
+# the server's total membership for any permanent invite code, with no
+# bot token needed — so this is the invite, not the guild id. Replace it
+# if that invite is ever revoked or allowed to expire.
+DISCORD_INVITE_CODE = "3rWUYV3wDu"
 SHEET_ID = "1RyT3k2L8jfFJt-2vtW8cxLyP7U2kEPE-qxJiNkOldKo"
 SHEET_GID = "0"
 # GID of the operations sheet tab (airports/hubs, fleet, paycheck status).

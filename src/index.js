@@ -314,33 +314,42 @@ function handleLogout(url) {
 
 
 
-// Discord's widget endpoint for the server, proxied rather than called
-// from the browser so the guild id isn't baked into the page and the
-// response can be cached at the edge. Note what the widget actually
-// reports: presence_count is members ONLINE right now, not the server's
-// total membership — Discord doesn't expose the total here. The widget
-// must stay enabled in Server Settings > Widget or this 403s.
+// Total server membership, proxied rather than called from the browser
+// so the response can be cached at the edge.
+//
+// This reads the INVITE endpoint rather than the widget: widget.json only
+// reports presence_count (who is online right now), while an invite
+// fetched with ?with_counts=true carries approximate_member_count, the
+// figure that actually answers "how many members". Neither needs a bot
+// token. The invite has to be a permanent one — Discord returns 404 for
+// an expired or revoked code.
 async function handleDiscordMembers(env) {
-  const guildId = env.DISCORD_GUILD_ID;
+  const inviteCode = env.DISCORD_INVITE_CODE;
   const fail = (reason) =>
     new Response(JSON.stringify({ ok: false, reason }), {
       status: 200,
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60' },
     });
 
-  if (!guildId) return fail('no-guild-id');
+  if (!inviteCode) return fail('no-invite-code');
 
   try {
-    const res = await fetch(`https://discord.com/api/guilds/${guildId}/widget.json`, {
-      cf: { cacheTtl: 300, cacheEverything: true },
-    });
+    const res = await fetch(
+      `https://discord.com/api/v10/invites/${encodeURIComponent(inviteCode)}?with_counts=true`,
+      { cf: { cacheTtl: 300, cacheEverything: true } }
+    );
     if (!res.ok) return fail(`discord-${res.status}`);
 
     const data = await res.json();
-    const online = Number(data.presence_count);
-    if (!Number.isFinite(online)) return fail('no-presence-count');
+    const total = Number(data.approximate_member_count);
+    const online = Number(data.approximate_presence_count);
+    if (!Number.isFinite(total)) return fail('no-member-count');
 
-    return new Response(JSON.stringify({ ok: true, online }), {
+    return new Response(JSON.stringify({
+      ok: true,
+      total,
+      online: Number.isFinite(online) ? online : null,
+    }), {
       headers: {
         'Content-Type': 'application/json',
         'Cache-Control': 'public, max-age=300',
