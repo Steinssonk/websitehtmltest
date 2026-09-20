@@ -79,13 +79,15 @@
            background instead, so an input reads as a recess in the card
            rather than another card. The tag+class selector outranks the
            plain class above, and both sit below the dark-mode rules. */
-        .bg-slate-50 { background-color: #FFFFFF !important; }
+        .bg-slate-50 { background-color: transparent !important; }
         /* Boxes nested inside a panel — the settings rows, the claim
            items, the logger instructions — sit on a tint so they read as
            insets rather than panels of their own. Dropdown popovers are
            excluded: they float over a panel, so they stay white. */
         .bg-slate-50 .bg-slate-50 { background-color: #F4F7F9 !important; }
-        .bg-slate-50 [id^="dropdown-"].bg-slate-50 { background-color: #FFFFFF !important; }
+        /* Dropdown popovers still need an opaque fill — they float over
+           the content behind them — so they take the inset tint. */
+        .bg-slate-50 [id^="dropdown-"].bg-slate-50 { background-color: #F4F7F9 !important; }
         /* Fields sit on their own faint tint so they read as fillable
            against the white panel around them. */
         .bg-slate-50 input.bg-slate-50,
@@ -97,11 +99,10 @@
         .bg-slate-700 { background-color: #001D52 !important; }
         .bg-slate-900\/70 { background-color: rgba(0, 29, 82, 0.7) !important; }
         .hover\:bg-slate-900:hover { background-color: #001D52 !important; }
-        /* Boxes carry no outline and no shadow: panels, the boxes nested
-           inside them, and the form fields are told apart by their fill
-           alone. Dark mode keeps its own borders, being more specific. */
-        .border-slate-100 { border-color: transparent !important; }
-        .border-slate-200 { border-color: transparent !important; }
+        /* Boxes are unfilled and outlined instead. Dark mode keeps its
+           own borders, being more specific. */
+        .border-slate-100 { border-color: #D1D5DB !important; }
+        .border-slate-200 { border-color: #D1D5DB !important; }
         .shadow-sm, .shadow, .shadow-md,
         .shadow-lg, .shadow-xl, .shadow-2xl { box-shadow: none !important; }
         .text-slate-300 { color: #9aa5b4 !important; }
@@ -110,7 +111,7 @@
         .text-slate-600 { color: #7d7b73 !important; }
         .text-slate-700 { color: #16181B !important; }
         .text-slate-900 { color: #16181B !important; }
-        .hover\:bg-slate-50:hover { background-color: #FFFFFF !important; }
+        .hover\:bg-slate-50:hover { background-color: #F4F7F9 !important; }
         .hover\:text-slate-600:hover { color: #7d7b73 !important; }
         .hover\:text-slate-900:hover { color: #16181B !important; }
         .bg-amber-600 { background-color: #E8A23D !important; }
@@ -257,8 +258,8 @@
                         <div class="flex items-baseline mt-2">
                             <span class="font-serif text-3xl font-bold text-slate-900" id="stat-flight-time">142h 30m</span>
                         </div>
-                        <div class="mt-auto pt-3 text-xs text-emerald-600 font-medium flex items-center">
-                            <i data-lucide="trending-up" class="w-3.5 h-3.5 mr-1"></i> Progression tracking active
+                        <div class="mt-auto pt-3">
+                            <span class="inline-block text-xs text-navy font-medium bg-navy/5 py-1 px-2.5 rounded-lg border border-navy/10" id="stat-flight-minutes">8,550m</span>
                         </div>
                     </div>
 
@@ -271,8 +272,8 @@
                         <div class="flex items-baseline mt-2">
                             <span class="font-serif text-3xl font-bold text-slate-900" id="stat-rank">Senior Captain</span>
                         </div>
-                        <div class="mt-auto pt-3 text-xs text-navy font-medium bg-navy/5 py-1 px-2.5 rounded-lg w-max border border-navy/10" id="stat-payrate">
-                            90,000 WP/hr
+                        <div class="mt-auto pt-3">
+                            <span class="inline-block text-xs text-navy font-medium bg-navy/5 py-1 px-2.5 rounded-lg border border-navy/10" id="stat-payrate">90,000 WP/hr</span>
                         </div>
                     </div>
 
@@ -285,8 +286,8 @@
                         <div class="flex items-baseline mt-2">
                             <span class="font-serif text-3xl font-bold text-slate-900" id="stat-pay">18,450WP</span>
                         </div>
-                        <div class="mt-auto pt-3 text-xs text-emerald-600 font-medium flex items-center">
-                            <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mr-1"></i> Fully credited
+                        <div class="mt-auto pt-3">
+                            <span class="inline-block text-xs text-navy font-medium bg-navy/5 py-1 px-2.5 rounded-lg border border-navy/10" id="stat-pay-goal">/500,000 WP</span>
                         </div>
                     </div>
                 </div>
@@ -937,6 +938,8 @@
 
     function renderUI() {
         document.getElementById('stat-flight-time').innerText = formatHoursMinutes(state.flightTime);
+        document.getElementById('stat-flight-minutes').innerText =
+            `${Math.round(state.flightTime * 60).toLocaleString()}m`;
         document.getElementById('stat-rank').innerText = state.rank;
         document.getElementById('stat-pay').innerText = `${state.payEarned.toLocaleString()}WP`;
         document.getElementById('stat-payrate').innerText = `${state.payRate.toLocaleString()} WP/hr`;

@@ -17,9 +17,7 @@
             --bg-raised: #FFFFFF;
             --ink: #16181B;
             --ink-soft: #97958D;
-            /* Boxes carry no outline; the token stays so the 1px border
-         declarations keep their place in the layout. */
-      --line: transparent;
+            --line: #D1D5DB;
             --navy: #012B7A;
             --navy-dark: #001D52;
             --amber: #E8A23D;
@@ -73,7 +71,7 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background: var(--bg-raised);
+            background: transparent;
             border: 1px solid var(--line);
             border-radius: 15px;
             padding: 0.4rem 0.9rem 0.4rem 0.55rem;
@@ -167,19 +165,20 @@
         }
 
         .hub-item {
-            padding: 1.1rem 0 1.1rem 1.25rem;
-            border-left: 1px solid var(--line);
+            padding: 1.2rem 1.6rem;
+            /* Outlined on all four sides now that the fill is gone; the
+               left edge stays the accent that marks the active hub. */
+            border: 1px solid var(--line);
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            border-radius: 0 15px 15px 0;
-            background-color: var(--bg-raised);
+            border-radius: 15px;
+            background-color: transparent;
         }
 
         .hub-item:hover,
         .hub-item:focus-visible,
         .hub-item.is-active {
             border-left-color: var(--navy);
-            background-color: transparent;
             outline: none;
             transform: translateX(6px);
         }
@@ -361,7 +360,7 @@
     /* ============ Bento box card ============ */
     .box {
       position: relative;
-      background: #FFFFFF;
+      background: transparent;
       border: 1px solid var(--line);
       border-radius: 15px;
       padding: 1.7rem 1.8rem;
