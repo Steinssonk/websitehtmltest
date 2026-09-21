@@ -19,8 +19,9 @@
          (px-4 / sm:px-6 / lg:px-8) so every page's container lines up
          with it and with the header. */
       --gutter: 1rem;
-      /* Headline face: bold upright for the dark line, regular
-         italic for the soft line under it. */
+      /* Display face for the mission statement and the stat figures;
+         headlines use --font-head above. */
+--font-head: 'Dorsa', 'Plus Jakarta Sans', sans-serif;
       --font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       --ink: #16181B;
       --ink-soft: #97958D;
@@ -118,13 +119,12 @@
     .hero h1 {
       font-family: 'Dorsa', var(--font-display);
       font-size: clamp(5rem, 17vw, 12rem);
-      line-height: 1.02;
+      line-height: 1.04;
       letter-spacing: 0.01em;
       font-weight: 400;
-      max-width: 900px;
+      max-width: 100%;
       margin: 0;
     }
-    .hero h1 .soft { color: var(--ink-soft); font-weight: 400; font-style: italic; }
     /* The aircraft sits at z-index 4. Only the first headline line is
        lifted above it; the rest of the hero copy stays below, so the
        plane passes in front of everything else. They still sit above the
@@ -136,8 +136,7 @@
     .hero-inner > .sub,
     .hero-inner > .hero-actions,
     .hero-inner > .trust,
-    .hero h1 .soft { position: relative; z-index: 2; }
-    .hero h1 .hero-line, .hero h1 .soft { display: inline-block; }
+    .hero h1 .hero-line { display: inline-block; }
 
     /* Sits under the wordmark as a founding line. */
     .hero-since {
@@ -215,7 +214,6 @@
     }
 
     .hero--photo h1 { color: #fff; }
-    .hero--photo h1 .soft { color: rgba(255,255,255,0.62); }
     .hero--photo p.sub { color: rgba(255,255,255,0.78); }
     .hero--photo .btn-outline {
       border-color: rgba(255,255,255,0.4);
@@ -323,13 +321,12 @@
     .eyebrow .sq { width: 7px; height: 7px; background: var(--navy); display: inline-block; }
 
     .block h2 {
-      font-family: var(--font-display);
-      font-size: clamp(2rem, 4vw, 2.8rem);
-      letter-spacing: -0.02em;
-      font-weight: 700;
-      line-height: 1.12;
+      font-family: var(--font-head);
+      font-size: clamp(4rem, 8vw, 6.5rem);
+      letter-spacing: 0.01em;
+      font-weight: 400;
+      line-height: 1.04;
     }
-    .block h2 .soft { color: var(--ink-soft); font-weight: 400; font-style: italic; }
 
     .block p.lead {
       max-width: 560px;
@@ -674,7 +671,6 @@
       .hero-inner > .sub,
       .hero-inner > .hero-actions,
       .hero-inner > .trust,
-      .hero h1 .soft { z-index: 5; }
     }
 
     /* ---- Phone hero ----
@@ -804,7 +800,7 @@
     <div class="cap-grid">
       <div class="cap-sticky">
         <div class="eyebrow"><span class="sq"></span> What we offer</div>
-        <h2>One airline.<br><span class="soft">Three paths forward.</span></h2>
+        <h2>One airline. Three paths forward.</h2>
         <p class="lead">Whether you're chasing WP, working towards your next milestone, or
         reaching your goals — here's where to start.</p>
 

@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="icon" type="image/png" href="https://i.imgur.com/98OXG6K.png">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,700;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dorsa&family=Plus+Jakarta+Sans:ital,wght@0,700;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     /* ============ Tokens ============ */
@@ -19,8 +19,9 @@
          (px-4 / sm:px-6 / lg:px-8) so every page's container lines up
          with it and with the header. */
       --gutter: 1rem;
-      /* Headline face: bold upright for the dark line, regular
-         italic for the soft line under it. */
+      /* Display face for the mission statement and the stat figures;
+         headlines use --font-head above. */
+      --font-head: 'Dorsa', 'Plus Jakarta Sans', sans-serif;
       --font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       --ink: #16181B;
       --ink-soft: #97958D;
@@ -99,15 +100,14 @@
     }
 
     .hero h1 {
-      font-family: var(--font-display);
-      font-size: clamp(2.4rem, 5.6vw, 4.2rem);
-      line-height: 1.08;
-      letter-spacing: -0.03em;
-      font-weight: 700;
+      font-family: var(--font-head);
+      font-size: clamp(5rem, 11vw, 9rem);
+      line-height: 1.04;
+      letter-spacing: 0.01em;
+      font-weight: 400;
       max-width: 820px;
       margin: 0 auto;
     }
-    .hero h1 .soft { color: var(--ink-soft); font-weight: 400; font-style: italic; }
 
     .hero p.sub {
       max-width: 560px;
@@ -134,13 +134,12 @@
     .eyebrow .sq { width: 7px; height: 7px; background: var(--navy); display: inline-block; }
 
     .block h2 {
-      font-family: var(--font-display);
-      font-size: clamp(1.9rem, 3.6vw, 2.6rem);
-      letter-spacing: -0.02em;
-      font-weight: 700;
-      line-height: 1.14;
+      font-family: var(--font-head);
+      font-size: clamp(4rem, 8vw, 6.5rem);
+      letter-spacing: 0.01em;
+      font-weight: 400;
+      line-height: 1.04;
     }
-    .block h2 .soft { color: var(--ink-soft); font-weight: 400; font-style: italic; }
 
     .block p.lead {
       max-width: 560px;
@@ -300,7 +299,7 @@
       Aircraft &amp; operations
     </span>
 
-    <h1>Every aircraft.<br><span class="soft">Every career stage.</span></h1>
+    <h1>Every aircraft. Every career stage.</h1>
 
     <p class="sub">From the entry-level workhorses to the flagships of the
     skies — explore the aircraft our pilots fly across every stage of their
@@ -309,7 +308,7 @@
 
   <section class="block reveal">
     <div class="eyebrow"><span class="sq"></span> The fleet</div>
-    <h2>Grouped by<br><span class="soft">manufacturer.</span></h2>
+    <h2>Grouped by manufacturer.</h2>
     <p class="lead">Every aircraft we fly, from current workhorses to retired
     classics and a few things that never quite made it to production.</p>
 
