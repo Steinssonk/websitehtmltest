@@ -8,11 +8,13 @@ import footerHtml from './footer.html';
 import metaTags from './meta.html';
 import homeContent from './home.html';
 import aboutContent from './about.html';
-// Hero photography ships with the worker as binary Data modules — see the
-// *.webp rule in wrangler.toml — and is served from /assets/ below, so the
-// pages don't depend on any third-party image host.
-import homeHeroImage from './assets/home-hero.webp';
+// The hero's two layers (night-city backdrop + cut-out aircraft) ship with
+// the worker as binary Data modules — see the *.webp rule in wrangler.toml
+// — and are served from /assets/ below, so the home page doesn't depend on
+// any third-party image host.
+import heroBgImage from './assets/hero-bg.webp';
 import aboutHeroImage from './assets/about-hero.webp';
+import heroPlaneImage from './assets/hero-plane.webp';
 import programsContent from './programs.html';
 import fleetContent from './fleet.html';
 import hubsContent from './hubs.html';
@@ -26,7 +28,8 @@ import dashboardContent from './dashboard.html';
 // handle the Discord OAuth + session routes below.
 // Binary files served straight from the worker bundle.
 const staticAssets = {
-  '/assets/home-hero.webp': { body: homeHeroImage, type: 'image/webp' },
+  '/assets/hero-bg.webp': { body: heroBgImage, type: 'image/webp' },
+  '/assets/hero-plane.webp': { body: heroPlaneImage, type: 'image/webp' },
   '/assets/about-hero.webp': { body: aboutHeroImage, type: 'image/webp' },
 };
 

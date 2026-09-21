@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="icon" type="image/png" href="https://i.imgur.com/98OXG6K.png">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Dorsa&family=Plus+Jakarta+Sans:ital,wght@0,700;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,700;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     /* ============ Tokens ============ */
@@ -19,9 +19,8 @@
          (px-4 / sm:px-6 / lg:px-8) so every page's container lines up
          with it and with the header. */
       --gutter: 1rem;
-      /* Display face for the mission statement and the stat figures;
-         headlines use --font-head above. */
---font-head: 'Dorsa', 'Plus Jakarta Sans', sans-serif;
+      /* Headline face: bold upright for the dark line, regular
+         italic for the soft line under it. */
       --font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       --ink: #16181B;
       --ink-soft: #97958D;
@@ -113,18 +112,16 @@
       background: radial-gradient(circle at 35% 30%, #4a7a5a, #101c16);
     }
 
-    /* Dorsa, on the home hero headline only. It ships in a single
-       weight and is extremely condensed, so it takes its own size and
-       spacing rather than the shared headline settings. */
     .hero h1 {
-      font-family: 'Dorsa', var(--font-display);
-      font-size: clamp(5rem, 17vw, 12rem);
-      line-height: 1.04;
-      letter-spacing: 0.01em;
-      font-weight: 400;
-      max-width: 100%;
+      font-family: var(--font-display);
+      font-size: clamp(2.6rem, 6vw, 4.6rem);
+      line-height: 1.06;
+      letter-spacing: -0.03em;
+      font-weight: 700;
+      max-width: 900px;
       margin: 0;
     }
+    .hero h1 .soft { color: var(--ink-soft); font-weight: 400; font-style: italic; }
     /* The aircraft sits at z-index 4. Only the first headline line is
        lifted above it; the rest of the hero copy stays below, so the
        plane passes in front of everything else. They still sit above the
@@ -136,19 +133,8 @@
     .hero-inner > .sub,
     .hero-inner > .hero-actions,
     .hero-inner > .trust,
-    .hero h1 .hero-line { display: inline-block; }
-
-    /* Sits under the wordmark as a founding line. */
-    .hero-since {
-      position: relative;
-      z-index: 5;
-      margin-top: 0.6rem;
-      font-size: 0.9rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.62);
-    }
+    .hero h1 .soft { position: relative; z-index: 2; }
+    .hero h1 .hero-line, .hero h1 .soft { display: inline-block; }
 
     .hero p.sub {
       max-width: 560px;
@@ -179,6 +165,8 @@
       padding-bottom: 4rem;
       padding-left: 0;
       padding-right: 0;
+      transform-origin: center center;
+      will-change: transform, opacity;
     }
     .hero-bg {
       position: absolute;
@@ -186,7 +174,7 @@
       left: -30px;
       right: -30px;
       bottom: -30px;
-      background: #04060C url('/assets/home-hero.webp') 62% 52% / cover no-repeat;
+      background: var(--navy) url('/assets/hero-bg.webp') 50% 55% / cover no-repeat;
       z-index: 0;
     }
     .hero-tint {
@@ -195,16 +183,35 @@
       left: -30px;
       right: -30px;
       bottom: -30px;
-      /* Dark from the left, clearing towards the aircraft on the right.
-         Neutral rather than navy, so the photo keeps its own colour
-         instead of turning blue under the tint. */
       background:
-        linear-gradient(90deg, rgba(4,6,12,0.95) 0%, rgba(4,6,12,0.80) 30%, rgba(4,6,12,0.40) 62%, rgba(4,6,12,0.08) 100%),
-        linear-gradient(180deg, rgba(4,6,12,0.22) 0%, rgba(4,6,12,0.38) 100%);
+        linear-gradient(90deg, rgba(0,10,32,0.62) 0%, rgba(0,10,32,0.18) 55%, rgba(0,10,32,0) 100%),
+        linear-gradient(180deg, rgba(1,43,122,0.10) 0%, rgba(0,12,38,0.38) 100%);
       z-index: 1;
     }
-    /* No z-index here on purpose    /* hero-inner deliberately creates no stacking context; the copy's own
-       z-indexes below keep it clear of the photo and its tint. */
+    .hero-plane-wrap {
+      position: absolute;
+      top: 4%;
+      right: 17%;
+      width: 62%;
+      max-width: 880px;
+      z-index: 4;
+      pointer-events: none;
+      will-change: transform;
+      transform: translate3d(0, 0, 0);
+    }
+    .hero-plane {
+      width: 100%;
+      display: block;
+      filter: drop-shadow(0 40px 55px rgba(0, 10, 30, 0.45));
+      animation: heroPlaneFloat 7s ease-in-out infinite;
+    }
+    @keyframes heroPlaneFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-16px); }
+    }
+    /* No z-index here on purpose: hero-inner must NOT create its own
+       stacking context, so the headline's two lines can sit on either
+       side of the aircraft (see .hero-line / .hero h1 .soft below). */
     .hero-inner {
       position: relative;
       width: 100%;
@@ -214,6 +221,7 @@
     }
 
     .hero--photo h1 { color: #fff; }
+    .hero--photo h1 .soft { color: rgba(255,255,255,0.62); }
     .hero--photo p.sub { color: rgba(255,255,255,0.78); }
     .hero--photo .btn-outline {
       border-color: rgba(255,255,255,0.4);
@@ -321,12 +329,13 @@
     .eyebrow .sq { width: 7px; height: 7px; background: var(--navy); display: inline-block; }
 
     .block h2 {
-      font-family: var(--font-head);
-      font-size: clamp(4rem, 8vw, 6.5rem);
-      letter-spacing: 0.01em;
-      font-weight: 400;
-      line-height: 1.04;
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      letter-spacing: -0.02em;
+      font-weight: 700;
+      line-height: 1.12;
     }
+    .block h2 .soft { color: var(--ink-soft); font-weight: 400; font-style: italic; }
 
     .block p.lead {
       max-width: 560px;
@@ -665,12 +674,14 @@
       .trust-row { gap: 1.5rem; }
       /* On narrow screens the copy fills the upper half, so the
          aircraft drops below it rather than sitting across it. */
+      .hero-plane-wrap { width: 104%; right: -22%; top: auto; bottom: 4%; }
       /* There isn't room here for the aircraft to pass over the copy the
          way it does on a wide screen, so the copy goes back on top. */
       .hero-inner > .badge,
       .hero-inner > .sub,
       .hero-inner > .hero-actions,
       .hero-inner > .trust,
+      .hero h1 .soft { z-index: 5; }
     }
 
     /* ---- Phone hero ----
@@ -679,17 +690,14 @@
        aircraft gets the bottom band to itself. */
     @media (max-width: 640px) {
       .hero--photo {
+        /* Centred, but only within the space above the aircraft: the
+           bottom padding reserves that band, so the copy sits in the
+           middle of what's left rather than being pushed onto it. */
         align-items: center;
         padding-top: 1.5rem;
-        padding-bottom: 1.5rem;
+        padding-bottom: 30vh;
       }
-      /* The copy spans the full width here, so it crosses the lit part of
-         the photo — the scrim evens out instead of favouring the left. */
-      .hero-tint {
-        background:
-          linear-gradient(180deg, rgba(4,6,12,0.72) 0%, rgba(4,6,12,0.58) 45%, rgba(4,6,12,0.80) 100%);
-      }
-      .hero h1 { font-size: clamp(3.4rem, 16vw, 5.5rem); }
+      .hero h1 { font-size: clamp(2.3rem, 10vw, 3rem); }
       .hero p.sub { margin-top: 1rem; font-size: 1rem; }
       .hero-actions { margin-top: 1.5rem; }
       .hero-actions .btn { padding: 0.75rem 1.4rem; }
@@ -698,12 +706,21 @@
       /* One tidy line instead of leaving "Europe" stranded below. */
       .trust-row { gap: 0.85rem; flex-wrap: nowrap; }
       .trust-row span { font-size: 0.82rem; }
+      .hero-plane-wrap {
+        width: 150%;
+        right: -34%;
+        top: auto;
+        bottom: -8%;
+      }
     }
 
     /* On a short phone the copy leaves almost no band at the bottom, so
        the aircraft drops further out of frame rather than climbing back
        into the country row. */
-
+    @media (max-width: 640px) and (max-height: 740px) {
+      .hero--photo { padding-bottom: 20vh; }
+      .hero-plane-wrap { width: 132%; right: -28%; bottom: -22%; }
+    }
 
     /* ============ Scroll reveal ============ */
     .reveal {
@@ -719,6 +736,8 @@
     .reveal-stagger > *:nth-child(5) { transition-delay: 0.32s; }
     @media (prefers-reduced-motion: reduce) {
       .reveal, .reveal-stagger > * { opacity: 1; transform: none; transition: none; }
+      .hero-plane { animation: none; }
+      .hero-plane-wrap { transform: none !important; transition: none !important; }
     }
 
     /* ============ Bento box card ============ */
@@ -757,18 +776,20 @@
 
   <div id="header-placeholder"></div>
 
+  <div class="zoom-clip">
   <section class="hero hero--photo">
     <div class="hero-bg" aria-hidden="true"></div>
     <div class="hero-tint" aria-hidden="true"></div>
+    <div class="hero-plane-wrap" id="heroPlaneWrap">
+      <img class="hero-plane" src="/assets/hero-plane.webp" alt="" aria-hidden="true">
+    </div>
     <div class="hero-inner">
     <a href="https://discord.gg/3rWUYV3wDu" target="_blank" rel="noopener noreferrer" class="badge">
       <span class="badge-dot"></span>
       Now recruiting pilots
     </a>
 
-    <h1><span class="hero-line">Elevating Your Journey</span></h1>
-
-    <div class="hero-since">Since April, 2025</div>
+    <h1><span class="hero-line">Command the skies</span><br><span class="soft">of Aeronautica.</span></h1>
 
     <p class="sub">One of Aeronautica's largest airlines. Real routes, real hours,
     real careers — from your first solo to widebody command.</p>
@@ -778,8 +799,19 @@
       <a href="/about" class="btn btn-outline">About us</a>
     </div>
 
+    <div class="trust">
+      <div class="trust-label">Flying alongside pilots from</div>
+      <div class="trust-row">
+        <span>Asia</span>
+        <span>America</span>
+        <span>Africa</span>
+        <span>Oceania</span>
+        <span>Europe</span>
+      </div>
+    </div>
     </div>
   </section>
+  </div>
 
   <!-- ============ Our Mission ============ -->
   <div class="mission-backdrop" id="missionBackdrop" aria-hidden="true"></div>
@@ -800,7 +832,7 @@
     <div class="cap-grid">
       <div class="cap-sticky">
         <div class="eyebrow"><span class="sq"></span> What we offer</div>
-        <h2>One airline. Three paths forward.</h2>
+        <h2>One airline.<br><span class="soft">Three paths forward.</span></h2>
         <p class="lead">Whether you're chasing WP, working towards your next milestone, or
         reaching your goals — here's where to start.</p>
 
@@ -991,6 +1023,57 @@
     })();
   </script>
   <script>
+    // Scroll-driven hero plane: it flies straight forward along its own
+    // heading as the user scrolls through the hero — no rotation and no
+    // scaling, so the motion reads as the aircraft travelling nose-first
+    // rather than being nudged around the screen.
+    (function () {
+      var wrap = document.getElementById('heroPlaneWrap');
+      var heroEl = document.querySelector('.hero--photo');
+      if (!wrap || !heroEl) return;
+
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduceMotion) return;
+
+      // The aircraft in hero-plane.webp is in a shallow nose-down right
+      // turn, so "forward" is down and to the right at roughly this
+      // angle off horizontal. Both axes are measured in vw so the
+      // heading holds its angle at every viewport aspect ratio.
+      var HEADING_DEG = 17;
+      var TRAVEL = 58;     // vw covered across the full hero scroll
+      var DX = Math.cos(HEADING_DEG * Math.PI / 180);
+      var DY = Math.sin(HEADING_DEG * Math.PI / 180);
+
+      var ticking = false;
+
+      function render() {
+        ticking = false;
+        var heroHeight = heroEl.offsetHeight || window.innerHeight;
+        var progress = window.scrollY / heroHeight;
+        if (progress < 0) progress = 0;
+        if (progress > 1) progress = 1;
+        // ease-out so the motion settles rather than arriving linearly
+        var eased = 1 - Math.pow(1 - progress, 2);
+
+        var distance = TRAVEL * eased;
+
+        wrap.style.transform =
+          'translate3d(' + (distance * DX) + 'vw, ' + (distance * DY) + 'vw, 0)';
+      }
+
+      function onScroll() {
+        if (!ticking) {
+          requestAnimationFrame(render);
+          ticking = true;
+        }
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', render);
+      render();
+    })();
+  </script>
+  <script>
     // Mission zoom, driven by how close the mission section's CENTER is
     // to the CENTER of the viewport. Zoom peaks exactly when the section
     // is centered on screen and eases back off symmetrically as it moves
@@ -1004,11 +1087,12 @@
     // width and height, so the mission text can never overflow the screen
     // or slide up under the fixed nav bar.
     (function () {
+      var heroEl = document.querySelector('.hero--photo');
       var missionEl = document.getElementById('missionSection');
       var backdrop = document.getElementById('missionBackdrop');
       var missionInner = missionEl ? missionEl.querySelector('.mission-inner') : null;
       var missionText = missionEl ? missionEl.querySelector('p') : null;
-      if (!missionEl) return;
+      if (!heroEl || !missionEl) return;
 
       var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (reduceMotion) return;
@@ -1080,8 +1164,22 @@
         return smoothstep(p);
       }
 
+      // The hero keeps its own one-way progress tied to scrolling past it,
+      // so it doesn't fade back in once you're below the mission.
+      function heroProgress() {
+        var h = heroEl.offsetHeight || window.innerHeight;
+        var p = window.scrollY / h;
+        if (p < 0) p = 0;
+        if (p > 1) p = 1;
+        return p;
+      }
+
       function render() {
         ticking = false;
+
+        var hp = heroProgress();
+        heroEl.style.transform = 'scale(' + (1 + hp * 0.08) + ')';
+        heroEl.style.opacity = 1 - hp * 0.5;
 
         var p = progressNow();
         missionEl.style.transform =

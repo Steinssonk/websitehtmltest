@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="icon" type="image/png" href="https://i.imgur.com/98OXG6K.png">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Dorsa&family=Plus+Jakarta+Sans:ital,wght@0,700;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,700;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     /* ============ Tokens ============ */
@@ -19,9 +19,8 @@
          (px-4 / sm:px-6 / lg:px-8) so every page's container lines up
          with it and with the header. */
       --gutter: 1rem;
-      /* Display face for the mission statement and the stat figures;
-         headlines use --font-head above. */
-      --font-head: 'Dorsa', 'Plus Jakarta Sans', sans-serif;
+      /* Headline face: bold upright for the dark line, regular
+         italic for the soft line under it. */
       --font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       --ink: #16181B;
       --ink-soft: #97958D;
@@ -103,14 +102,15 @@
     }
 
     .hero h1 {
-      font-family: var(--font-head);
-      font-size: clamp(5rem, 11vw, 9rem);
-      line-height: 1.04;
-      letter-spacing: 0.01em;
-      font-weight: 400;
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5.6vw, 4.2rem);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      font-weight: 700;
       max-width: 820px;
       margin: 0 auto;
     }
+    .hero h1 .soft { color: var(--ink-soft); font-weight: 400; font-style: italic; }
 
     .hero p.sub {
       max-width: 560px;
@@ -172,12 +172,13 @@
     .eyebrow.on-dark .sq { background: var(--amber); }
 
     h2 {
-      font-family: var(--font-head);
-      font-size: clamp(4rem, 8vw, 6.5rem);
-      letter-spacing: 0.01em;
-      font-weight: 400;
-      line-height: 1.04;
+      font-family: var(--font-display);
+      font-size: clamp(1.9rem, 3.6vw, 2.6rem);
+      letter-spacing: -0.02em;
+      font-weight: 700;
+      line-height: 1.14;
     }
+    h2 .soft { color: var(--ink-soft); font-weight: 400; font-style: italic; }
     h2.on-dark { color: #fff; }
 
     p.lead {
@@ -483,7 +484,7 @@
       Career pathways
     </span>
 
-    <h1>Every rank has a clear reward.</h1>
+    <h1>Every rank has<br><span class="soft">a clear reward.</span></h1>
 
     <p class="sub">Competitive pay, five ranks, and exclusive development
     pathways designed to accelerate your aviation career from cadet to
@@ -505,7 +506,7 @@
   <!-- ============ Pay & Ranks ============ -->
   <section class="block reveal" style="padding-bottom: 4.5rem;">
     <div class="eyebrow"><span class="sq"></span> Pay &amp; ranks</div>
-    <h2>Five ranks. One clear ladder.</h2>
+    <h2>Five ranks.<br><span class="soft">One clear ladder.</span></h2>
     <p class="lead">Every hour flown moves you closer to the next stripe —
     and the next pay bracket.</p>
 
@@ -682,7 +683,7 @@
   <!-- ============ Development Programs ============ -->
   <section class="block reveal">
     <div class="eyebrow"><span class="sq"></span> Development programs</div>
-    <h2>Specialized training. Rapid advancement.</h2>
+    <h2>Specialized training.<br><span class="soft">Rapid advancement.</span></h2>
     <p class="lead">Two initiatives built to fast-track pilots who don't yet
     hold the license they need.</p>
 
