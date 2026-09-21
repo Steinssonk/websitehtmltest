@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="icon" type="image/png" href="https://i.imgur.com/98OXG6K.png">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,700;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dorsa&family=Plus+Jakarta+Sans:ital,wght@0,700;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     /* ============ Tokens ============ */
@@ -112,12 +112,15 @@
       background: radial-gradient(circle at 35% 30%, #4a7a5a, #101c16);
     }
 
+    /* Dorsa, on the home hero headline only. It ships in a single
+       weight and is extremely condensed, so it takes its own size and
+       spacing rather than the shared headline settings. */
     .hero h1 {
-      font-family: var(--font-display);
-      font-size: clamp(3.6rem, 11vw, 8rem);
-      line-height: 1.06;
-      letter-spacing: -0.03em;
-      font-weight: 700;
+      font-family: 'Dorsa', var(--font-display);
+      font-size: clamp(5rem, 17vw, 12rem);
+      line-height: 1.02;
+      letter-spacing: 0.01em;
+      font-weight: 400;
       max-width: 900px;
       margin: 0;
     }
@@ -690,7 +693,7 @@
         background:
           linear-gradient(180deg, rgba(4,6,12,0.72) 0%, rgba(4,6,12,0.58) 45%, rgba(4,6,12,0.80) 100%);
       }
-      .hero h1 { font-size: clamp(2.3rem, 10vw, 3rem); }
+      .hero h1 { font-size: clamp(3.4rem, 16vw, 5.5rem); }
       .hero p.sub { margin-top: 1rem; font-size: 1rem; }
       .hero-actions { margin-top: 1.5rem; }
       .hero-actions .btn { padding: 0.75rem 1.4rem; }
@@ -767,7 +770,7 @@
       Now recruiting pilots
     </a>
 
-    <h1><span class="hero-line">Dorsa</span></h1>
+    <h1><span class="hero-line">Elevating Your Journey</span></h1>
 
     <div class="hero-since">Since April, 2025</div>
 
