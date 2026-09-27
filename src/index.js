@@ -7,6 +7,14 @@ import headerHtml from './header.html';
 import footerHtml from './footer.html';
 import metaTags from './meta.html';
 import homeContent from './home.html';
+import aboutContent from './about.html';
+// The hero's two layers (night-city backdrop + cut-out aircraft) ship with
+// the worker as binary Data modules — see the *.webp rule in wrangler.toml
+// — and are served from /assets/ below, so the home page doesn't depend on
+// any third-party image host.
+import heroBgImage from './assets/hero-bg.webp';
+import aboutHeroImage from './assets/about-hero.webp';
+import heroPlaneImage from './assets/hero-plane.webp';
 import programsContent from './programs.html';
 import fleetContent from './fleet.html';
 import hubsContent from './hubs.html';
@@ -18,10 +26,20 @@ import dashboardContent from './dashboard.html';
 // shared nav and footer — see the SITE_CHROME_JS constant below. The
 // worker's job is to serve the right file for the right path, plus
 // handle the Discord OAuth + session routes below.
+// Binary files served straight from the worker bundle.
+const staticAssets = {
+  '/assets/hero-bg.webp': { body: heroBgImage, type: 'image/webp' },
+  '/assets/hero-plane.webp': { body: heroPlaneImage, type: 'image/webp' },
+  '/assets/about-hero.webp': { body: aboutHeroImage, type: 'image/webp' },
+};
+
 const pageRoutes = {
   '/': homeContent,
   '/index.html': homeContent,
   '/home.html': homeContent,
+
+  '/about': aboutContent,
+  '/about.html': aboutContent,
 
   '/programs': programsContent,
   '/programs.html': programsContent,
@@ -75,6 +93,15 @@ export default {
         });
       }
 
+      if (staticAssets[pathname]) {
+        return new Response(staticAssets[pathname].body, {
+          headers: {
+            'Content-Type': staticAssets[pathname].type,
+            'Cache-Control': 'public, max-age=31536000, immutable',
+          },
+        });
+      }
+
       if (pathname === '/site-chrome.js') {
         return new Response(SITE_CHROME_JS, {
           headers: {
@@ -98,6 +125,10 @@ export default {
 
       if (pathname === '/api/me') {
         return handleMe(request, env);
+      }
+
+      if (pathname === '/api/discord-members') {
+        return handleDiscordMembers(env);
       }
 
       if (pathname === '/api/operations') {
@@ -282,6 +313,52 @@ function handleLogout(url) {
 }
 
 
+
+// Total server membership, proxied rather than called from the browser
+// so the response can be cached at the edge.
+//
+// This reads the INVITE endpoint rather than the widget: widget.json only
+// reports presence_count (who is online right now), while an invite
+// fetched with ?with_counts=true carries approximate_member_count, the
+// figure that actually answers "how many members". Neither needs a bot
+// token. The invite has to be a permanent one — Discord returns 404 for
+// an expired or revoked code.
+async function handleDiscordMembers(env) {
+  const inviteCode = env.DISCORD_INVITE_CODE;
+  const fail = (reason) =>
+    new Response(JSON.stringify({ ok: false, reason }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60' },
+    });
+
+  if (!inviteCode) return fail('no-invite-code');
+
+  try {
+    const res = await fetch(
+      `https://discord.com/api/v10/invites/${encodeURIComponent(inviteCode)}?with_counts=true`,
+      { cf: { cacheTtl: 300, cacheEverything: true } }
+    );
+    if (!res.ok) return fail(`discord-${res.status}`);
+
+    const data = await res.json();
+    const total = Number(data.approximate_member_count);
+    const online = Number(data.approximate_presence_count);
+    if (!Number.isFinite(total)) return fail('no-member-count');
+
+    return new Response(JSON.stringify({
+      ok: true,
+      total,
+      online: Number.isFinite(online) ? online : null,
+    }), {
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=300',
+      },
+    });
+  } catch (err) {
+    return fail('fetch-failed');
+  }
+}
 
 async function handleMe(request, env) {
   const cookies = parseCookies(request.headers.get('Cookie') || '');
