@@ -5,18 +5,12 @@
 <style>
   #header-placeholder, #header-placeholder * { box-sizing: border-box; }
 
-  /* Same gutter steps as the dashboard's Tailwind container, declared
-     here because this fragment is injected into pages that each define
-     their own tokens. */
-  #header-placeholder { --gutter: 1rem; }
-  @media (min-width: 640px)  { #header-placeholder { --gutter: 1.5rem; } }
-  @media (min-width: 1024px) { #header-placeholder { --gutter: 2rem; } }
-
   #header-placeholder nav {
     display: flex;
     align-items: center;
-    height: 84px;
-    padding: 0;
+    justify-content: space-between;
+    height: 76px;
+    padding: 0 6%;
     position: fixed;
     top: 0;
     left: 0;
@@ -25,19 +19,6 @@
     background-color: #012B7A;
     box-shadow: 0 2px 16px rgba(1, 20, 58, 0.18);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  }
-
-  /* Matches every page's container: 1280px max-width, centred, with the
-     gutter steps above — so the header's edges track the content's. */
-  #header-placeholder .nav-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 1280px;
-    height: 100%;
-    margin: 0 auto;
-    padding: 0 var(--gutter);
   }
 
   /* Logo + nav links grouped together on the left, right next to
@@ -58,9 +39,9 @@
   }
 
   #header-placeholder .brand-logo {
-    height: 63px;
+    height: 42px;
     width: auto;
-    max-width: 255px;
+    max-width: 170px;
     object-fit: contain;
     display: block;
   }
@@ -97,16 +78,6 @@
     display: none;
     align-items: center;
     gap: 0.6rem;
-    min-width: 0;
-  }
-
-  /* A long username shouldn't be able to push the nav into the links or
-     off the bar on a narrow screen. */
-  #header-placeholder #user-name {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 160px;
   }
   #header-placeholder .user-badge img {
     width: 32px;
@@ -126,7 +97,7 @@
     color: #fff;
     border: none;
     padding: 0.65rem 1.35rem;
-    border-radius: 15px;
+    border-radius: 999px;
     cursor: pointer;
     font-weight: 600;
     font-size: 0.92rem;
@@ -148,12 +119,12 @@
     justify-content: center;
     align-items: flex-end;
     gap: 5px;
-    width: 44px;
-    height: 44px;
+    width: 32px;
+    height: 32px;
     background: none;
     border: none;
     cursor: pointer;
-    padding: 0 6px;
+    padding: 0;
     z-index: 210;
   }
   .nav-toggle span {
@@ -174,7 +145,7 @@
   .mobile-menu {
     position: fixed;
     inset: 0;
-    background: #F4F6F9;
+    background: #F4F2EB;
     z-index: 200;
     display: flex;
     flex-direction: column;
@@ -198,37 +169,22 @@
     #header-placeholder .nav-links { display: none; }
     .nav-toggle { display: flex; }
   }
-
-  @media (max-width: 640px) {
-    #header-placeholder nav { height: 72px; }
-    #header-placeholder .brand-logo { height: 50px; max-width: 150px; }
-    #header-placeholder .btn { padding: 0.5rem 1rem; font-size: 0.85rem; }
-    #header-placeholder #user-name { max-width: 28vw; }
-  }
-
-  /* On the narrowest phones the avatar alone stands in for the signed-in
-     user, so the logo, the button and the menu toggle all still fit. */
-  @media (max-width: 480px) {
-    #header-placeholder #user-name { display: none; }
-  }
   @media (min-width: 981px) {
     .mobile-menu { display: none; }
   }
 </style>
 
 <nav>
-  <div class="nav-inner">
     <div class="nav-left">
         <a href="/" class="logo">
             <img class="brand-logo" src="https://i.imgur.com/WLsUaNg.png" alt="Udyanapura">
         </a>
         <ul class="nav-links">
             <li><a href="/">Home</a></li>
-            <li><a href="/about">About us</a></li>
-            <li><a href="/dashboard">Dashboard</a></li>
             <li><a href="/programs">Programs</a></li>
-            <li><a href="/fleet">Fleet</a></li>
             <li><a href="/hubs">Hubs</a></li>
+            <li><a href="/fleet">Fleet</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
         </ul>
     </div>
     <div class="nav-right">
@@ -241,17 +197,15 @@
             <span></span><span></span><span></span>
         </button>
     </div>
-  </div>
 </nav>
 
 <div class="mobile-menu" id="mobileMenu">
     <ul>
         <li><a href="/">Home</a></li>
-        <li><a href="/about">About us</a></li>
-        <li><a href="/dashboard">Dashboard</a></li>
         <li><a href="/programs">Programs</a></li>
-        <li><a href="/fleet">Fleet</a></li>
         <li><a href="/hubs">Hubs</a></li>
+        <li><a href="/fleet">Fleet</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
     </ul>
     <a id="mobile-auth-btn" class="btn btn-dark" href="/auth/discord">Get Started</a>
 </div>

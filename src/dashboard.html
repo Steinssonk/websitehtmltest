@@ -30,20 +30,9 @@
         }
     </script>
     <style>
-        body { background-color: #F4F6F9; color: #16181B; }
+        body { background-color: #F4F2EB; color: #16181B; }
         .dropdown-results::-webkit-scrollbar { width: 4px; }
         .dropdown-results::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
-        /* One corner radius across the whole site. Tailwind's rounded-*
-           utilities are remapped here rather than edited on every element,
-           the same technique this page already uses for its colours.
-           rounded-full is deliberately left out: on this page it is only
-           used for true circles (the status dot, the image remove button)
-           and a hairline progress track. */
-        .rounded-sm, .rounded, .rounded-md, .rounded-lg,
-        .rounded-xl, .rounded-2xl, .rounded-3xl { border-radius: 15px !important; }
-
-        .border-2 { border-width: 1px !important; }
-
         #app-shell { transition: filter 0.3s ease; }
         #app-shell.gated { filter: blur(7px); pointer-events: none; user-select: none; }
 
@@ -51,7 +40,7 @@
            Given their own classes rather than raw bg-white/text-navy so
            the "selected" pill stays legible in dark mode instead of
            inheriting the same override used for card backgrounds. */
-        .seg-btn { padding: 0.5rem 1rem; border-radius: 15px; font-size: 0.75rem; font-weight: 600; transition: all 0.15s ease; }
+        .seg-btn { padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; transition: all 0.15s ease; }
         .seg-btn-active { background-color: #ffffff; color: #012B7A; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         .seg-btn-inactive { color: #97958D; }
         .seg-btn-inactive:hover { color: #16181B; }
@@ -60,7 +49,7 @@
         html.dashboard-dark .seg-btn-inactive:hover { color: #eaf1ff; }
 
         /* --- Page loading overlay --- */
-        #page-loading { transition: opacity 0.2s ease; background-color: #F4F6F9; }
+        #page-loading { transition: opacity 0.2s ease; background-color: #F4F2EB; }
         html.dashboard-dark #page-loading { background-color: #0b1220; }
         .spinner { border: 3px solid rgba(1, 43, 122, 0.15); border-top-color: #012B7A; border-radius: 9999px; width: 2.25rem; height: 2.25rem; animation: spin 0.8s linear infinite; }
         html.dashboard-dark .spinner { border-color: rgba(255, 255, 255, 0.12); border-top-color: #6f9bff; }
@@ -74,54 +63,22 @@
            cream tokens, the same technique already used below for dark
            mode. Semantic colors (emerald = success, red = error) are left
            alone on purpose. */
-        /* Panels, cards and dropdowns are white so they lift off the
-           page; the form controls that share this class take the page
-           background instead, so an input reads as a recess in the card
-           rather than another card. The tag+class selector outranks the
-           plain class above, and both sit below the dark-mode rules. */
-        .bg-slate-50 { background-color: #FFFFFF !important; }
-        /* Boxes nested inside a panel — the settings rows, the claim
-           items, the logger instructions — sit on a tint so they read as
-           insets rather than panels of their own. Dropdown popovers are
-           excluded: they float over a panel, so they stay white. */
-        .bg-slate-50 .bg-slate-50 { background-color: #F4F7F9 !important; }
-        .bg-slate-50 [id^="dropdown-"].bg-slate-50 { background-color: #FFFFFF !important; }
-        /* Fields sit on their own faint tint so they read as fillable
-           against the white panel around them. */
-        .bg-slate-50 input.bg-slate-50,
-        .bg-slate-50 select.bg-slate-50,
-        .bg-slate-50 textarea.bg-slate-50 { background-color: #F4F7F9 !important; }
-        .bg-slate-100 { background-color: #F4F7F9 !important; }
+        .bg-slate-50 { background-color: #F4F2EB !important; }
+        .bg-slate-100 { background-color: #EDEAE0 !important; }
         .bg-slate-200,
-        .bg-slate-200\/70 { background-color: #E3E8EF !important; }
+        .bg-slate-200\/70 { background-color: #E4E1D6 !important; }
         .bg-slate-700 { background-color: #001D52 !important; }
         .bg-slate-900\/70 { background-color: rgba(0, 29, 82, 0.7) !important; }
         .hover\:bg-slate-900:hover { background-color: #001D52 !important; }
-        /* Boxes carry no outline: panels, the boxes nested inside them,
-           and the form fields are told apart by their fill alone. Dark
-           mode keeps its own borders, being more specific. */
-        .border-slate-100 { border-color: transparent !important; }
-        .border-slate-200 { border-color: transparent !important; }
-        .shadow-sm, .shadow, .shadow-md,
-        .shadow-lg, .shadow-xl, .shadow-2xl { box-shadow: none !important; }
-        /* Two exceptions on the career banner. Tailwind draws ring-* as a
-           box-shadow, so the reset above was erasing the gold ring that
-           marks the current rank; and the rank badges are the same navy
-           as the banner behind them, so without their shadow they have no
-           edge at all. */
-        #rank-timeline-grid .shadow-lg {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.35) !important;
-        }
-        #rank-timeline-grid .ring-2 {
-            box-shadow: 0 0 0 2px #E8A23D, 0 10px 15px -3px rgba(0, 0, 0, 0.35) !important;
-        }
+        .border-slate-100 { border-color: #E4E1D6 !important; }
+        .border-slate-200 { border-color: #E4E1D6 !important; }
         .text-slate-300 { color: #9aa5b4 !important; }
         .text-slate-400 { color: #97958D !important; }
         .text-slate-500 { color: #97958D !important; }
         .text-slate-600 { color: #7d7b73 !important; }
         .text-slate-700 { color: #16181B !important; }
         .text-slate-900 { color: #16181B !important; }
-        .hover\:bg-slate-50:hover { background-color: #FFFFFF !important; }
+        .hover\:bg-slate-50:hover { background-color: #F4F2EB !important; }
         .hover\:text-slate-600:hover { color: #7d7b73 !important; }
         .hover\:text-slate-900:hover { color: #16181B !important; }
         .bg-amber-600 { background-color: #E8A23D !important; }
@@ -188,7 +145,7 @@
         html.dashboard-dark .nav-toggle span { background: #eaf1ff; }
 
         html {
-            --header-h: 84px; /* fallback until /site-chrome.js measures the real nav height */
+            --header-h: 76px; /* fallback until /site-chrome.js measures the real nav height */
         }
         body {
             padding-top: var(--header-h);
@@ -249,7 +206,7 @@
                 <div class="rounded-3xl bg-navy-deep text-white p-8 shadow-md relative overflow-hidden">
                     <div class="relative z-10 flex items-center justify-between gap-5">
                         <div>
-                            <span class="text-[11px] font-semibold uppercase tracking-wider text-gold bg-white/10 px-3 py-1 rounded-xl border border-white/20">Flight Operations</span>
+                            <span class="text-[11px] font-semibold uppercase tracking-wider text-gold bg-white/10 px-3 py-1 rounded-full border border-white/20">Flight Operations</span>
                             <h1 class="font-serif text-3xl font-bold mt-3" id="hero-greeting">Welcome back, Pilot</h1>
                             <p class="text-slate-300 text-xs mt-1 max-w-xl">Review your current career metrics, flight time credits, and claim milestones from your overview panel.</p>
                         </div>
@@ -260,7 +217,7 @@
                 <!-- Core Metrics Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- Flight Time -->
-                    <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6 shadow-sm flex flex-col">
+                    <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6 shadow-sm">
                         <div class="flex items-center justify-between text-slate-400 mb-2">
                             <span class="text-xs font-semibold uppercase tracking-wider">Flight Time</span>
                             <i data-lucide="clock" class="w-5 h-5 text-navy"></i>
@@ -268,36 +225,36 @@
                         <div class="flex items-baseline mt-2">
                             <span class="font-serif text-3xl font-bold text-slate-900" id="stat-flight-time">142h 30m</span>
                         </div>
-                        <div class="mt-auto pt-3">
-                            <span class="inline-block text-xs text-navy font-medium bg-navy/5 py-1 px-2.5 rounded-lg border border-navy/10" id="stat-flight-minutes">8,550m</span>
+                        <div class="mt-3 text-xs text-emerald-600 font-medium flex items-center">
+                            <i data-lucide="trending-up" class="w-3.5 h-3.5 mr-1"></i> Progression tracking active
                         </div>
                     </div>
 
                     <!-- Rank -->
-                    <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6 shadow-sm flex flex-col">
+                    <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6 shadow-sm">
                         <div class="flex items-center justify-between text-slate-400 mb-2">
                             <span class="text-xs font-semibold uppercase tracking-wider">Pilot Rank</span>
                             <i data-lucide="award" class="w-5 h-5 text-navy"></i>
                         </div>
-                        <div class="flex items-baseline mt-2">
-                            <span class="font-serif text-3xl font-bold text-slate-900" id="stat-rank">Senior Captain</span>
+                        <div class="mt-2">
+                            <span class="font-serif text-xl font-bold text-slate-900" id="stat-rank">Senior Captain</span>
                         </div>
-                        <div class="mt-auto pt-3">
-                            <span class="inline-block text-xs text-navy font-medium bg-navy/5 py-1 px-2.5 rounded-lg border border-navy/10" id="stat-payrate">90,000 WP/hr</span>
+                        <div class="mt-3 text-xs text-navy font-medium bg-navy/5 py-1 px-2.5 rounded-lg w-max border border-navy/10" id="stat-payrate">
+                            90,000 WP/hr
                         </div>
                     </div>
 
                     <!-- Pay Earned -->
-                    <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6 shadow-sm flex flex-col">
+                    <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6 shadow-sm">
                         <div class="flex items-center justify-between text-slate-400 mb-2">
                             <span class="text-xs font-semibold uppercase tracking-wider">Pay Earned</span>
                             <i data-lucide="badge-dollar-sign" class="w-5 h-5 text-emerald-600"></i>
                         </div>
                         <div class="flex items-baseline mt-2">
-                            <span class="font-serif text-3xl font-bold text-slate-900" id="stat-pay">18,450WP</span>
+                            <span class="font-serif text-3xl font-bold text-slate-900" id="stat-pay">$18,450</span>
                         </div>
-                        <div class="mt-auto pt-3">
-                            <span class="inline-block text-xs text-navy font-medium bg-navy/5 py-1 px-2.5 rounded-lg border border-navy/10" id="stat-pay-goal">/500,000 WP</span>
+                        <div class="mt-3 text-xs text-emerald-600 font-medium flex items-center">
+                            <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mr-1"></i> Fully credited
                         </div>
                     </div>
                 </div>
@@ -307,7 +264,7 @@
                     <div class="relative z-10">
                         <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                             <div>
-                                <span class="text-[11px] font-semibold uppercase tracking-wider text-gold bg-white/10 px-3 py-1 rounded-xl border border-white/20">Career Progression Pathway</span>
+                                <span class="text-[11px] font-semibold uppercase tracking-wider text-gold bg-white/10 px-3 py-1 rounded-full border border-white/20">Career Progression Pathway</span>
                                 <h2 class="font-serif text-2xl font-bold mt-3 text-white">Flight Programs &amp; Rewards</h2>
                                 <p class="text-slate-300 text-xs mt-1 max-w-xl">Ascend through the ranks and unlock new perks along your journey.</p>
                             </div>
@@ -363,7 +320,7 @@
                     <h2 class="font-serif text-xl font-bold text-slate-900 mb-1">Flight Logger System</h2>
                     <p class="text-xs text-slate-500 mb-6">Select your parameters using the search filters below to log a new flight.</p>
 
-                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-6 text-xs text-slate-600 leading-relaxed">
+                    <div class="bg-navy/5 border border-navy/10 rounded-2xl p-4 mb-6 text-xs text-slate-600 leading-relaxed">
                         Add your flight logging instructions here.
                     </div>
 
@@ -439,7 +396,7 @@
                         ondragover="event.preventDefault(); this.classList.add('border-navy/40')"
                         ondragleave="this.classList.remove('border-navy/40')"
                         ondrop="event.preventDefault(); this.classList.remove('border-navy/40'); handleImageFilesSelected(event.dataTransfer.files)"
-                        class="mt-4 flex flex-col items-center justify-center bg-slate-50 border-2 border-dashed border-slate-200 hover:border-navy/40 rounded-2xl p-6 text-center cursor-pointer transition-colors">
+                        class="mt-4 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 hover:border-navy/40 rounded-2xl p-6 text-center cursor-pointer transition-colors">
                         <i data-lucide="image-plus" class="w-6 h-6 mb-2 text-slate-300"></i>
                         <span class="text-sm font-medium text-slate-700">Click to upload, or drag screenshots here</span>
                         <span class="text-xs text-slate-400 mt-1">PNG, JPEG, or WEBP &middot; up to 8 at once</span>
@@ -483,7 +440,7 @@
                 <!-- Banner Header -->
                 <div class="rounded-3xl textured-banner text-white p-8 shadow-md relative overflow-hidden">
                     <div class="relative z-10">
-                        <span class="text-[11px] font-semibold uppercase tracking-wider text-gold bg-white/10 px-3 py-1 rounded-xl border border-white/20">Merlion Fleet Store</span>
+                        <span class="text-[11px] font-semibold uppercase tracking-wider text-gold bg-white/10 px-3 py-1 rounded-full border border-white/20">Merlion Fleet Store</span>
                         <h1 class="font-serif text-3xl font-bold mt-3">Flight Programs & Rewards</h1>
                         <p class="text-slate-300 text-xs mt-1 max-w-xl">Select aircraft rewards unlocked by your career rank and add them to your claim payload along with your accrued paycheck balance.</p>
                     </div>
@@ -516,7 +473,7 @@
                                     <div class="text-xs text-slate-500">Accrued flight earnings</div>
                                 </div>
                             </div>
-                            <span class="font-serif text-lg font-bold text-slate-900" id="summary-pay-amount">18,450WP</span>
+                            <span class="font-serif text-lg font-bold text-slate-900" id="summary-pay-amount">$18,450</span>
                         </div>
 
                         <!-- Multi-item Cart Payload -->
@@ -948,12 +905,10 @@
 
     function renderUI() {
         document.getElementById('stat-flight-time').innerText = formatHoursMinutes(state.flightTime);
-        document.getElementById('stat-flight-minutes').innerText =
-            `${Math.round(state.flightTime * 60).toLocaleString()}m`;
         document.getElementById('stat-rank').innerText = state.rank;
-        document.getElementById('stat-pay').innerText = `${state.payEarned.toLocaleString()}WP`;
+        document.getElementById('stat-pay').innerText = `$${state.payEarned.toLocaleString()}`;
         document.getElementById('stat-payrate').innerText = `${state.payRate.toLocaleString()} WP/hr`;
-        document.getElementById('summary-pay-amount').innerText = `${state.payEarned.toLocaleString()}WP`;
+        document.getElementById('summary-pay-amount').innerText = `$${state.payEarned.toLocaleString()}`;
     }
 
     // --- Reward Claim Cart Logic ---
@@ -1113,8 +1068,8 @@
             }
 
             const msg = selectedRewards.length > 0
-                ? `Successfully claimed paycheck (${claimedPay.toLocaleString()}WP) and ${rewardNames}!`
-                : `Successfully claimed paycheck (${claimedPay.toLocaleString()}WP)!`;
+                ? `Successfully claimed paycheck ($${claimedPay.toLocaleString()}) and ${rewardNames}!`
+                : `Successfully claimed paycheck ($${claimedPay.toLocaleString()})!`;
             showToast(confirmedUser ? msg : `${msg} (confirmation is taking longer than expected — refresh to check.)`);
 
             clearCart();
